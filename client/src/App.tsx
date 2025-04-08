@@ -1,45 +1,40 @@
-import { usePalette } from "@/contexts/PaletteContext";
+import { Switch, Route } from "wouter";
+import { queryClient } from "./lib/queryClient";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
+import NotFound from "@/pages/not-found";
+import Home from "@/pages/Home";
+import { useEffect } from "react";
 
-function SimpleTestComponent() {
-  const { palette, generatePalette } = usePalette();
-  
+function Router() {
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Simple Palette Test</h1>
-      <div className="mb-4">
-        <p>Palette size: {palette.length}</p>
-      </div>
-      <button 
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-        onClick={generatePalette}
-      >
-        Generate Palette
-      </button>
-      
-      <div className="mt-8 flex gap-4">
-        {palette.map((color, index) => (
-          <div 
-            key={index}
-            className="w-20 h-20 rounded-md flex items-center justify-center"
-            style={{ backgroundColor: color.hex }}
-          >
-            <span className="text-xs px-2 py-1 bg-white bg-opacity-70 rounded">
-              {color.hex}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
+    <Switch>
+      <Route path="/" component={Home} />
+      <Route component={NotFound} />
+    </Switch>
   );
 }
 
 function App() {
+  useEffect(() => {
+    // Initialize keyboard shortcut listener
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === "Space" && 
+          document.activeElement?.tagName !== "INPUT" && 
+          document.activeElement?.tagName !== "TEXTAREA") {
+        e.preventDefault();
+      }
+    };
+    
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
-    <div>
-      <SimpleTestComponent />
+    <QueryClientProvider client={queryClient}>
+      <Router />
       <Toaster />
-    </div>
+    </QueryClientProvider>
   );
 }
 
