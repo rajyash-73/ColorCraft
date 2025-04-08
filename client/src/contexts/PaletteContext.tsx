@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { Color } from "@shared/schema";
 import { getRandomColor, hexToRgb } from "@/lib/colorUtils";
 
+// Define the shape of our context
 interface PaletteContextType {
   palette: Color[];
   generatePalette: () => void;
@@ -12,17 +13,30 @@ interface PaletteContextType {
   clearPalette: () => void;
 }
 
-const PaletteContext = createContext<PaletteContextType | undefined>(undefined);
+// Create the context with a default value
+const defaultValue: PaletteContextType = {
+  palette: [],
+  generatePalette: () => {},
+  toggleLock: () => {},
+  addColor: () => {},
+  removeColor: () => {},
+  updateColor: () => {},
+  clearPalette: () => {}
+};
 
-export function PaletteProvider({ children }: { children: React.ReactNode }) {
+// Create the context
+const PaletteContext = createContext<PaletteContextType>(defaultValue);
+
+// Create a provider component that will wrap your app
+export const PaletteProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
+  // State to hold our palette colors
   const [palette, setPalette] = useState<Color[]>([]);
   
-  // Initialize palette on first render
+  // Initialize with 5 random colors when the component mounts
   useEffect(() => {
     if (palette.length === 0) {
       const initialPalette: Color[] = [];
       
-      // Generate 5 initial colors
       for (let i = 0; i < 5; i++) {
         const hex = getRandomColor();
         const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
@@ -38,21 +52,7 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
   
-  // Setup keyboard shortcut for generating palette
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === "Space" && 
-          document.activeElement?.tagName !== "INPUT" && 
-          document.activeElement?.tagName !== "TEXTAREA") {
-        e.preventDefault();
-        generatePalette();
-      }
-    };
-    
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [palette]);
-  
+  // Generate a new palette, keeping locked colors
   const generatePalette = () => {
     setPalette(prevPalette => 
       prevPalette.map(color => {
@@ -72,6 +72,7 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
     );
   };
   
+  // Toggle the lock state of a color
   const toggleLock = (index: number) => {
     setPalette(prevPalette => 
       prevPalette.map((color, i) => 
@@ -82,6 +83,7 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
     );
   };
   
+  // Add a new random color to the palette
   const addColor = () => {
     // Limit to 10 colors maximum
     if (palette.length >= 10) return;
@@ -89,8 +91,8 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
     const hex = getRandomColor();
     const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
     
-    setPalette([
-      ...palette,
+    setPalette(prevPalette => [
+      ...prevPalette,
       {
         hex,
         rgb,
@@ -99,6 +101,7 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
     ]);
   };
   
+  // Remove a color from the palette
   const removeColor = (index: number) => {
     // Don't allow removing if only one color remains
     if (palette.length <= 1) return;
@@ -108,6 +111,7 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
     );
   };
   
+  // Update a specific color
   const updateColor = (index: number, updatedColor: Color) => {
     setPalette(prevPalette => 
       prevPalette.map((color, i) => 
@@ -116,8 +120,8 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
     );
   };
   
+  // Clear all colors and start with one
   const clearPalette = () => {
-    // Generate a single new color
     const hex = getRandomColor();
     const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
     
@@ -130,27 +134,27 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
     ]);
   };
   
+  // The value provided to consumers of the context
+  const contextValue = {
+    palette,
+    generatePalette,
+    toggleLock,
+    addColor,
+    removeColor,
+    updateColor,
+    clearPalette
+  };
+  
   return (
-    <PaletteContext.Provider value={{
-      palette,
-      generatePalette,
-      toggleLock,
-      addColor,
-      removeColor,
-      updateColor,
-      clearPalette
-    }}>
+    <PaletteContext.Provider value={contextValue}>
       {children}
     </PaletteContext.Provider>
   );
-}
+};
 
-export function usePalette() {
+// Hook to use the palette context
+export const usePalette = () => {
   const context = useContext(PaletteContext);
   
-  if (context === undefined) {
-    throw new Error("usePalette must be used within a PaletteProvider");
-  }
-  
   return context;
-}
+};
