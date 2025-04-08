@@ -19,6 +19,8 @@ export default function Home() {
   
   const { palette, generatePalette, addColor, clearPalette, updateColor } = usePalette();
   const { toast } = useToast();
+  
+  console.log('Home component rendered with palette:', palette);
 
   useEffect(() => {
     // Check if first visit
