@@ -17,7 +17,7 @@ export default function Home() {
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  const { palette } = usePalette();
+  const { palette, generatePalette, addColor, clearPalette, updateColor } = usePalette();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -43,10 +43,12 @@ export default function Home() {
     
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [showOnboarding, showExportModal, showAdjustModal]);
+  }, [showOnboarding, showExportModal, showAdjustModal, generatePalette]);
 
   const handleGeneratePalette = () => {
-    // This is implemented in PaletteContext
+    // Call the generate palette function from context
+    generatePalette();
+    
     toast({
       title: "New palette generated!",
       description: "Press spacebar for another one.",
@@ -113,7 +115,7 @@ export default function Home() {
         ))}
         
         <div className="hidden md:flex items-center justify-center w-16 bg-gray-100 border-l border-gray-300 hover:bg-gray-200 cursor-pointer transition-colors"
-            onClick={() => usePalette().addColor()}>
+            onClick={() => addColor()}>
           <div className="flex flex-col items-center justify-center text-gray-500 space-y-2">
             <i className="fas fa-plus text-xl"></i>
             <span className="text-xs font-medium">Add</span>
@@ -123,8 +125,8 @@ export default function Home() {
       
       <ActionButtons 
         onGenerate={handleGeneratePalette}
-        onAddColor={() => usePalette().addColor()}
-        onClearAll={() => usePalette().clearPalette()}
+        onAddColor={addColor}
+        onClearAll={clearPalette}
       />
       
       {showOnboarding && <OnboardingTour onClose={() => setShowOnboarding(false)} />}
@@ -141,7 +143,7 @@ export default function Home() {
           color={palette[activeColorIndex]} 
           onClose={() => setShowAdjustModal(false)}
           onApply={(updatedColor: Color) => {
-            usePalette().updateColor(activeColorIndex, updatedColor);
+            updateColor(activeColorIndex, updatedColor);
             setShowAdjustModal(false);
           }}
         />
