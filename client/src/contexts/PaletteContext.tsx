@@ -13,47 +13,54 @@ interface PaletteContextType {
   clearPalette: () => void;
 }
 
-// Create the context with a default value
-const defaultValue: PaletteContextType = {
-  palette: [],
-  generatePalette: () => {},
-  toggleLock: () => {},
-  addColor: () => {},
-  removeColor: () => {},
-  updateColor: () => {},
-  clearPalette: () => {}
-};
+// Create initial palette data for the default context
+const initialPaletteData: Color[] = [
+  {
+    hex: "#FF5733",
+    rgb: { r: 255, g: 87, b: 51 },
+    locked: false
+  },
+  {
+    hex: "#33FF57",
+    rgb: { r: 51, g: 255, b: 87 },
+    locked: false
+  },
+  {
+    hex: "#3357FF",
+    rgb: { r: 51, g: 87, b: 255 },
+    locked: false
+  },
+  {
+    hex: "#F3FF33",
+    rgb: { r: 243, g: 255, b: 51 },
+    locked: false
+  },
+  {
+    hex: "#FF33F3",
+    rgb: { r: 255, g: 51, b: 243 },
+    locked: false
+  }
+];
 
-// Create the context
-const PaletteContext = createContext<PaletteContextType>(defaultValue);
+// Create the context with a meaningful default value
+const PaletteContext = createContext<PaletteContextType>({
+  palette: initialPaletteData,
+  generatePalette: () => console.warn("generatePalette not implemented"),
+  toggleLock: () => console.warn("toggleLock not implemented"),
+  addColor: () => console.warn("addColor not implemented"),
+  removeColor: () => console.warn("removeColor not implemented"),
+  updateColor: () => console.warn("updateColor not implemented"),
+  clearPalette: () => console.warn("clearPalette not implemented")
+});
 
-// Create a provider component that will wrap your app
-export const PaletteProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  // State to hold our palette colors
-  const [palette, setPalette] = useState<Color[]>([]);
-  
-  // Initialize with 5 random colors when the component mounts
-  useEffect(() => {
-    if (palette.length === 0) {
-      const initialPalette: Color[] = [];
-      
-      for (let i = 0; i < 5; i++) {
-        const hex = getRandomColor();
-        const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
-        
-        initialPalette.push({
-          hex,
-          rgb,
-          locked: false
-        });
-      }
-      
-      setPalette(initialPalette);
-    }
-  }, []);
+// Create a provider component
+function PaletteProvider({ children }: { children: React.ReactNode }) {
+  // Initialize with default palette colors
+  const [palette, setPalette] = useState<Color[]>(initialPaletteData);
   
   // Generate a new palette, keeping locked colors
   const generatePalette = () => {
+    console.log("Generating new palette...");
     setPalette(prevPalette => 
       prevPalette.map(color => {
         if (color.locked) {
@@ -134,27 +141,26 @@ export const PaletteProvider: React.FC<{children: React.ReactNode}> = ({ childre
     ]);
   };
   
-  // The value provided to consumers of the context
-  const contextValue = {
-    palette,
-    generatePalette,
-    toggleLock,
-    addColor,
-    removeColor,
-    updateColor,
-    clearPalette
-  };
-  
   return (
-    <PaletteContext.Provider value={contextValue}>
+    <PaletteContext.Provider 
+      value={{
+        palette,
+        generatePalette,
+        toggleLock,
+        addColor,
+        removeColor,
+        updateColor,
+        clearPalette
+      }}
+    >
       {children}
     </PaletteContext.Provider>
   );
-};
+}
 
-// Hook to use the palette context
-export const usePalette = () => {
-  const context = useContext(PaletteContext);
-  
-  return context;
-};
+// Create a hook to use the palette context
+function usePalette() {
+  return useContext(PaletteContext);
+}
+
+export { PaletteProvider, usePalette };
