@@ -1,8 +1,10 @@
 import React, { useState, useCallback, useMemo, useContext, useRef, useEffect } from 'react';
 import { Color } from '@shared/schema';
-import { getRandomColor, hexToRgb, isLightColor } from '@/lib/colorUtils';
-import { LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info } from 'lucide-react';
+import { getRandomColor, hexToRgb, isLightColor, rgbToHex } from '@/lib/colorUtils';
+import { LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders } from 'lucide-react';
 import html2canvas from 'html2canvas';
+import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
+import TrendingPalettes, { TRENDING_PALETTES } from '@/components/TrendingPalettes';
 
 // Define context shape
 interface PaletteContextType {
@@ -12,6 +14,8 @@ interface PaletteContextType {
   addColor: () => void;
   removeColor: (index: number) => void;
   resetPalette: () => void;
+  updateColor: (index: number, color: Color) => void;
+  setPalette: (colors: Color[]) => void;
 }
 
 // Create the context
@@ -27,11 +31,11 @@ const DEFAULT_COLORS = [
 
 // Provider component
 function PaletteProvider({ children }: { children: React.ReactNode }) {
-  const [palette, setPalette] = useState<Color[]>(DEFAULT_COLORS);
+  const [palette, setPaletteState] = useState<Color[]>(DEFAULT_COLORS);
   
   const generatePalette = useCallback(() => {
     console.log("Generating new palette...");
-    setPalette(prevPalette => 
+    setPaletteState(prevPalette => 
       prevPalette.map(color => {
         if (color.locked) return color;
         
@@ -48,7 +52,7 @@ function PaletteProvider({ children }: { children: React.ReactNode }) {
   }, []);
   
   const toggleLock = useCallback((index: number) => {
-    setPalette(prevPalette => 
+    setPaletteState(prevPalette => 
       prevPalette.map((color, i) => 
         i === index ? { ...color, locked: !color.locked } : color
       )
@@ -64,7 +68,7 @@ function PaletteProvider({ children }: { children: React.ReactNode }) {
     const hex = getRandomColor();
     const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
     
-    setPalette(prevPalette => [
+    setPaletteState(prevPalette => [
       ...prevPalette,
       { hex, rgb, locked: false }
     ]);
@@ -76,13 +80,23 @@ function PaletteProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     
-    setPalette(prevPalette => 
+    setPaletteState(prevPalette => 
       prevPalette.filter((_, i) => i !== index)
     );
   }, [palette.length]);
   
   const resetPalette = useCallback(() => {
-    setPalette(DEFAULT_COLORS);
+    setPaletteState(DEFAULT_COLORS);
+  }, []);
+  
+  const updateColor = useCallback((index: number, updatedColor: Color) => {
+    setPaletteState(prevPalette => 
+      prevPalette.map((color, i) => i === index ? updatedColor : color)
+    );
+  }, []);
+  
+  const setPalette = useCallback((colors: Color[]) => {
+    setPaletteState(colors);
   }, []);
   
   const value = useMemo(() => ({
@@ -91,8 +105,10 @@ function PaletteProvider({ children }: { children: React.ReactNode }) {
     toggleLock,
     addColor,
     removeColor,
-    resetPalette
-  }), [palette, generatePalette, toggleLock, addColor, removeColor, resetPalette]);
+    resetPalette,
+    updateColor,
+    setPalette
+  }), [palette, generatePalette, toggleLock, addColor, removeColor, resetPalette, updateColor, setPalette]);
   
   return (
     <PaletteContext.Provider value={value}>
@@ -129,9 +145,21 @@ function Toast({ message, onClose }: { message: string; onClose: () => void }) {
 
 // Main component that uses the context
 function PaletteApp() {
-  const { palette, generatePalette, toggleLock, addColor, removeColor, resetPalette } = usePalette();
+  const { 
+    palette, 
+    generatePalette, 
+    toggleLock, 
+    addColor, 
+    removeColor, 
+    resetPalette,
+    updateColor,
+    setPalette: setPaletteColors 
+  } = usePalette();
+  
   const [toast, setToast] = useState<string | null>(null);
   const [showInfoTooltip, setShowInfoTooltip] = useState<number | null>(null);
+  const [showAdjustModal, setShowAdjustModal] = useState<boolean>(false);
+  const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const paletteRef = useRef<HTMLDivElement>(null);
   
   // Handle spacebar for generating new palette
@@ -139,7 +167,8 @@ function PaletteApp() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === "Space" && 
           document.activeElement?.tagName !== "INPUT" && 
-          document.activeElement?.tagName !== "TEXTAREA") {
+          document.activeElement?.tagName !== "TEXTAREA" &&
+          !showAdjustModal) {
         e.preventDefault();
         generatePalette();
       }
@@ -147,7 +176,7 @@ function PaletteApp() {
     
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [generatePalette]);
+  }, [generatePalette, showAdjustModal]);
   
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -184,6 +213,24 @@ function PaletteApp() {
     link.download = "palette.json";
     link.click();
     URL.revokeObjectURL(url);
+  };
+  
+  const handleAdjustColor = (index: number) => {
+    setActiveColorIndex(index);
+    setShowAdjustModal(true);
+  };
+  
+  const handleApplyColorAdjustment = (color: Color) => {
+    if (activeColorIndex !== null) {
+      updateColor(activeColorIndex, color);
+      setShowAdjustModal(false);
+      setActiveColorIndex(null);
+    }
+  };
+  
+  const handleTrendingPaletteSelect = (colors: Color[]) => {
+    setPaletteColors(colors);
+    setToast("Trending palette applied!");
   };
   
   return (
@@ -265,6 +312,14 @@ function PaletteApp() {
                     
                     <button 
                       className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
+                      onClick={() => handleAdjustColor(index)}
+                      title="Adjust color"
+                    >
+                      <Sliders size={18} />
+                    </button>
+                    
+                    <button 
+                      className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
                       onClick={() => removeColor(index)}
                       disabled={palette.length <= 2}
                       title="Remove color"
@@ -306,12 +361,23 @@ function PaletteApp() {
             );
           })}
         </div>
-        <pre className="text-xs text-gray-500 mt-2">Debug: {palette.length} colors found</pre>
       </div>
+      
+      {/* Trending Palettes Section */}
+      <TrendingPalettes onSelectPalette={handleTrendingPaletteSelect} />
       
       <div className="mt-8 text-center text-gray-600 text-sm">
         <p>Press spacebar to generate a new palette | Click on the lock icon to keep a color</p>
       </div>
+      
+      {/* Modals */}
+      {showAdjustModal && activeColorIndex !== null && (
+        <ColorAdjustmentModal 
+          color={palette[activeColorIndex]}
+          onClose={() => setShowAdjustModal(false)}
+          onApply={handleApplyColorAdjustment}
+        />
+      )}
       
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
     </div>
