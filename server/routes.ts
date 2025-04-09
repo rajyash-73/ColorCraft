@@ -96,38 +96,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Export palette (for potential future server-side rendering of PNG)
-  app.post("/api/export", (req, res) => {
-    try {
-      const exportSchema = z.object({
-        colors: z.array(z.object({
-          hex: z.string(),
-          rgb: z.object({
-            r: z.number(),
-            g: z.number(),
-            b: z.number()
-          })
-        })),
-        format: z.enum(["png", "json", "txt"])
-      });
-      
-      const result = exportSchema.safeParse(req.body);
-      
-      if (!result.success) {
-        return res.status(400).json({ 
-          message: "Invalid export data", 
-          errors: result.error.errors 
-        });
-      }
-      
-      // For JSON/TXT exports - the client handles this directly
-      // This endpoint is mainly for future server-side rendering of PNGs if needed
-      
-      return res.json({ success: true });
-    } catch (error) {
-      console.error("Error exporting palette:", error);
-      return res.status(500).json({ message: "Error exporting palette" });
-    }
+  // Simplified health check endpoint for client testing
+  app.get("/api/health", (_req, res) => {
+    return res.json({ status: "ok", timestamp: Date.now() });
   });
 
   const httpServer = createServer(app);
