@@ -240,10 +240,10 @@ function PaletteApp() {
         </button>
       </div>
       
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1">
         <div 
           ref={paletteRef} 
-          className="flex flex-col md:flex-row h-full max-h-[600px] rounded-xl overflow-hidden shadow-2xl"
+          className="flex flex-col md:flex-row h-[500px] rounded-xl overflow-hidden shadow-2xl"
         >
           {palette.map((color, index) => {
             const textColor = isLightColor(color.hex) ? 'text-gray-800' : 'text-white';
@@ -306,6 +306,7 @@ function PaletteApp() {
             );
           })}
         </div>
+        <pre className="text-xs text-gray-500 mt-2">Debug: {palette.length} colors found</pre>
       </div>
       
       <div className="mt-8 text-center text-gray-600 text-sm">
