@@ -1,9 +1,5 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/use-auth";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Link } from "wouter";
 import Header from "@/components/Header";
 import KeyboardShortcutsBar from "@/components/KeyboardShortcutsBar";
 import ActionButtons from "@/components/ActionButtons";
@@ -13,64 +9,18 @@ import ExportModal from "@/components/modals/ExportModal";
 import AdjustColorModal from "@/components/modals/AdjustColorModal";
 import { usePalette } from "@/contexts/PaletteContext";
 import { type Color } from "@shared/schema";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription,
-  DialogFooter
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Loader2, Save, BookmarkPlus } from "lucide-react";
 
 export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showAdjustModal, setShowAdjustModal] = useState(false);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [paletteName, setPaletteName] = useState("");
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const { palette, generatePalette, addColor, clearPalette, updateColor } = usePalette();
   const { toast } = useToast();
-  const { user } = useAuth();
-  const paletteNameInputRef = useRef<HTMLInputElement>(null);
   
   console.log('Home component rendered with palette:', palette);
-
-  // Mutation for saving palette to the database
-  const savePaletteMutation = useMutation({
-    mutationFn: async (data: { name: string, colors: string }) => {
-      const response = await apiRequest(
-        "POST", 
-        "/api/palettes", 
-        {
-          name: data.name,
-          colors: data.colors,
-          createdAt: new Date().toISOString()
-        }
-      );
-      return response.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/palettes"] });
-      toast({
-        title: "Palette saved!",
-        description: "Your palette has been saved to your account.",
-      });
-      setShowSaveDialog(false);
-    },
-    onError: (error: Error) => {
-      toast({
-        title: "Error saving palette",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
 
   useEffect(() => {
     // Check if first visit
@@ -87,8 +37,7 @@ export default function Home() {
           document.activeElement?.tagName !== "TEXTAREA" &&
           !showOnboarding && 
           !showExportModal && 
-          !showAdjustModal &&
-          !showSaveDialog) {
+          !showAdjustModal) {
         e.preventDefault();
         handleGeneratePalette();
       }
@@ -96,13 +45,7 @@ export default function Home() {
     
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [showOnboarding, showExportModal, showAdjustModal, showSaveDialog, generatePalette]);
-
-  useEffect(() => {
-    if (showSaveDialog && paletteNameInputRef.current) {
-      paletteNameInputRef.current.focus();
-    }
-  }, [showSaveDialog]);
+  }, [showOnboarding, showExportModal, showAdjustModal, generatePalette]);
 
   const handleGeneratePalette = () => {
     // Call the generate palette function from context
@@ -116,28 +59,21 @@ export default function Home() {
   };
 
   const handleSavePalette = () => {
-    // Open save dialog
-    setPaletteName(`My Palette ${new Date().toLocaleDateString()}`);
-    setShowSaveDialog(true);
-  };
-  
-  const handleSaveConfirm = () => {
-    if (!paletteName.trim()) {
-      toast({
-        title: "Name required",
-        description: "Please give your palette a name.",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Save to localStorage
+    const savedPalettes = JSON.parse(localStorage.getItem("savedPalettes") || "[]");
+    const newPalette = {
+      id: Date.now(),
+      colors: palette,
+      createdAt: new Date().toISOString(),
+    };
     
-    // Extract just the hex values for storage
-    const colorsArray = palette.map(color => color.hex);
-    const colorsString = JSON.stringify(colorsArray);
+    savedPalettes.push(newPalette);
+    localStorage.setItem("savedPalettes", JSON.stringify(savedPalettes));
     
-    savePaletteMutation.mutate({
-      name: paletteName.trim(),
-      colors: colorsString
+    toast({
+      title: "Palette saved!",
+      description: "Your palette has been saved to local storage.",
+      duration: 2000,
     });
   };
 
@@ -214,71 +150,6 @@ export default function Home() {
           }}
         />
       }
-      
-      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Save Palette</DialogTitle>
-            <DialogDescription>
-              Give your palette a name to save it to your account.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="py-4">
-            <div className="flex h-16 mb-4 rounded overflow-hidden">
-              {palette.map((color, index) => (
-                <div
-                  key={index}
-                  className="flex-1"
-                  style={{ backgroundColor: color.hex }}
-                ></div>
-              ))}
-            </div>
-            <Input
-              ref={paletteNameInputRef}
-              placeholder="My awesome palette"
-              value={paletteName}
-              onChange={(e) => setPaletteName(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleSaveConfirm();
-              }}
-            />
-          </div>
-          <DialogFooter className="flex flex-col sm:flex-row gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setShowSaveDialog(false)}
-              className="sm:ml-auto"
-            >
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleSaveConfirm}
-              disabled={savePaletteMutation.isPending}
-              className="gap-2"
-            >
-              {savePaletteMutation.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="h-4 w-4" />
-              )}
-              Save Palette
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Link to saved palettes */}
-      <Button
-        variant="outline"
-        size="sm"
-        className="fixed bottom-4 right-4 z-50 shadow-md gap-2"
-        asChild
-      >
-        <Link href="/saved-palettes">
-          <BookmarkPlus className="h-4 w-4" />
-          <span className="hidden sm:inline">Saved Palettes</span>
-        </Link>
-      </Button>
     </div>
   );
 }
