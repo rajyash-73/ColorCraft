@@ -78,14 +78,14 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
   
   return (
     <div 
-      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group"
+      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[150px] md:min-h-0"
       style={{ backgroundColor: color.hex }}
       data-color-index={index}
     >
       {/* Color Controls - Top */}
-      <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center">
+      <div className="absolute top-0 left-0 right-0 p-2 md:p-4 flex justify-between items-center">
         <button 
-          className={`${textColor} ${buttonBg} rounded-full p-2 transition-all transform hover:scale-110 group-hover:opacity-100 opacity-0 md:opacity-70`}
+          className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
           onClick={handleToggleLock}
           aria-label={color.locked ? "Unlock color" : "Lock color"}
           title={color.locked ? "Unlock color" : "Lock color"}
@@ -93,9 +93,9 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
           <i className={`fas ${color.locked ? 'fa-lock' : 'fa-unlock'}`}></i>
         </button>
         
-        <div className="flex space-x-2">
+        <div className="flex space-x-1 md:space-x-2">
           <button 
-            className={`${textColor} ${buttonBg} rounded-full p-2 transition-all transform hover:scale-110 group-hover:opacity-100 opacity-0 md:opacity-70`}
+            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
             onClick={handleAdjustColor}
             aria-label="Adjust color"
             title="Adjust color"
@@ -103,7 +103,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
             <i className="fas fa-sliders-h"></i>
           </button>
           <button 
-            className={`${textColor} ${buttonBg} rounded-full p-2 transition-all transform hover:scale-110 group-hover:opacity-100 opacity-0 md:opacity-70`}
+            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
             onClick={handleRemoveColor}
             aria-label="Remove color"
             title="Remove color"
@@ -115,15 +115,15 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
       
       {/* Color Code Display - Center */}
       <div 
-        className={`flex-1 flex flex-col items-center justify-center ${textColor} p-4 group-hover:scale-110 transition-transform`}
+        className={`flex-1 flex flex-col items-center justify-center ${textColor} py-4 px-2 md:p-4 group-hover:scale-105 md:group-hover:scale-110 transition-transform`}
         onClick={handleCopyColorCode}
       >
-        <h2 className="text-3xl md:text-5xl font-bold tracking-wider mb-2">{color.hex}</h2>
-        <p className="text-sm md:text-base opacity-80">
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-wider mb-1 md:mb-2 break-words text-center">{color.hex}</h2>
+        <p className="text-xs sm:text-sm md:text-base opacity-80">
           RGB: {color.rgb.r}, {color.rgb.g}, {color.rgb.b}
         </p>
-        <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className={`${isLightColor(color.hex) ? 'bg-black bg-opacity-10' : 'bg-white bg-opacity-20'} rounded-full px-3 py-1 text-sm`}>
+        <div className="mt-2 md:mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className={`${isLightColor(color.hex) ? 'bg-black bg-opacity-10' : 'bg-white bg-opacity-20'} rounded-full px-2 py-0.5 md:px-3 md:py-1 text-xs md:text-sm`}>
             Click to copy
           </div>
         </div>
