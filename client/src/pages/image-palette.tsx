@@ -213,7 +213,7 @@ export default function ImagePalette() {
         </p>
       </header>
       
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
         <div className="flex flex-col items-center">
           <input 
             type="file" 
@@ -225,14 +225,14 @@ export default function ImagePalette() {
           
           <button
             onClick={triggerFileInput}
-            className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center gap-2 mb-6"
+            className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center gap-1 sm:gap-2 mb-4 sm:mb-6 text-sm sm:text-base"
           >
-            <Upload size={20} />
+            <Upload size={16} className="sm:w-[20px] sm:h-[20px]" />
             {uploadedImage ? 'Upload Different Image' : 'Upload Image'}
           </button>
           
           {error && (
-            <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6 w-full">
+            <div className="bg-red-50 text-red-600 p-3 sm:p-4 rounded-lg mb-4 sm:mb-6 w-full text-xs sm:text-sm">
               {error}
             </div>
           )}
@@ -250,17 +250,17 @@ export default function ImagePalette() {
               <button
                 onClick={extractColors}
                 disabled={isExtracting}
-                className="bg-white text-gray-800 border border-gray-300 px-6 py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-2 mx-auto"
+                className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-1 sm:gap-2 mx-auto text-sm sm:text-base"
               >
                 {isExtracting ? (
                   <>
-                    <RefreshCw size={18} className="animate-spin" />
-                    Extracting Colors...
+                    <RefreshCw size={16} className="sm:w-[18px] sm:h-[18px] animate-spin" />
+                    <span>Extracting...</span>
                   </>
                 ) : (
                   <>
-                    <ImageIcon size={18} />
-                    Extract Colors
+                    <ImageIcon size={16} className="sm:w-[18px] sm:h-[18px]" />
+                    <span>Extract Colors</span>
                   </>
                 )}
               </button>
@@ -269,19 +269,19 @@ export default function ImagePalette() {
           
           {extractedPalette.length > 0 && (
             <div className="w-full">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Extracted Palette</h2>
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">Extracted Palette</h2>
               
-              <div className="flex h-24 mb-6 rounded-lg overflow-hidden shadow-md">
+              <div className="flex h-16 sm:h-24 mb-4 sm:mb-6 rounded-lg overflow-hidden shadow-md">
                 {extractedPalette.map((color, index) => (
                   <div 
                     key={index} 
                     className="flex-1" 
                     style={{ backgroundColor: color.hex }}
                   >
-                    <div className="h-full flex items-end justify-center p-2">
+                    <div className="h-full flex items-end justify-center p-1 sm:p-2">
                       <div className="text-center">
                         <span 
-                          className={`text-xs font-medium px-2 py-1 rounded bg-white bg-opacity-30 ${
+                          className={`text-[10px] sm:text-xs font-medium px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-white bg-opacity-30 ${
                             parseInt(color.hex.slice(1), 16) > 0xFFFFFF / 2 ? 'text-gray-800' : 'text-white'
                           }`}
                         >
@@ -295,7 +295,7 @@ export default function ImagePalette() {
               
               <button
                 onClick={useExtractedPalette}
-                className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center gap-2 mx-auto"
+                className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center gap-1 sm:gap-2 mx-auto text-sm sm:text-base"
               >
                 Use This Palette
               </button>
@@ -313,57 +313,58 @@ export default function ImagePalette() {
       {/* Instructions Modal */}
       {showInstructions && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-4 sm:p-6 relative">
             <button 
               onClick={() => setShowInstructions(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              className="absolute top-2 sm:top-4 right-2 sm:right-4 text-gray-500 hover:text-gray-700"
+              aria-label="Close"
             >
-              <X size={20} />
+              <X size={18} className="sm:w-[20px] sm:h-[20px]" />
             </button>
             
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">How to Use Image to Palette</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-3 sm:mb-4">How to Use Image to Palette</h2>
             
-            <div className="space-y-4 text-gray-600">
-              <div className="flex items-start gap-3">
-                <div className="bg-blue-100 p-2 rounded-full">
-                  <Upload size={18} className="text-blue-600" />
+            <div className="space-y-3 sm:space-y-4 text-gray-600 text-xs sm:text-sm">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="bg-blue-100 p-1.5 sm:p-2 rounded-full flex-shrink-0">
+                  <Upload size={16} className="text-blue-600 sm:w-[18px] sm:h-[18px]" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-800">1. Upload an Image</h3>
+                  <h3 className="font-medium text-gray-800 text-sm sm:text-base">1. Upload an Image</h3>
                   <p>Click the upload button and select any image from your device.</p>
                 </div>
               </div>
               
-              <div className="flex items-start gap-3">
-                <div className="bg-indigo-100 p-2 rounded-full">
-                  <ImageIcon size={18} className="text-indigo-600" />
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="bg-indigo-100 p-1.5 sm:p-2 rounded-full flex-shrink-0">
+                  <ImageIcon size={16} className="text-indigo-600 sm:w-[18px] sm:h-[18px]" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-800">2. Extract Colors</h3>
+                  <h3 className="font-medium text-gray-800 text-sm sm:text-base">2. Extract Colors</h3>
                   <p>Click "Extract Colors" to analyze your image and find its dominant colors.</p>
                 </div>
               </div>
               
-              <div className="flex items-start gap-3">
-                <div className="bg-green-100 p-2 rounded-full">
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="bg-green-100 p-1.5 sm:p-2 rounded-full flex-shrink-0">
                   <div className="flex -space-x-1">
-                    <div className="w-4 h-4 rounded-full bg-red-500"></div>
-                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-blue-500"></div>
+                    <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-green-500"></div>
                   </div>
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-800">3. Review Your Palette</h3>
+                  <h3 className="font-medium text-gray-800 text-sm sm:text-base">3. Review Your Palette</h3>
                   <p>The tool will extract up to 5 dominant colors from your image.</p>
                 </div>
               </div>
               
-              <div className="flex items-start gap-3">
-                <div className="bg-emerald-100 p-2 rounded-full">
-                  <ArrowLeft size={18} className="text-emerald-600" />
+              <div className="flex items-start gap-2 sm:gap-3">
+                <div className="bg-emerald-100 p-1.5 sm:p-2 rounded-full flex-shrink-0">
+                  <ArrowLeft size={16} className="text-emerald-600 sm:w-[18px] sm:h-[18px]" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-800">4. Use Your Palette</h3>
+                  <h3 className="font-medium text-gray-800 text-sm sm:text-base">4. Use Your Palette</h3>
                   <p>Click "Use This Palette" to apply these colors to the main generator.</p>
                 </div>
               </div>
@@ -371,7 +372,7 @@ export default function ImagePalette() {
             
             <button 
               onClick={() => setShowInstructions(false)}
-              className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 rounded-lg font-medium"
+              className="w-full mt-4 sm:mt-6 bg-gradient-to-r from-purple-600 to-blue-500 text-white py-1.5 sm:py-2 rounded-lg font-medium text-sm sm:text-base"
             >
               Got it!
             </button>
