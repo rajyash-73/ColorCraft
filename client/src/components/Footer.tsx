@@ -15,6 +15,9 @@ export default function Footer() {
             <Link href="/privacy-policy">
               <a className="hover:text-gray-900 transition-colors">Privacy Policy</a>
             </Link>
+            <Link href="/faq">
+              <a className="hover:text-gray-900 transition-colors">FAQ</a>
+            </Link>
             <a 
               href="https://github.com" 
               target="_blank" 
