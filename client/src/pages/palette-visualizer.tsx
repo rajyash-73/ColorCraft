@@ -6,6 +6,7 @@ import { Color } from '@/types/Color';
 import { cn } from '@/lib/utils';
 import Footer from '@/components/Footer';
 import { isLightColor } from '@/lib/colorUtils';
+import { Helmet } from 'react-helmet-async';
 
 // Template types
 type TemplateType = 'dashboard' | 'landing' | 'analytics' | 'chat' | 'calendar';
@@ -29,6 +30,26 @@ export default function PaletteVisualizer() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
+      <Helmet>
+        <title>Palette Visualizer | See Your Colors in Real UI Templates - Coolors.in</title>
+        <meta name="description" content="Visualize your color palette in real UI templates. See how your colors work together in dashboards, landing pages, and app interfaces." />
+        <meta name="keywords" content="palette visualizer, color combinations, UI templates, color schemes in action" />
+        <link rel="canonical" href="https://coolors.in/visualize" />
+        {/* Dynamic structured data for the visualizer page */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Palette Visualizer | Coolors.in",
+            "url": "https://coolors.in/visualize",
+            "description": "Visualize your color palette in real UI templates with Coolors.in's Palette Visualizer",
+            "isPartOf": {
+              "@type": "WebApplication",
+              "name": "Coolors.in"
+            }
+          })}
+        </script>
+      </Helmet>
       <header className="mb-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
