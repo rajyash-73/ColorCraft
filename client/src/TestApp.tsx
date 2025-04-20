@@ -144,68 +144,68 @@ function PaletteApp() {
   
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
+      <header className="mb-4 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
           Palette Generator
         </h1>
-        <p className="text-gray-600 mt-2">
-          Press spacebar to generate a new palette. Click on a color to lock/unlock it. Use the grip handle to drag and reorder colors.
+        <p className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">
+          Press spacebar to generate a new palette. Click a color to lock/unlock. Drag to reorder.
         </p>
       </header>
       
-      <div className="flex flex-wrap gap-4 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-3 sm:gap-4 mb-8">
         <button 
-          className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
+          className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
           onClick={generatePalette}
         >
-          <RefreshCw size={18} />
-          Generate Palette
+          <RefreshCw size={16} className="sm:w-[18px] sm:h-[18px]" />
+          <span>Generate</span>
         </button>
         
         <button 
-          className="bg-white text-gray-800 border border-gray-300 px-6 py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-2"
+          className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
           onClick={addColor}
           disabled={palette.length >= 10}
         >
-          <Plus size={18} />
-          Add Color
+          <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
+          <span>Add Color</span>
         </button>
         
         <button 
-          className="bg-white text-gray-800 border border-gray-300 px-6 py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-2"
+          className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
           onClick={resetPalette}
         >
-          <RefreshCw size={18} />
-          Reset
+          <RefreshCw size={16} className="sm:w-[18px] sm:h-[18px]" />
+          <span>Reset</span>
         </button>
         
         <button 
-          className="bg-white text-gray-800 border border-gray-300 px-6 py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-2"
+          className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
           onClick={exportPalette}
         >
-          <Download size={18} />
-          Export PNG
+          <Download size={16} className="sm:w-[18px] sm:h-[18px]" />
+          <span>PNG</span>
         </button>
         
         <button 
-          className="bg-white text-gray-800 border border-gray-300 px-6 py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-2"
+          className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
           onClick={exportPaletteAsJSON}
         >
-          <Download size={18} />
-          Export JSON
+          <Download size={16} className="sm:w-[18px] sm:h-[18px]" />
+          <span>JSON</span>
         </button>
         
         <Link href="/image-palette">
-          <a className="bg-white text-gray-800 border border-gray-300 px-6 py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-2">
-            <ImageIcon size={18} />
-            Create from Image
+          <a className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base">
+            <ImageIcon size={16} className="sm:w-[18px] sm:h-[18px]" />
+            <span>From Image</span>
           </a>
         </Link>
         
         <Link href="/visualize">
-          <a className="bg-white text-gray-800 border border-gray-300 px-6 py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-2">
-            <Eye size={18} />
-            Visualize Palette
+          <a className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base">
+            <Eye size={16} className="sm:w-[18px] sm:h-[18px]" />
+            <span>Visualize</span>
           </a>
         </Link>
       </div>
@@ -213,7 +213,7 @@ function PaletteApp() {
       <div className="flex-1">
         <div 
           ref={paletteRef} 
-          className="flex flex-col md:flex-row h-[500px] rounded-xl overflow-hidden shadow-2xl"
+          className="flex flex-col md:flex-row h-[350px] md:h-[500px] rounded-xl overflow-hidden shadow-2xl"
         >
           {palette.map((color, index) => {
             const textColor = isLightColor(color.hex) ? 'text-gray-800' : 'text-white';
@@ -228,73 +228,87 @@ function PaletteApp() {
                 onDrop={(e) => handleDrop(e, index)}
                 onDragEnd={handleDragEnd}
               >
-                <div className={`absolute inset-0 flex flex-col items-center justify-center p-4 ${textColor}`}>
-                  <div className="absolute top-3 left-3">
+                <div className={`absolute inset-0 flex flex-col items-center justify-center p-2 sm:p-4 ${textColor}`}>
+                  <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
                     <div 
-                      className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all cursor-move"
+                      className="p-1.5 sm:p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all cursor-move"
                       title="Drag to reorder"
                     >
-                      <GripVertical size={18} />
+                      <GripVertical size={16} className="sm:w-[18px] sm:h-[18px]" />
                     </div>
                   </div>
-                  <div className="absolute top-3 right-3 flex space-x-2">
+                  
+                  {/* Mobile-friendly action buttons */}
+                  <div className="absolute top-2 sm:top-3 right-2 sm:right-3 flex space-x-1 sm:space-x-2">
                     <button 
-                      className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
+                      className="p-1.5 sm:p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
                       onClick={() => toggleLock(index)}
                       title={color.locked ? "Unlock color" : "Lock color"}
                     >
-                      {color.locked ? <LockIcon size={18} /> : <UnlockIcon size={18} />}
+                      {color.locked ? 
+                        <LockIcon size={16} className="sm:w-[18px] sm:h-[18px]" /> : 
+                        <UnlockIcon size={16} className="sm:w-[18px] sm:h-[18px]" />
+                      }
                     </button>
                     
                     <button 
-                      className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
+                      className="p-1.5 sm:p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all hidden sm:block"
                       onClick={() => handleAdjustColor(index)}
                       title="Adjust color"
                     >
-                      <Sliders size={18} />
+                      <Sliders size={16} className="sm:w-[18px] sm:h-[18px]" />
                     </button>
                     
                     <button 
-                      className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
+                      className="p-1.5 sm:p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
                       onClick={() => removeColor(index)}
                       disabled={palette.length <= 2}
                       title="Remove color"
                     >
-                      <Trash size={18} />
+                      <Trash size={16} className="sm:w-[18px] sm:h-[18px]" />
                     </button>
                     
                     <button 
-                      className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
-                      onMouseEnter={() => setShowInfoTooltip(index)}
-                      onMouseLeave={() => setShowInfoTooltip(null)}
+                      className="p-1.5 sm:p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
+                      onClick={() => setShowInfoTooltip(showInfoTooltip === index ? null : index)}
                       title="Color information"
                     >
-                      <Info size={18} />
+                      <Info size={16} className="sm:w-[18px] sm:h-[18px]" />
                     </button>
                   </div>
                   
+                  {/* Mobile-friendly popup for sliders on small screens */}
+                  <button 
+                    className="absolute bottom-16 right-2 p-1.5 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all sm:hidden"
+                    onClick={() => handleAdjustColor(index)}
+                    title="Adjust color"
+                  >
+                    <Sliders size={16} />
+                  </button>
+                  
                   {showInfoTooltip === index && (
-                    <div className="absolute top-14 right-3 bg-white text-gray-800 p-3 rounded-lg shadow-lg z-10 w-48">
+                    <div className="absolute top-12 sm:top-14 right-2 sm:right-3 bg-white text-gray-800 p-3 rounded-lg shadow-lg z-10 w-[140px] sm:w-48">
                       {color.name && (
                         <p className="text-sm font-semibold mb-2">{color.name}</p>
                       )}
-                      <p className="text-sm font-semibold">RGB Values:</p>
-                      <p className="text-xs">R: {color.rgb.r}</p>
-                      <p className="text-xs">G: {color.rgb.g}</p>
-                      <p className="text-xs">B: {color.rgb.b}</p>
+                      <div className="grid grid-cols-3 gap-1">
+                        <p className="text-xs font-medium">R: {color.rgb.r}</p>
+                        <p className="text-xs font-medium">G: {color.rgb.g}</p>
+                        <p className="text-xs font-medium">B: {color.rgb.b}</p>
+                      </div>
                     </div>
                   )}
                   
-                  <div className="mt-auto mb-4 text-center">
-                    <h3 className="text-2xl font-bold mb-1">{color.hex}</h3>
+                  <div className="mt-auto mb-2 sm:mb-4 text-center">
+                    <h3 className="text-lg sm:text-2xl font-bold mb-0.5 sm:mb-1">{color.hex}</h3>
                     {color.name && (
-                      <p className="text-sm mb-2 opacity-90">{color.name}</p>
+                      <p className="text-xs sm:text-sm mb-1 sm:mb-2 opacity-90">{color.name}</p>
                     )}
                     <button 
-                      className="px-3 py-1 rounded bg-white bg-opacity-20 hover:bg-opacity-30 transition-all flex items-center gap-1 mx-auto"
+                      className="px-2 sm:px-3 py-0.5 sm:py-1 rounded bg-white bg-opacity-20 hover:bg-opacity-30 transition-all flex items-center gap-1 mx-auto text-xs sm:text-sm"
                       onClick={() => copyToClipboard(color.hex)}
                     >
-                      <Copy size={14} />
+                      <Copy size={12} className="sm:w-[14px] sm:h-[14px]" />
                       <span>Copy</span>
                     </button>
                   </div>
@@ -308,8 +322,8 @@ function PaletteApp() {
       {/* Trending Palettes Section */}
       <TrendingPalettes onSelectPalette={handleTrendingPaletteSelect} />
       
-      <div className="mt-8 text-center text-gray-600 text-sm">
-        <p>Press spacebar to generate a new palette | Click on the lock icon to keep a color | Drag and drop to reorder</p>
+      <div className="mt-4 sm:mt-8 text-center text-gray-600 text-xs sm:text-sm px-2">
+        <p>Press spacebar to generate • Click lock icon to keep a color • Drag to reorder</p>
       </div>
       
       {/* Footer */}
