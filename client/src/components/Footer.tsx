@@ -18,6 +18,9 @@ export default function Footer() {
             <Link href="/faq">
               <a className="hover:text-gray-900 transition-colors">FAQ</a>
             </Link>
+            <Link href="/designers-guide">
+              <a className="hover:text-gray-900 transition-colors">Designer's Guide</a>
+            </Link>
             <a 
               href="https://github.com" 
               target="_blank" 

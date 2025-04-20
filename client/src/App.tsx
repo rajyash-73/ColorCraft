@@ -8,6 +8,7 @@ import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import FAQPage from "@/pages/faq";
+import DesignersGuide from "@/pages/designers-guide";
 import { useEffect } from "react";
 import { AuthProvider } from "./hooks/use-auth";
 import { PaletteProvider } from "./contexts/PaletteContext";
@@ -22,6 +23,7 @@ const PaletteRoutes = () => {
       <Route path="/visualize" component={PaletteVisualizer} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/faq" component={FAQPage} />
+      <Route path="/designers-guide" component={DesignersGuide} />
       <Route component={NotFound} />
     </Switch>
   );
