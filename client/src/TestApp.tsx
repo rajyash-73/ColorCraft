@@ -6,6 +6,7 @@ import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
 import TrendingPalettes from '@/components/TrendingPalettes';
 import WelcomeModal from '@/components/modals/WelcomeModal';
+import Footer from '@/components/Footer';
 import { usePalette } from '@/contexts/PaletteContext';
 import { Link } from 'wouter';
 
@@ -310,6 +311,9 @@ function PaletteApp() {
       <div className="mt-8 text-center text-gray-600 text-sm">
         <p>Press spacebar to generate a new palette | Click on the lock icon to keep a color | Drag and drop to reorder</p>
       </div>
+      
+      {/* Footer */}
+      <Footer />
       
       {/* Modals */}
       {showAdjustModal && activeColorIndex !== null && (

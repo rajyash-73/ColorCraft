@@ -4,6 +4,7 @@ import { ArrowLeft, Layout, Monitor, PieChart, MessageSquare, Calendar } from 'l
 import { usePalette } from '@/contexts/PaletteContext';
 import { Color } from '@/types/Color';
 import { cn } from '@/lib/utils';
+import Footer from '@/components/Footer';
 // Import isLightColor or define it here
 import { isLightColor } from '@/lib/colorUtils';
 
