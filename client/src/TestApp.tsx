@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Color } from './types/Color';
 import { isLightColor } from '@/lib/colorUtils';
-import { LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, GripVertical, Image as ImageIcon } from 'lucide-react';
+import { LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, GripVertical, Image as ImageIcon, Eye } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
 import TrendingPalettes from '@/components/TrendingPalettes';
@@ -198,6 +198,13 @@ function PaletteApp() {
           <a className="bg-white text-gray-800 border border-gray-300 px-6 py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-2">
             <ImageIcon size={18} />
             Create from Image
+          </a>
+        </Link>
+        
+        <Link href="/visualize">
+          <a className="bg-white text-gray-800 border border-gray-300 px-6 py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center gap-2">
+            <Eye size={18} />
+            Visualize Palette
           </a>
         </Link>
       </div>

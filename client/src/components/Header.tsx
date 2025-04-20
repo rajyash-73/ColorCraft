@@ -4,6 +4,7 @@ interface HeaderProps {
   onHelp: () => void;
   onExport: () => void;
   onSave: () => void;
+  onVisualize?: () => void;
   mobileMenuOpen: boolean;
   toggleMobileMenu: () => void;
 }
@@ -12,6 +13,7 @@ export default function Header({
   onHelp, 
   onExport, 
   onSave, 
+  onVisualize,
   mobileMenuOpen, 
   toggleMobileMenu 
 }: HeaderProps) {
@@ -59,6 +61,20 @@ export default function Header({
               Save to local storage
             </span>
           </button>
+          
+          {onVisualize && (
+            <button 
+              className="text-gray-600 hover:text-primary flex items-center space-x-1 group relative"
+              onClick={onVisualize}
+              aria-label="Visualize palette"
+            >
+              <i className="fas fa-eye"></i>
+              <span>Visualize</span>
+              <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+                Preview in UI templates
+              </span>
+            </button>
+          )}
         </div>
         
         <div className="md:hidden">
@@ -98,6 +114,16 @@ export default function Header({
             <i className="fas fa-save w-5"></i>
             <span>Save</span>
           </button>
+          
+          {onVisualize && (
+            <button 
+              className="text-gray-600 hover:text-primary flex items-center space-x-2 py-1"
+              onClick={onVisualize}
+            >
+              <i className="fas fa-eye w-5"></i>
+              <span>Visualize</span>
+            </button>
+          )}
         </div>
       </div>
     </>
