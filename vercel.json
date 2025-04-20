@@ -2,7 +2,7 @@
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ],
-  "buildCommand": "cd client && vite build --config vite.config.vercel.js",
+  "buildCommand": "cp client/src/main.vercel.tsx client/src/main.tsx && cd client && vite build --config vite.config.vercel.js",
   "outputDirectory": "client/dist",
   "framework": "vite",
   "headers": [

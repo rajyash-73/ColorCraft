@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 import themePlugin from '@replit/vite-plugin-shadcn-theme-json';
 import path from 'path';
 
-// This is a simplified Vite config for Vercel deployment
+// This is a specialized Vite config for Vercel deployment
 export default defineConfig({
   plugins: [
     react(),
@@ -20,5 +20,20 @@ export default defineConfig({
     assetsDir: 'assets',
     emptyOutDir: true,
     sourcemap: false,
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+      },
+    },
+  },
+  css: {
+    postcss: {
+      plugins: [
+        require('tailwindcss')({
+          config: path.resolve(__dirname, 'tailwind.config.vercel.js'),
+        }),
+        require('autoprefixer'),
+      ],
+    },
   },
 });
