@@ -1,166 +1,139 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { Color } from "../types/Color";
-import { getRandomColor, hexToRgb } from "@/lib/colorUtils";
+import React, { useState, useCallback, useMemo, useContext } from 'react';
+import { Color } from '@/types/Color';
+import { getRandomColor, hexToRgb, getColorName } from '@/lib/colorUtils';
 
-// Define the shape of our context
+// Define context shape
 interface PaletteContextType {
   palette: Color[];
   generatePalette: () => void;
   toggleLock: (index: number) => void;
   addColor: () => void;
   removeColor: (index: number) => void;
+  resetPalette: () => void;
   updateColor: (index: number, color: Color) => void;
-  clearPalette: () => void;
+  setPalette: (colors: Color[]) => void;
+  reorderColors: (sourceIndex: number, targetIndex: number) => void;
 }
 
-// Create initial palette data for the default context
-const initialPaletteData: Color[] = [
-  {
-    hex: "#FF5733",
-    rgb: { r: 255, g: 87, b: 51 },
-    locked: false
-  },
-  {
-    hex: "#33FF57",
-    rgb: { r: 51, g: 255, b: 87 },
-    locked: false
-  },
-  {
-    hex: "#3357FF",
-    rgb: { r: 51, g: 87, b: 255 },
-    locked: false
-  },
-  {
-    hex: "#F3FF33",
-    rgb: { r: 243, g: 255, b: 51 },
-    locked: false
-  },
-  {
-    hex: "#FF33F3",
-    rgb: { r: 255, g: 51, b: 243 },
-    locked: false
-  }
+// Create the context
+const PaletteContext = React.createContext<PaletteContextType | null>(null);
+
+const DEFAULT_COLORS = [
+  { hex: "#7A4ED9", rgb: { r: 122, g: 78, b: 217 }, locked: false, name: "Blue Violet" },
+  { hex: "#ED584E", rgb: { r: 237, g: 88, b: 78 }, locked: false, name: "Tomato" },
+  { hex: "#51CED9", rgb: { r: 81, g: 206, b: 217 }, locked: false, name: "Turquoise" },
+  { hex: "#F7DB58", rgb: { r: 247, g: 219, b: 88 }, locked: false, name: "Yellow" },
+  { hex: "#5AE881", rgb: { r: 90, g: 232, b: 129 }, locked: false, name: "Spring Green" },
 ];
 
-// Create the context with a meaningful default value
-const PaletteContext = createContext<PaletteContextType>({
-  palette: initialPaletteData,
-  generatePalette: () => console.warn("generatePalette not implemented"),
-  toggleLock: () => console.warn("toggleLock not implemented"),
-  addColor: () => console.warn("addColor not implemented"),
-  removeColor: () => console.warn("removeColor not implemented"),
-  updateColor: () => console.warn("updateColor not implemented"),
-  clearPalette: () => console.warn("clearPalette not implemented")
-});
-
-// Create a provider component
-function PaletteProvider({ children }: { children: React.ReactNode }) {
-  // Initialize with default palette colors
-  const [palette, setPalette] = useState<Color[]>(initialPaletteData);
+// Provider component
+export function PaletteProvider({ children }: { children: React.ReactNode }) {
+  const [palette, setPaletteState] = useState<Color[]>(DEFAULT_COLORS);
   
-  // Generate a new palette, keeping locked colors
-  const generatePalette = () => {
+  const generatePalette = useCallback(() => {
     console.log("Generating new palette...");
-    setPalette(prevPalette => 
+    setPaletteState(prevPalette => 
       prevPalette.map(color => {
-        if (color.locked) {
-          return color;
-        }
+        if (color.locked) return color;
         
         const hex = getRandomColor();
         const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+        const name = getColorName(hex);
         
         return {
           hex,
           rgb,
-          locked: false
+          locked: false,
+          name
         };
       })
     );
-  };
+  }, []);
   
-  // Toggle the lock state of a color
-  const toggleLock = (index: number) => {
-    setPalette(prevPalette => 
+  const toggleLock = useCallback((index: number) => {
+    setPaletteState(prevPalette => 
       prevPalette.map((color, i) => 
-        i === index 
-          ? { ...color, locked: !color.locked } 
-          : color
+        i === index ? { ...color, locked: !color.locked } : color
       )
     );
-  };
+  }, []);
   
-  // Add a new random color to the palette
-  const addColor = () => {
-    // Limit to 10 colors maximum
-    if (palette.length >= 10) return;
+  const addColor = useCallback(() => {
+    if (palette.length >= 10) {
+      console.log("Maximum palette size reached");
+      return;
+    }
     
     const hex = getRandomColor();
     const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+    const name = getColorName(hex);
     
-    setPalette(prevPalette => [
+    setPaletteState(prevPalette => [
       ...prevPalette,
-      {
-        hex,
-        rgb,
-        locked: false
-      }
+      { hex, rgb, locked: false, name }
     ]);
-  };
+  }, [palette.length]);
   
-  // Remove a color from the palette
-  const removeColor = (index: number) => {
-    // Don't allow removing if only one color remains
-    if (palette.length <= 1) return;
+  const removeColor = useCallback((index: number) => {
+    if (palette.length <= 2) {
+      console.log("Minimum palette size reached");
+      return;
+    }
     
-    setPalette(prevPalette => 
+    setPaletteState(prevPalette => 
       prevPalette.filter((_, i) => i !== index)
     );
-  };
+  }, [palette.length]);
   
-  // Update a specific color
-  const updateColor = (index: number, updatedColor: Color) => {
-    setPalette(prevPalette => 
-      prevPalette.map((color, i) => 
-        i === index ? updatedColor : color
-      )
+  const resetPalette = useCallback(() => {
+    setPaletteState(DEFAULT_COLORS);
+  }, []);
+  
+  const updateColor = useCallback((index: number, updatedColor: Color) => {
+    setPaletteState(prevPalette => 
+      prevPalette.map((color, i) => i === index ? updatedColor : color)
     );
-  };
+  }, []);
   
-  // Clear all colors and start with one
-  const clearPalette = () => {
-    const hex = getRandomColor();
-    const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+  const setPalette = useCallback((colors: Color[]) => {
+    setPaletteState(colors);
+  }, []);
+  
+  const reorderColors = useCallback((sourceIndex: number, targetIndex: number) => {
+    if (sourceIndex === targetIndex) return;
     
-    setPalette([
-      {
-        hex,
-        rgb,
-        locked: false
-      }
-    ]);
-  };
+    setPaletteState(prevPalette => {
+      const newPalette = [...prevPalette];
+      const [movedColor] = newPalette.splice(sourceIndex, 1);
+      newPalette.splice(targetIndex, 0, movedColor);
+      return newPalette;
+    });
+  }, []);
+  
+  const value = useMemo(() => ({
+    palette,
+    generatePalette,
+    toggleLock,
+    addColor,
+    removeColor,
+    resetPalette,
+    updateColor,
+    setPalette,
+    reorderColors
+  }), [palette, generatePalette, toggleLock, addColor, removeColor, resetPalette, updateColor, setPalette, reorderColors]);
   
   return (
-    <PaletteContext.Provider 
-      value={{
-        palette,
-        generatePalette,
-        toggleLock,
-        addColor,
-        removeColor,
-        updateColor,
-        clearPalette
-      }}
-    >
+    <PaletteContext.Provider value={value}>
       {children}
     </PaletteContext.Provider>
   );
 }
 
-// Create a hook to use the palette context
-function usePalette() {
-  return useContext(PaletteContext);
+// Hook for using the context
+export function usePalette() {
+  const context = useContext(PaletteContext);
+  if (!context) {
+    throw new Error("usePalette must be used within a PaletteProvider");
+  }
+  return context;
 }
-
-export { PaletteProvider, usePalette };

@@ -4,16 +4,25 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
+import ImagePalette from "@/pages/image-palette";
 import { useEffect } from "react";
 import { AuthProvider } from "./hooks/use-auth";
+import { PaletteProvider } from "./contexts/PaletteContext";
+import TestApp from "./TestApp";
 
-function Router() {
+// Components that use the PaletteContext
+const PaletteRoutes = () => {
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      <Route path="/" component={TestApp} />
+      <Route path="/image-palette" component={ImagePalette} />
       <Route component={NotFound} />
     </Switch>
   );
+};
+
+function Router() {
+  return <PaletteRoutes />;
 }
 
 function App() {
@@ -34,8 +43,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Router />
-        <Toaster />
+        <PaletteProvider>
+          <Router />
+          <Toaster />
+        </PaletteProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
