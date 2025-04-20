@@ -1,18 +1,43 @@
 import React from 'react';
 import { Link } from 'wouter';
 import { ArrowLeft } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
+import Footer from '@/components/Footer';
 
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
+      <Helmet>
+        <title>Privacy Policy | Coolors.in</title>
+        <meta name="description" content="Learn about how Coolors.in collects, uses, and protects your information when using our color palette generator tool." />
+        <meta name="robots" content="noindex, follow" />
+        <link rel="canonical" href="https://coolors.in/privacy-policy" />
+        {/* Structured data for legal page */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Privacy Policy | Coolors.in",
+            "description": "Learn about how Coolors.in collects, uses, and protects your information.",
+            "publisher": {
+              "@type": "Organization",
+              "name": "Coolors.in"
+            },
+            "license": "https://coolors.in/privacy-policy"
+          })}
+        </script>
+      </Helmet>
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-6 md:p-8">
         <header className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h1 className="text-3xl font-bold text-gray-800">Privacy Policy</h1>
-            <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+            <div 
+              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+              onClick={() => window.location.href = '/'}
+            >
               <ArrowLeft className="mr-1" size={20} />
               Back to Home
-            </Link>
+            </div>
           </div>
           <p className="text-gray-500">Effective date: April 20, 2025</p>
         </header>
@@ -74,6 +99,9 @@ export default function PrivacyPolicy() {
             If you have questions, email us at <a href="mailto:support@coolors.in" className="text-blue-600 hover:underline">support@coolors.in</a>
           </p>
         </div>
+      </div>
+      <div className="mt-8">
+        <Footer />
       </div>
     </div>
   );

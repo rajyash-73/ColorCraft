@@ -6,6 +6,7 @@ import { usePalette } from '@/contexts/PaletteContext';
 import { hexToRgb, getColorName, rgbToHex } from '@/lib/colorUtils';
 import { useToast } from '@/hooks/use-toast';
 import Footer from '@/components/Footer';
+import { Helmet } from 'react-helmet-async';
 
 export default function ImagePalette() {
   const { setPalette } = usePalette();
@@ -198,15 +199,45 @@ export default function ImagePalette() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
+      <Helmet>
+        <title>Image to Palette Generator | Coolors.in</title>
+        <meta name="description" content="Extract color palettes from your images. Upload any image and automatically generate a harmonious color palette based on the dominant colors." />
+        <link rel="canonical" href="https://coolors.in/image-palette" />
+        {/* Structured data for tool page */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Image to Palette Generator",
+            "applicationCategory": "DesignApplication",
+            "operatingSystem": "Web",
+            "description": "Extract color palettes from your images. Upload any image and automatically generate a harmonious color palette based on the dominant colors.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "USD"
+            },
+            "featureList": [
+              "Extract color palettes from images",
+              "Identify dominant colors",
+              "Transfer extracted colors to palette generator",
+              "Export color palettes in various formats"
+            ]
+          })}
+        </script>
+      </Helmet>
       <header className="mb-4 sm:mb-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
             Image to Palette
           </h1>
-          <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors text-sm sm:text-base">
+          <div
+            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors text-sm sm:text-base cursor-pointer"
+            onClick={() => window.location.href = '/'}
+          >
             <ArrowLeft className="mr-1" size={18} />
             Back to Generator
-          </Link>
+          </div>
         </div>
         <p className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">
           Upload an image to extract a color palette from its dominant colors.

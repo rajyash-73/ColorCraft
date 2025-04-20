@@ -8,6 +8,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Trash2, Loader2, ChevronLeft } from "lucide-react";
 import { Link } from "wouter";
 import { getPalettes, getUserPalettes, deletePalette } from "../lib/localStorageService";
+import { Helmet } from "react-helmet-async";
+import Footer from "@/components/Footer";
 
 export default function SavedPalettes() {
   const { user } = useAuth();
