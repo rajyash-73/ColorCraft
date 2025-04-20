@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useContext, useRef, useEffect } from 'react';
-import { Color } from '@shared/schema';
+import { Color } from './types/Color';
 import { getRandomColor, hexToRgb, isLightColor, rgbToHex } from '@/lib/colorUtils';
 import { LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders } from 'lucide-react';
 import html2canvas from 'html2canvas';

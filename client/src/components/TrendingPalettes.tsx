@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
-import { Color } from '@shared/schema';
+import { Color } from '../types/Color';
 import { isLightColor } from '@/lib/colorUtils';
 
 interface TrendingPaletteProps {

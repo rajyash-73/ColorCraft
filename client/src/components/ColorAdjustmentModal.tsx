@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { Color } from '@shared/schema';
+import { Color } from '../types/Color';
 import { hexToRgb, rgbToHex } from '@/lib/colorUtils';
 
 interface ColorAdjustmentModalProps {

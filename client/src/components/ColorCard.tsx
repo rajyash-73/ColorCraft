@@ -1,6 +1,6 @@
 import React from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Color } from "@shared/schema";
+import { Color } from "../types/Color";
 import { usePalette } from "@/contexts/PaletteContext";
 
 interface ColorCardProps {
