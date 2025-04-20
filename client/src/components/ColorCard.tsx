@@ -119,12 +119,14 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
         onClick={handleCopyColorCode}
       >
         {/* Mobile Display */}
-        <div className="block md:hidden">
-          <div className="text-xxs xs:text-xs sm:text-sm font-bold mb-0.5 text-center">
-            {color.hex}
-          </div>
-          <div className="text-[8px] xs:text-[10px] sm:text-xs opacity-80 text-center">
-            RGB: {color.rgb.r}, {color.rgb.g}, {color.rgb.b}
+        <div className="block md:hidden w-full">
+          <div className="flex justify-center items-center gap-2 xs:gap-3">
+            <div className="text-xxs xs:text-xs sm:text-sm font-bold text-center">
+              {color.hex}
+            </div>
+            <div className="text-[8px] xs:text-[10px] sm:text-xs opacity-80 text-center">
+              {color.name ? color.name : `(${color.rgb.r},${color.rgb.g},${color.rgb.b})`}
+            </div>
           </div>
         </div>
         
@@ -133,9 +135,18 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
           <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold tracking-wider mb-2 text-center">
             {color.hex}
           </h2>
-          <p className="text-base opacity-80">
-            RGB: {color.rgb.r}, {color.rgb.g}, {color.rgb.b}
-          </p>
+          {color.name ? (
+            <div className="flex flex-col gap-1">
+              <p className="text-base opacity-90 font-medium">{color.name}</p>
+              <p className="text-sm opacity-70">
+                RGB: {color.rgb.r}, {color.rgb.g}, {color.rgb.b}
+              </p>
+            </div>
+          ) : (
+            <p className="text-base opacity-80">
+              RGB: {color.rgb.r}, {color.rgb.g}, {color.rgb.b}
+            </p>
+          )}
         </div>
         
         <div className="mt-2 md:mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
