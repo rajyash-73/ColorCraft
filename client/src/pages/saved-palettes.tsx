@@ -85,13 +85,42 @@ export default function SavedPalettes() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Helmet>
+        <title>My Saved Palettes | Coolors.in</title>
+        <meta name="description" content="Access your saved color palettes. View, manage, and load previously created color schemes for your design projects." />
+        <link rel="canonical" href="https://coolors.in/saved-palettes" />
+        {/* Structured data for collection page */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "My Saved Palettes | Coolors.in",
+            "description": "Access your saved color palettes and previously created color schemes.",
+            "numberOfItems": palettes.length,
+            "itemListElement": palettes.map((palette, index) => ({
+              "@type": "ListItem",
+              "position": index + 1,
+              "item": {
+                "@type": "CreativeWork",
+                "name": palette.name,
+                "dateCreated": palette.createdAt instanceof Date 
+                  ? palette.createdAt.toISOString() 
+                  : new Date(palette.createdAt as any).toISOString()
+              }
+            }))
+          })}
+        </script>
+      </Helmet>
       <header className="mb-8">
         <div className="flex items-center gap-4 mb-4">
-          <Link href="/">
+          <div 
+            className="cursor-pointer"
+            onClick={() => window.location.href = '/'}
+          >
             <Button variant="outline" size="icon">
               <ChevronLeft className="h-4 w-4" />
             </Button>
-          </Link>
+          </div>
           <h1 className="text-3xl font-bold">Saved Palettes</h1>
         </div>
         <p className="text-muted-foreground">
@@ -107,9 +136,12 @@ export default function SavedPalettes() {
           <p className="text-muted-foreground mb-6">
             Create and save palettes from the home page to see them here.
           </p>
-          <Link href="/">
+          <div
+            className="cursor-pointer" 
+            onClick={() => window.location.href = '/'}
+          >
             <Button>Create New Palette</Button>
-          </Link>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -149,16 +181,22 @@ export default function SavedPalettes() {
                 </div>
               </CardContent>
               <CardFooter>
-                <Link href={`/?palette=${palette.id}`}>
+                <div
+                  className="cursor-pointer"
+                  onClick={() => window.location.href = `/?palette=${palette.id}`}
+                >
                   <Button variant="outline" className="w-full">
                     Load Palette
                   </Button>
-                </Link>
+                </div>
               </CardFooter>
             </Card>
           ))}
         </div>
       )}
+      <div className="mt-12">
+        <Footer />
+      </div>
     </div>
   );
 }

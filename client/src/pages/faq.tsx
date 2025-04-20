@@ -91,7 +91,7 @@ export default function FAQPage() {
           <div className="border-b border-gray-200 pb-5">
             <h2 className="text-xl font-semibold mb-2 text-gray-800">5. Does Coolors.in store my data?</h2>
             <p className="text-gray-600">
-              No personal data is stored. We use anonymous tracking through cookies and analytics tools. Read our <Link href="/privacy-policy"><a className="text-blue-600 hover:underline">Privacy Policy</a></Link> for details.
+              No personal data is stored. We use anonymous tracking through cookies and analytics tools. Read our <span className="text-blue-600 hover:underline cursor-pointer" onClick={() => window.location.href = '/privacy-policy'}>Privacy Policy</span> for details.
             </p>
           </div>
           
