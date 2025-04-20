@@ -13,6 +13,9 @@ export default {
       '2xl': '1536px',
     },
     extend: {
+      fontSize: {
+        'xxs': '0.625rem', // 10px
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
