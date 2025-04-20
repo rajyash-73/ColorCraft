@@ -14,6 +14,7 @@ export default function ColorAdjustmentModal({ color, onClose, onApply }: ColorA
   const [green, setGreen] = useState(color.rgb.g);
   const [blue, setBlue] = useState(color.rgb.b);
   const [currentHex, setCurrentHex] = useState(color.hex);
+  const [colorName, setColorName] = useState(color.name || getColorName(color.hex));
   
   const handleRGBChange = (component: 'r' | 'g' | 'b', value: number) => {
     const newValue = Math.min(255, Math.max(0, value));
@@ -30,6 +31,7 @@ export default function ColorAdjustmentModal({ color, onClose, onApply }: ColorA
     );
     
     setCurrentHex(newHex);
+    setColorName(getColorName(newHex));
   };
   
   const handleHexChange = (hex: string) => {
@@ -43,6 +45,9 @@ export default function ColorAdjustmentModal({ color, onClose, onApply }: ColorA
         setRed(rgb.r);
         setGreen(rgb.g);
         setBlue(rgb.b);
+        
+        // Update color name
+        setColorName(getColorName(hex));
       }
     } else {
       // Just update the input without changing RGB values
@@ -51,10 +56,12 @@ export default function ColorAdjustmentModal({ color, onClose, onApply }: ColorA
   };
   
   const handleApply = () => {
+    const colorName = getColorName(currentHex);
     onApply({
       hex: currentHex,
       rgb: { r: red, g: green, b: blue },
-      locked: color.locked
+      locked: color.locked,
+      name: colorName
     });
   };
   
@@ -72,9 +79,13 @@ export default function ColorAdjustmentModal({ color, onClose, onApply }: ColorA
         </div>
         
         <div 
-          className="w-full h-24 rounded-lg mb-6"
+          className="w-full h-24 rounded-lg mb-2"
           style={{ backgroundColor: currentHex }}
         ></div>
+        
+        <div className="text-center mb-4">
+          <span className="text-lg font-medium">{colorName}</span>
+        </div>
         
         <div className="mb-6">
           <label className="block text-sm font-medium mb-1">Hex</label>
