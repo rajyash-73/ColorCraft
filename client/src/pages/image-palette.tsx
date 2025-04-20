@@ -5,6 +5,7 @@ import { Upload, Image as ImageIcon, ArrowLeft, RefreshCw, X, Info } from 'lucid
 import { usePalette } from '@/contexts/PaletteContext';
 import { hexToRgb, getColorName, rgbToHex } from '@/lib/colorUtils';
 import { useToast } from '@/hooks/use-toast';
+import Footer from '@/components/Footer';
 
 export default function ImagePalette() {
   const { setPalette } = usePalette();
@@ -305,6 +306,9 @@ export default function ImagePalette() {
           <canvas ref={canvasRef} className="hidden" />
         </div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
       
       {/* Instructions Modal */}
       {showInstructions && (
