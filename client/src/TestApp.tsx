@@ -183,12 +183,13 @@ function PaletteApp() {
               </p>
             </div>
             
-            <Link href="/designers-guide">
-              <a className="mt-3 sm:mt-0 px-4 py-2 text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 border border-blue-200 rounded-full shadow-sm transition-colors flex items-center gap-1.5">
-                <Eye size={16} />
-                <span>Designer's Guide</span>
-              </a>
-            </Link>
+            <div
+              className="mt-3 sm:mt-0 px-4 py-2 text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 border border-blue-200 rounded-full shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer"
+              onClick={() => window.location.href = '/designers-guide'}
+            >
+              <Eye size={16} />
+              <span>Designer's Guide</span>
+            </div>
           </div>
           
           <div className="bg-white p-4 sm:p-5 rounded-xl shadow-md border border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -277,19 +278,21 @@ function PaletteApp() {
             <span>Add Color</span>
           </button>
           
-          <Link href="/image-palette">
-            <a className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:from-purple-600 hover:to-pink-600 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium">
-              <ImageIcon size={18} className="sm:w-5 sm:h-5" />
-              <span>From Image</span>
-            </a>
-          </Link>
+          <div
+            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:from-purple-600 hover:to-pink-600 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium cursor-pointer"
+            onClick={() => window.location.href = '/image-palette'}
+          >
+            <ImageIcon size={18} className="sm:w-5 sm:h-5" />
+            <span>From Image</span>
+          </div>
           
-          <Link href="/visualize">
-            <a className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:from-emerald-600 hover:to-teal-600 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium">
-              <Eye size={18} className="sm:w-5 sm:h-5" />
-              <span>Visualize</span>
-            </a>
-          </Link>
+          <div
+            className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:from-emerald-600 hover:to-teal-600 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium cursor-pointer"
+            onClick={() => window.location.href = '/visualize'}
+          >
+            <Eye size={18} className="sm:w-5 sm:h-5" />
+            <span>Visualize</span>
+          </div>
           
           <button 
             className="bg-white text-gray-700 border border-gray-200 px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:bg-gray-50 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
@@ -446,16 +449,18 @@ function PaletteApp() {
           Experiment with different color theories, save your favorite palettes, and visualize them in real-world designs.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link href="/designers-guide">
-            <a className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-5 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all font-medium">
-              Read the Designer's Guide
-            </a>
-          </Link>
-          <Link href="/visualize">
-            <a className="bg-white text-gray-700 border border-gray-200 px-5 py-3 rounded-lg shadow hover:shadow-md transition-all font-medium">
-              Try Visualizer
-            </a>
-          </Link>
+          <div
+            className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-5 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all font-medium cursor-pointer"
+            onClick={() => window.location.href = '/designers-guide'}
+          >
+            Read the Designer's Guide
+          </div>
+          <div
+            className="bg-white text-gray-700 border border-gray-200 px-5 py-3 rounded-lg shadow hover:shadow-md transition-all font-medium cursor-pointer"
+            onClick={() => window.location.href = '/visualize'}
+          >
+            Try Visualizer
+          </div>
         </div>
       </div>
       
