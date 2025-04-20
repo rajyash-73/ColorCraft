@@ -78,7 +78,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
   
   return (
     <div 
-      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[150px] md:min-h-0"
+      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[120px] xs:min-h-[150px] md:min-h-0"
       style={{ backgroundColor: color.hex }}
       data-color-index={index}
     >
@@ -115,15 +115,15 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
       
       {/* Color Code Display - Center */}
       <div 
-        className={`flex-1 flex flex-col items-center justify-center ${textColor} py-4 px-2 md:p-4 group-hover:scale-105 md:group-hover:scale-110 transition-transform`}
+        className={`flex-1 flex flex-col items-center justify-center ${textColor} py-5 sm:py-4 px-2 md:p-4 group-hover:scale-105 md:group-hover:scale-110 transition-transform`}
         onClick={handleCopyColorCode}
       >
-        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-wider mb-1 md:mb-2 break-words text-center">{color.hex}</h2>
-        <p className="text-xs sm:text-sm md:text-base opacity-80">
+        <h2 className="text-xs xs:text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-wide md:tracking-wider mb-1 md:mb-2 break-all md:break-words text-center w-full px-1 overflow-hidden">{color.hex}</h2>
+        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base opacity-80">
           RGB: {color.rgb.r}, {color.rgb.g}, {color.rgb.b}
         </p>
         <div className="mt-2 md:mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className={`${isLightColor(color.hex) ? 'bg-black bg-opacity-10' : 'bg-white bg-opacity-20'} rounded-full px-2 py-0.5 md:px-3 md:py-1 text-xs md:text-sm`}>
+          <div className={`${isLightColor(color.hex) ? 'bg-black bg-opacity-10' : 'bg-white bg-opacity-20'} rounded-full px-2 py-0.5 md:px-3 md:py-1 text-[10px] xs:text-xs md:text-sm`}>
             Click to copy
           </div>
         </div>
