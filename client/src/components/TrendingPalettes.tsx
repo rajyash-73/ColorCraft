@@ -55,23 +55,35 @@ function TrendingPalette({ name, colors, onSelect }: TrendingPaletteProps) {
   
   return (
     <div 
-      className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+      className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg border border-gray-100 transition-all cursor-pointer group"
       onClick={handleClick}
     >
-      <div className="flex h-12 sm:h-16">
+      <div className="flex h-14 sm:h-20 relative">
         {colors.map((color, index) => (
           <div 
             key={index}
-            className="flex-1"
+            className="flex-1 group-hover:flex-[1.1] transition-all duration-300 relative"
             style={{ backgroundColor: color }}
-          ></div>
+          >
+            <div 
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 flex items-center justify-center text-xs font-medium transition-opacity duration-300"
+              style={{ color: isLightColor(color) ? '#333' : '#fff', backgroundColor: color + '99' }}
+            >
+              <span className="px-2 py-1 backdrop-blur-sm rounded bg-white bg-opacity-20">
+                {color}
+              </span>
+            </div>
+          </div>
         ))}
       </div>
-      <div className="p-2 sm:p-3 flex justify-between items-center">
-        <h3 className="text-sm sm:text-base font-medium text-gray-800">{name}</h3>
-        <button className="text-blue-500 hover:text-blue-700">
+      <div className="p-3 sm:p-4 flex justify-between items-center">
+        <div>
+          <h3 className="text-sm sm:text-base font-medium text-gray-800">{name}</h3>
+          <p className="text-xs text-gray-500 mt-0.5">{colors.length} colors</p>
+        </div>
+        <span className="p-1.5 bg-gray-100 rounded-full text-gray-500 group-hover:bg-blue-500 group-hover:text-white transition-all">
           <ArrowRight size={16} className="sm:h-[18px] sm:w-[18px]" />
-        </button>
+        </span>
       </div>
     </div>
   );
@@ -83,9 +95,18 @@ interface TrendingPalettesProps {
 
 export default function TrendingPalettes({ onSelectPalette }: TrendingPalettesProps) {
   return (
-    <div className="mt-6 sm:mt-8 bg-gray-50 rounded-xl p-4 sm:p-6">
-      <h2 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4 text-gray-800">Trending Palettes</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+    <div className="mt-8 sm:mt-12 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 sm:p-8 shadow-sm border border-gray-200">
+      <div className="flex justify-between items-center mb-5 sm:mb-6">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Trending Palettes</h2>
+          <p className="text-sm text-gray-600 mt-1">Try these popular color combinations</p>
+        </div>
+        <div className="bg-white p-1.5 rounded-full shadow-sm border border-gray-200">
+          <ArrowRight size={20} className="text-blue-500" />
+        </div>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         {TRENDING_PALETTES.map((palette, index) => (
           <TrendingPalette
             key={index}

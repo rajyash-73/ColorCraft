@@ -24,8 +24,21 @@ function Toast({ message, onClose }: { message: string; onClose: () => void }) {
   }, [onClose]);
   
   return (
-    <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2 animate-fade-in-up">
-      <span>{message}</span>
+    <div className="fixed bottom-4 right-4 bg-white text-gray-800 px-4 py-3 rounded-xl shadow-xl border border-gray-200 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-8 duration-300 z-50 max-w-md">
+      <div className="p-2 rounded-full bg-blue-100 text-blue-600">
+        <Info size={18} />
+      </div>
+      <div className="flex-1">
+        <p className="font-medium">{message}</p>
+      </div>
+      <button 
+        onClick={onClose}
+        className="p-1 hover:bg-gray-100 rounded-full text-gray-500 hover:text-gray-700 transition-colors"
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1L13 13M1 13L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+      </button>
     </div>
   );
 }
@@ -426,17 +439,28 @@ function PaletteApp() {
       {/* Trending Palettes Section */}
       <TrendingPalettes onSelectPalette={handleTrendingPaletteSelect} />
       
-      <div className="mt-4 sm:mt-8 text-center text-gray-600 text-xs sm:text-sm px-2">
-        <p>Press spacebar to generate • Click lock icon to keep a color • Drag to reorder</p>
-        {colorTheory !== 'auto' && (
-          <p className="mt-1 text-[10px] sm:text-xs text-gray-500">
-            Select a color theory rule and click "Use as Base" on any color to create a harmonic palette
-          </p>
-        )}
+      <div className="mt-10 sm:mt-14 p-6 sm:p-8 bg-white rounded-2xl border border-gray-200 shadow-sm text-center">
+        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">Start creating beautiful designs today</h3>
+        <p className="text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+          Use our palette generator to create harmonious color combinations for your next project.
+          Experiment with different color theories, save your favorite palettes, and visualize them in real-world designs.
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Link href="/designers-guide">
+            <a className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-5 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all font-medium">
+              Read the Designer's Guide
+            </a>
+          </Link>
+          <Link href="/visualize">
+            <a className="bg-white text-gray-700 border border-gray-200 px-5 py-3 rounded-lg shadow hover:shadow-md transition-all font-medium">
+              Try Visualizer
+            </a>
+          </Link>
+        </div>
       </div>
       
       {/* Footer */}
-      <Footer />
+      <Footer className="mt-8" />
       
       {/* Modals */}
       {showAdjustModal && activeColorIndex !== null && (
