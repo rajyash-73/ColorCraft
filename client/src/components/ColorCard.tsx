@@ -115,18 +115,18 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
       
       {/* Color Code Display - Center */}
       <div 
-        className={`flex-1 flex flex-col items-center justify-center ${textColor} py-5 sm:py-4 px-2 md:p-4 group-hover:scale-105 md:group-hover:scale-110 transition-transform`}
+        className={`flex-1 flex flex-col items-center justify-center ${textColor} py-3 xs:py-4 sm:py-4 px-1 xs:px-2 md:p-4 group-hover:scale-105 md:group-hover:scale-110 transition-transform`}
         onClick={handleCopyColorCode}
       >
         {/* Mobile Display */}
         <div className="block md:hidden w-full">
-          <div className="flex justify-center items-center gap-2 xs:gap-3">
-            <div className="text-xxs xs:text-xs sm:text-sm font-bold text-center">
+          <div className="flex flex-row justify-center items-center">
+            <span className="text-[10px] xs:text-xs sm:text-sm font-bold whitespace-nowrap mr-1">
               {color.hex}
-            </div>
-            <div className="text-[8px] xs:text-[10px] sm:text-xs opacity-80 text-center">
+            </span>
+            <span className="text-[8px] xs:text-[10px] sm:text-xs opacity-80 whitespace-nowrap">
               {color.name ? color.name : `(${color.rgb.r},${color.rgb.g},${color.rgb.b})`}
-            </div>
+            </span>
           </div>
         </div>
         
