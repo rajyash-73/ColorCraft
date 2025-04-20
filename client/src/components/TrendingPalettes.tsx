@@ -36,15 +36,19 @@ export const TRENDING_PALETTES = [
 function TrendingPalette({ name, colors, onSelect }: TrendingPaletteProps) {
   const handleClick = () => {
     // Convert hex strings to Color objects
-    const colorObjects = colors.map(hex => ({
-      hex,
-      rgb: {
-        r: parseInt(hex.slice(1, 3), 16),
-        g: parseInt(hex.slice(3, 5), 16),
-        b: parseInt(hex.slice(5, 7), 16)
-      },
-      locked: false
-    }));
+    const colorObjects = colors.map(hex => {
+      const colorName = getColorName(hex);
+      return {
+        hex,
+        rgb: {
+          r: parseInt(hex.slice(1, 3), 16),
+          g: parseInt(hex.slice(3, 5), 16),
+          b: parseInt(hex.slice(5, 7), 16)
+        },
+        locked: false,
+        name: colorName
+      };
+    });
     
     onSelect(colorObjects);
   };
