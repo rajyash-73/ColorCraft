@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Color } from './types/Color';
 import { isLightColor } from '@/lib/colorUtils';
-import { LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, GripVertical, Image as ImageIcon, Eye } from 'lucide-react';
+import { 
+  LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, 
+  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock 
+} from 'lucide-react';
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
 import TrendingPalettes from '@/components/TrendingPalettes';
@@ -147,111 +150,156 @@ function PaletteApp() {
   
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
-      <header className="mb-4 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
-          Palette Generator
-        </h1>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-1 sm:mt-2 gap-2 sm:gap-4">
-          <p className="text-xs sm:text-sm text-gray-600">
-            Press spacebar to generate a new palette. Click a color to lock/unlock. Drag to reorder.
-          </p>
-          
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <label htmlFor="color-theory" className="text-xs sm:text-sm text-gray-700 whitespace-nowrap">Color Theory:</label>
-              <select 
-                id="color-theory"
-                value={colorTheory}
-                onChange={(e) => setColorTheory(e.target.value as ColorTheory)}
-                className="text-xs sm:text-sm border border-gray-300 rounded-lg px-2 py-1 sm:py-1.5 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                {colorTheoryOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+      {/* Hero Section */}
+      <header className="relative mb-8 sm:mb-12 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 sm:p-8 overflow-hidden shadow-sm">
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10">
+          <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-500 rounded-full"></div>
+          <div className="absolute top-20 -right-10 w-60 h-60 bg-purple-500 rounded-full"></div>
+          <div className="absolute -bottom-20 left-40 w-80 h-80 bg-indigo-500 rounded-full"></div>
+        </div>
+        
+        <div className="relative">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800 bg-gradient-to-r from-purple-600 via-blue-500 to-indigo-600 bg-clip-text text-transparent">
+                Palette Generator
+              </h1>
+              <p className="mt-2 text-sm sm:text-base text-gray-600 max-w-xl">
+                Create beautiful, harmonious color combinations with the power of color theory. Design like a pro in seconds.
+              </p>
             </div>
             
-            {colorTheory !== 'auto' && (
-              <p className="text-[10px] sm:text-xs text-gray-500 mt-1 max-w-[220px] sm:max-w-xs">
-                {colorTheory === 'monochromatic' ? "Variations in lightness and saturation of one color" : 
-                 colorTheory === 'analogous' ? "Colors that sit next to each other on the color wheel" :
-                 colorTheory === 'complementary' ? "Opposite colors that create strong contrast" :
-                 colorTheory === 'split-complementary' ? "A base color and two adjacent to its complement" :
-                 colorTheory === 'triadic' ? "Three colors evenly spaced on the wheel for balance" :
-                 colorTheory === 'tetradic' ? "Two complementary pairs for rich diversity" :
-                 colorTheory === 'neutral' ? "Desaturated colors for clean aesthetics" : 
-                 ""}
-                
-                {" - Select 'Use as Base' on any color"}
-              </p>
-            )}
+            <Link href="/designers-guide">
+              <a className="mt-3 sm:mt-0 px-4 py-2 text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 border border-blue-200 rounded-full shadow-sm transition-colors flex items-center gap-1.5">
+                <Eye size={16} />
+                <span>Designer's Guide</span>
+              </a>
+            </Link>
+          </div>
+          
+          <div className="bg-white p-4 sm:p-5 rounded-xl shadow-md border border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center px-3 py-1.5 bg-gray-100 rounded-full text-sm text-gray-700">
+                <RefreshCw size={14} className="mr-1.5 text-gray-500" />
+                <span>Press <kbd className="px-1.5 py-0.5 bg-white rounded text-xs font-semibold border border-gray-200 shadow-sm">spacebar</kbd> to generate</span>
+              </div>
+              
+              <div className="flex items-center px-3 py-1.5 bg-gray-100 rounded-full text-sm text-gray-700">
+                <LockIcon size={14} className="mr-1.5 text-gray-500" />
+                <span>Click lock to keep a color</span>
+              </div>
+              
+              <div className="flex items-center px-3 py-1.5 bg-gray-100 rounded-full text-sm text-gray-700">
+                <GripVertical size={14} className="mr-1.5 text-gray-500" />
+                <span>Drag to reorder</span>
+              </div>
+            </div>
+            
+            <div className="flex flex-col bg-blue-50 rounded-lg p-3 border border-blue-100">
+              <div className="flex items-center gap-2">
+                <label htmlFor="color-theory" className="text-sm font-medium text-gray-700 whitespace-nowrap">Color Theory:</label>
+                <select 
+                  id="color-theory"
+                  value={colorTheory}
+                  onChange={(e) => setColorTheory(e.target.value as ColorTheory)}
+                  className="text-sm border border-blue-200 rounded-lg px-2 py-1.5 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  {colorTheoryOptions.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              {colorTheory !== 'auto' && (
+                <p className="text-xs text-blue-700 mt-2 max-w-[220px] sm:max-w-xs">
+                  {colorTheory === 'monochromatic' ? "Variations in lightness and saturation of one color" : 
+                   colorTheory === 'analogous' ? "Colors that sit next to each other on the color wheel" :
+                   colorTheory === 'complementary' ? "Opposite colors that create strong contrast" :
+                   colorTheory === 'split-complementary' ? "A base color and two adjacent to its complement" :
+                   colorTheory === 'triadic' ? "Three colors evenly spaced on the wheel for balance" :
+                   colorTheory === 'tetradic' ? "Two complementary pairs for rich diversity" :
+                   colorTheory === 'neutral' ? "Desaturated colors for clean aesthetics" : 
+                   ""}
+                  
+                  {" - Select 'Use as Base' on any color"}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </header>
       
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-3 sm:gap-4 mb-8">
-        <button 
-          className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
-          onClick={generatePalette}
-        >
-          <RefreshCw size={16} className="sm:w-[18px] sm:h-[18px]" />
-          <span>Generate</span>
-        </button>
-        
-        <button 
-          className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
-          onClick={addColor}
-          disabled={palette.length >= 10}
-        >
-          <Plus size={16} className="sm:w-[18px] sm:h-[18px]" />
-          <span>Add Color</span>
-        </button>
-        
-        <button 
-          className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
-          onClick={resetPalette}
-        >
-          <RefreshCw size={16} className="sm:w-[18px] sm:h-[18px]" />
-          <span>Reset</span>
-        </button>
-        
-        <button 
-          className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
-          onClick={exportPalette}
-        >
-          <Download size={16} className="sm:w-[18px] sm:h-[18px]" />
-          <span>PNG</span>
-        </button>
-        
-        <button 
-          className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base"
-          onClick={exportPaletteAsJSON}
-        >
-          <Download size={16} className="sm:w-[18px] sm:h-[18px]" />
-          <span>JSON</span>
-        </button>
-        
-        <Link href="/image-palette">
-          <a className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base">
-            <ImageIcon size={16} className="sm:w-[18px] sm:h-[18px]" />
-            <span>From Image</span>
-          </a>
-        </Link>
-        
-        <Link href="/visualize">
-          <a className="bg-white text-gray-800 border border-gray-300 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:shadow-md transition-all flex items-center justify-center gap-1 sm:gap-2 text-sm sm:text-base">
-            <Eye size={16} className="sm:w-[18px] sm:h-[18px]" />
-            <span>Visualize</span>
-          </a>
-        </Link>
+      <div className="bg-white rounded-xl p-4 mb-8 shadow-md border border-gray-100">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-800">Actions</h2>
+          <div className="flex gap-2">
+            <button 
+              onClick={resetPalette}
+              className="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-colors"
+              title="Reset palette"
+            >
+              <RefreshCw size={18} />
+            </button>
+          </div>
+        </div>
+      
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4">
+          <button 
+            className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 sm:px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-indigo-700 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
+            onClick={generatePalette}
+          >
+            <RefreshCw size={18} className="sm:w-5 sm:h-5" />
+            <span>Generate</span>
+          </button>
+          
+          <button 
+            className="bg-white text-gray-700 border border-gray-200 px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:bg-gray-50 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
+            onClick={addColor}
+            disabled={palette.length >= 10}
+          >
+            <Plus size={18} className="sm:w-5 sm:h-5" />
+            <span>Add Color</span>
+          </button>
+          
+          <Link href="/image-palette">
+            <a className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:from-purple-600 hover:to-pink-600 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium">
+              <ImageIcon size={18} className="sm:w-5 sm:h-5" />
+              <span>From Image</span>
+            </a>
+          </Link>
+          
+          <Link href="/visualize">
+            <a className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:from-emerald-600 hover:to-teal-600 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium">
+              <Eye size={18} className="sm:w-5 sm:h-5" />
+              <span>Visualize</span>
+            </a>
+          </Link>
+          
+          <button 
+            className="bg-white text-gray-700 border border-gray-200 px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:bg-gray-50 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
+            onClick={exportPalette}
+          >
+            <Download size={18} className="sm:w-5 sm:h-5" />
+            <span>Export PNG</span>
+          </button>
+          
+          <button 
+            className="bg-white text-gray-700 border border-gray-200 px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:bg-gray-50 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
+            onClick={exportPaletteAsJSON}
+          >
+            <Download size={18} className="sm:w-5 sm:h-5" />
+            <span>Export JSON</span>
+          </button>
+        </div>
       </div>
       
       <div className="flex-1">
         <div 
           ref={paletteRef} 
-          className="flex flex-col md:flex-row h-[350px] md:h-[500px] rounded-xl overflow-hidden shadow-2xl"
+          className="flex flex-col md:flex-row h-[350px] md:h-[500px] rounded-2xl overflow-hidden shadow-2xl border border-gray-200"
         >
           {palette.map((color, index) => {
             const textColor = isLightColor(color.hex) ? 'text-gray-800' : 'text-white';
@@ -337,28 +385,32 @@ function PaletteApp() {
                     </div>
                   )}
                   
-                  <div className="mt-auto mb-2 sm:mb-4 text-center">
-                    <h3 className="text-lg sm:text-2xl font-bold mb-0.5 sm:mb-1">{color.hex}</h3>
-                    {color.name && (
-                      <p className="text-xs sm:text-sm mb-1 sm:mb-2 opacity-90">{color.name}</p>
-                    )}
-                    <div className="flex flex-col sm:flex-row gap-1 sm:gap-2 justify-center">
+                  <div className="mt-auto mb-3 sm:mb-5 text-center w-full px-2">
+                    <div className="mb-2">
+                      <h3 className="text-lg sm:text-2xl font-bold tracking-wide">{color.hex}</h3>
+                      {color.name && (
+                        <p className="text-xs sm:text-sm opacity-90 font-medium mt-0.5">{color.name}</p>
+                      )}
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row gap-2 justify-center">
                       <button 
-                        className="px-2 sm:px-3 py-0.5 sm:py-1 rounded bg-white bg-opacity-20 hover:bg-opacity-30 transition-all flex items-center gap-1 mx-auto text-xs sm:text-sm"
+                        className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm transition-all flex items-center justify-center gap-1.5 mx-auto text-xs sm:text-sm font-medium"
                         onClick={() => copyToClipboard(color.hex)}
                       >
-                        <Copy size={12} className="sm:w-[14px] sm:h-[14px]" />
+                        <Copy size={14} className="sm:w-4 sm:h-4" />
                         <span>Copy</span>
                       </button>
+                      
                       {colorTheory !== 'auto' && (
                         <button 
-                          className="px-2 sm:px-3 py-0.5 sm:py-1 rounded bg-white bg-opacity-20 hover:bg-opacity-30 transition-all flex items-center gap-1 mx-auto text-xs sm:text-sm"
+                          className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm transition-all flex items-center justify-center gap-1.5 mx-auto text-xs sm:text-sm font-medium"
                           onClick={() => {
                             generatePaletteWithTheory(color);
                             setToast(`Generated palette using ${colorTheory} theory with ${color.hex} as base`);
                           }}
                         >
-                          <RefreshCw size={12} className="sm:w-[14px] sm:h-[14px]" />
+                          <RefreshCw size={14} className="sm:w-4 sm:h-4" />
                           <span>Use as Base</span>
                         </button>
                       )}
