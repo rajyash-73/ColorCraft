@@ -21,13 +21,13 @@ export default function Header({
 }: HeaderProps) {
   return (
     <>
-      <header className="bg-white shadow-sm px-4 py-3 flex justify-between items-center z-10">
-        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => window.location.href = '/'}>
-          <div className="flex items-center gap-2">
-            <div className="w-20 sm:w-24 h-8">
+      <header className="bg-white shadow-sm px-3 sm:px-4 py-2 sm:py-3 flex justify-between items-center z-10">
+        <div className="flex items-center space-x-1 sm:space-x-2 cursor-pointer" onClick={() => window.location.href = '/'}>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <div className="w-16 sm:w-20 md:w-24 h-6 sm:h-8">
               <img src="/logo_circles.svg" alt="Coolors.in Logo" className="h-full" />
             </div>
-            <span className="font-bold text-lg sm:text-xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <span className="font-bold text-md sm:text-lg md:text-xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               Coolors.in
             </span>
           </div>
@@ -98,37 +98,37 @@ export default function Header({
       
       {/* Mobile Menu */}
       <div 
-        className={`md:hidden bg-white shadow-lg absolute top-14 right-4 w-56 z-20 rounded-xl transform origin-top-right transition-all duration-200 ${mobileMenuOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0 pointer-events-none'}`} 
+        className={`md:hidden bg-white shadow-lg fixed top-[42px] sm:top-[52px] right-2 sm:right-4 w-48 sm:w-56 z-50 rounded-xl transform origin-top-right transition-all duration-200 ${mobileMenuOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0 pointer-events-none'}`} 
       >
-        <div className="py-3 px-3 flex flex-col space-y-2">
+        <div className="py-2 px-2 flex flex-col space-y-1.5">
           <button 
-            className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
+            className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-2 py-1.5 px-3 rounded-lg transition-colors text-sm"
             onClick={onHelp}
           >
-            <HelpCircle size={18} className="text-gray-500" />
+            <HelpCircle size={16} className="text-gray-500" />
             <span className="font-medium">Help</span>
           </button>
           <button 
-            className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
+            className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-2 py-1.5 px-3 rounded-lg transition-colors text-sm"
             onClick={onExport}
           >
-            <Download size={18} className="text-gray-500" />
+            <Download size={16} className="text-gray-500" />
             <span className="font-medium">Export</span>
           </button>
           <button 
-            className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
+            className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-2 py-1.5 px-3 rounded-lg transition-colors text-sm"
             onClick={onSave}
           >
-            <Save size={18} className="text-gray-500" />
+            <Save size={16} className="text-gray-500" />
             <span className="font-medium">Save</span>
           </button>
           
           {onVisualize && (
             <button 
-              className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
+              className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-2 py-1.5 px-3 rounded-lg transition-colors text-sm"
               onClick={onVisualize}
             >
-              <Eye size={18} className="text-gray-500" />
+              <Eye size={16} className="text-gray-500" />
               <span className="font-medium">Visualize</span>
             </button>
           )}
