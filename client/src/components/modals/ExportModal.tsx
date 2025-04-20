@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { Color } from "@shared/schema";
+import { Color } from "../../types/Color";
 import { useToast } from "@/hooks/use-toast";
 import html2canvas from "html2canvas";
 

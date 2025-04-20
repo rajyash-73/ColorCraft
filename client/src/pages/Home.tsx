@@ -8,7 +8,7 @@ import OnboardingTour from "@/components/modals/OnboardingTour";
 import ExportModal from "@/components/modals/ExportModal";
 import AdjustColorModal from "@/components/modals/AdjustColorModal";
 import { usePalette } from "@/contexts/PaletteContext";
-import { type Color } from "@shared/schema";
+import { type Color } from "../types/Color";
 
 export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(false);

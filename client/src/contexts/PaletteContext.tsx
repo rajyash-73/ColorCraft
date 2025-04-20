@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { Color } from "@shared/schema";
+import { Color } from "../types/Color";
 import { getRandomColor, hexToRgb } from "@/lib/colorUtils";
 
 // Define the shape of our context
