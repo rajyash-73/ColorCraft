@@ -175,13 +175,14 @@ function PaletteApp() {
             
             {colorTheory !== 'auto' && (
               <p className="text-[10px] sm:text-xs text-gray-500 mt-1 max-w-[220px] sm:max-w-xs">
-                {colorTheory === 'monochromatic' && "Variations in lightness and saturation of one color"}
-                {colorTheory === 'analogous' && "Colors that sit next to each other on the color wheel"}
-                {colorTheory === 'complementary' && "Opposite colors that create strong contrast"}
-                {colorTheory === 'split-complementary' && "A base color and two adjacent to its complement"}
-                {colorTheory === 'triadic' && "Three colors evenly spaced on the wheel for balance"}
-                {colorTheory === 'tetradic' && "Two complementary pairs for rich diversity"}
-                {colorTheory === 'neutral' && "Desaturated colors for clean aesthetics"}
+                {colorTheory === 'monochromatic' ? "Variations in lightness and saturation of one color" : 
+                 colorTheory === 'analogous' ? "Colors that sit next to each other on the color wheel" :
+                 colorTheory === 'complementary' ? "Opposite colors that create strong contrast" :
+                 colorTheory === 'split-complementary' ? "A base color and two adjacent to its complement" :
+                 colorTheory === 'triadic' ? "Three colors evenly spaced on the wheel for balance" :
+                 colorTheory === 'tetradic' ? "Two complementary pairs for rich diversity" :
+                 colorTheory === 'neutral' ? "Desaturated colors for clean aesthetics" : 
+                 ""}
                 
                 {" - Select 'Use as Base' on any color"}
               </p>
