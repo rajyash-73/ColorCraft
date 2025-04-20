@@ -96,7 +96,7 @@ export default function PrivacyPolicy() {
 
           <h2 className="text-xl font-semibold mb-3">Contact:</h2>
           <p className="mb-6">
-            If you have questions, email us at <a href="mailto:support@coolors.in" className="text-blue-600 hover:underline">support@coolors.in</a>
+            If you have questions, email us at <a href="mailto:coolors.in@gmail.com" className="text-blue-600 hover:underline">coolors.in@gmail.com</a>
           </p>
         </div>
       </div>

@@ -37,7 +37,7 @@ export default function Footer({ className }: FooterProps) {
                 <Github size={18} />
               </a>
               <a 
-                href="mailto:support@coolors.in"
+                href="mailto:coolors.in@gmail.com"
                 className="p-2 bg-white text-gray-700 hover:text-blue-600 rounded-full border border-gray-200 shadow-sm transition-colors"
                 aria-label="Email"
               >
