@@ -198,17 +198,17 @@ export default function ImagePalette() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
-      <header className="mb-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
+      <header className="mb-4 sm:mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
             Image to Palette
           </h1>
-          <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
-            <ArrowLeft className="mr-1" size={20} />
+          <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors text-sm sm:text-base">
+            <ArrowLeft className="mr-1" size={18} />
             Back to Generator
           </Link>
         </div>
-        <p className="text-gray-600 mt-2">
+        <p className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">
           Upload an image to extract a color palette from its dominant colors.
         </p>
       </header>

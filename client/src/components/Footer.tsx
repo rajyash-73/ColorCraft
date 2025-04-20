@@ -5,13 +5,13 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="bg-white py-4 border-t mt-auto">
+    <footer className="bg-white py-3 sm:py-4 border-t mt-auto">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
-          <div>
+        <div className="flex flex-col md:flex-row justify-between items-center text-xs sm:text-sm text-gray-600">
+          <div className="text-center md:text-left">
             © {currentYear} Palette Pro. All rights reserved.
           </div>
-          <div className="mt-2 md:mt-0 flex space-x-4">
+          <div className="mt-3 md:mt-0 flex flex-wrap justify-center gap-y-2 gap-x-4">
             <Link href="/privacy-policy">
               <a className="hover:text-gray-900 transition-colors">Privacy Policy</a>
             </Link>
