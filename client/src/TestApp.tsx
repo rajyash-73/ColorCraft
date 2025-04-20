@@ -156,20 +156,36 @@ function PaletteApp() {
             Press spacebar to generate a new palette. Click a color to lock/unlock. Drag to reorder.
           </p>
           
-          <div className="flex items-center gap-2">
-            <label htmlFor="color-theory" className="text-xs sm:text-sm text-gray-700 whitespace-nowrap">Color Theory:</label>
-            <select 
-              id="color-theory"
-              value={colorTheory}
-              onChange={(e) => setColorTheory(e.target.value as ColorTheory)}
-              className="text-xs sm:text-sm border border-gray-300 rounded-lg px-2 py-1 sm:py-1.5 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              {colorTheoryOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <label htmlFor="color-theory" className="text-xs sm:text-sm text-gray-700 whitespace-nowrap">Color Theory:</label>
+              <select 
+                id="color-theory"
+                value={colorTheory}
+                onChange={(e) => setColorTheory(e.target.value as ColorTheory)}
+                className="text-xs sm:text-sm border border-gray-300 rounded-lg px-2 py-1 sm:py-1.5 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                {colorTheoryOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            {colorTheory !== 'auto' && (
+              <p className="text-[10px] sm:text-xs text-gray-500 mt-1 max-w-[220px] sm:max-w-xs">
+                {colorTheory === 'monochromatic' && "Variations in lightness and saturation of one color"}
+                {colorTheory === 'analogous' && "Colors that sit next to each other on the color wheel"}
+                {colorTheory === 'complementary' && "Opposite colors that create strong contrast"}
+                {colorTheory === 'split-complementary' && "A base color and two adjacent to its complement"}
+                {colorTheory === 'triadic' && "Three colors evenly spaced on the wheel for balance"}
+                {colorTheory === 'tetradic' && "Two complementary pairs for rich diversity"}
+                {colorTheory === 'neutral' && "Desaturated colors for clean aesthetics"}
+                
+                {" - Select 'Use as Base' on any color"}
+              </p>
+            )}
           </div>
         </div>
       </header>
@@ -325,13 +341,27 @@ function PaletteApp() {
                     {color.name && (
                       <p className="text-xs sm:text-sm mb-1 sm:mb-2 opacity-90">{color.name}</p>
                     )}
-                    <button 
-                      className="px-2 sm:px-3 py-0.5 sm:py-1 rounded bg-white bg-opacity-20 hover:bg-opacity-30 transition-all flex items-center gap-1 mx-auto text-xs sm:text-sm"
-                      onClick={() => copyToClipboard(color.hex)}
-                    >
-                      <Copy size={12} className="sm:w-[14px] sm:h-[14px]" />
-                      <span>Copy</span>
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-1 sm:gap-2 justify-center">
+                      <button 
+                        className="px-2 sm:px-3 py-0.5 sm:py-1 rounded bg-white bg-opacity-20 hover:bg-opacity-30 transition-all flex items-center gap-1 mx-auto text-xs sm:text-sm"
+                        onClick={() => copyToClipboard(color.hex)}
+                      >
+                        <Copy size={12} className="sm:w-[14px] sm:h-[14px]" />
+                        <span>Copy</span>
+                      </button>
+                      {colorTheory !== 'auto' && (
+                        <button 
+                          className="px-2 sm:px-3 py-0.5 sm:py-1 rounded bg-white bg-opacity-20 hover:bg-opacity-30 transition-all flex items-center gap-1 mx-auto text-xs sm:text-sm"
+                          onClick={() => {
+                            generatePaletteWithTheory(color);
+                            setToast(`Generated palette using ${colorTheory} theory with ${color.hex} as base`);
+                          }}
+                        >
+                          <RefreshCw size={12} className="sm:w-[14px] sm:h-[14px]" />
+                          <span>Use as Base</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -345,6 +375,11 @@ function PaletteApp() {
       
       <div className="mt-4 sm:mt-8 text-center text-gray-600 text-xs sm:text-sm px-2">
         <p>Press spacebar to generate • Click lock icon to keep a color • Drag to reorder</p>
+        {colorTheory !== 'auto' && (
+          <p className="mt-1 text-[10px] sm:text-xs text-gray-500">
+            Select a color theory rule and click "Use as Base" on any color to create a harmonic palette
+          </p>
+        )}
       </div>
       
       {/* Footer */}
