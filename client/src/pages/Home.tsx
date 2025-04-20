@@ -9,6 +9,7 @@ import ExportModal from "@/components/modals/ExportModal";
 import AdjustColorModal from "@/components/modals/AdjustColorModal";
 import { usePalette } from "@/contexts/PaletteContext";
 import { type Color } from "../types/Color";
+import { Helmet } from "react-helmet-async";
 
 export default function Home() {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -17,7 +18,7 @@ export default function Home() {
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
-  const { palette, generatePalette, addColor, clearPalette, updateColor } = usePalette();
+  const { palette, generatePalette, addColor, resetPalette, updateColor } = usePalette();
   const { toast } = useToast();
   
   console.log('Home component rendered with palette:', palette);
@@ -96,6 +97,24 @@ export default function Home() {
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
+      <Helmet>
+        <title>Coolors.in - Free Color Palette Generator | Create Beautiful Color Schemes</title>
+        <meta name="description" content="Create and explore beautiful color combinations with Coolors.in, the free color palette generator. Design with confidence using our intuitive color tools." />
+        <meta name="keywords" content="color palette generator, color scheme, color combinations, design tools" />
+        <link rel="canonical" href="https://coolors.in/" />
+        {/* Dynamic structured data for the home page */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Coolors.in Color Palette Generator",
+            "url": "https://coolors.in/",
+            "description": "Create beautiful color combinations with our intuitive color generator",
+            "applicationCategory": "DesignApplication",
+            "operatingSystem": "Any"
+          })}
+        </script>
+      </Helmet>
       <Header 
         onHelp={handleHelp} 
         onExport={handleExport} 
@@ -128,7 +147,7 @@ export default function Home() {
       <ActionButtons 
         onGenerate={handleGeneratePalette}
         onAddColor={addColor}
-        onClearAll={clearPalette}
+        onClearAll={resetPalette}
       />
       
       {showOnboarding && <OnboardingTour onClose={() => setShowOnboarding(false)} />}
