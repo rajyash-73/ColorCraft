@@ -1,7 +1,7 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Color } from '../types/Color';
-import { isLightColor } from '@/lib/colorUtils';
+import { isLightColor, getColorName } from '@/lib/colorUtils';
 
 interface TrendingPaletteProps {
   name: string;

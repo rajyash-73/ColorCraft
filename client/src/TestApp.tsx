@@ -23,11 +23,11 @@ interface PaletteContextType {
 const PaletteContext = React.createContext<PaletteContextType | null>(null);
 
 const DEFAULT_COLORS = [
-  { hex: "#7A4ED9", rgb: { r: 122, g: 78, b: 217 }, locked: false },
-  { hex: "#ED584E", rgb: { r: 237, g: 88, b: 78 }, locked: false },
-  { hex: "#51CED9", rgb: { r: 81, g: 206, b: 217 }, locked: false },
-  { hex: "#F7DB58", rgb: { r: 247, g: 219, b: 88 }, locked: false },
-  { hex: "#5AE881", rgb: { r: 90, g: 232, b: 129 }, locked: false },
+  { hex: "#7A4ED9", rgb: { r: 122, g: 78, b: 217 }, locked: false, name: "Blue Violet" },
+  { hex: "#ED584E", rgb: { r: 237, g: 88, b: 78 }, locked: false, name: "Tomato" },
+  { hex: "#51CED9", rgb: { r: 81, g: 206, b: 217 }, locked: false, name: "Turquoise" },
+  { hex: "#F7DB58", rgb: { r: 247, g: 219, b: 88 }, locked: false, name: "Yellow" },
+  { hex: "#5AE881", rgb: { r: 90, g: 232, b: 129 }, locked: false, name: "Spring Green" },
 ];
 
 // Provider component
@@ -343,6 +343,9 @@ function PaletteApp() {
                   
                   {showInfoTooltip === index && (
                     <div className="absolute top-14 right-3 bg-white text-gray-800 p-3 rounded-lg shadow-lg z-10 w-48">
+                      {color.name && (
+                        <p className="text-sm font-semibold mb-2">{color.name}</p>
+                      )}
                       <p className="text-sm font-semibold">RGB Values:</p>
                       <p className="text-xs">R: {color.rgb.r}</p>
                       <p className="text-xs">G: {color.rgb.g}</p>
@@ -351,7 +354,10 @@ function PaletteApp() {
                   )}
                   
                   <div className="mt-auto mb-4 text-center">
-                    <h3 className="text-2xl font-bold mb-2">{color.hex}</h3>
+                    <h3 className="text-2xl font-bold mb-1">{color.hex}</h3>
+                    {color.name && (
+                      <p className="text-sm mb-2 opacity-90">{color.name}</p>
+                    )}
                     <button 
                       className="px-3 py-1 rounded bg-white bg-opacity-20 hover:bg-opacity-30 transition-all flex items-center gap-1 mx-auto"
                       onClick={() => copyToClipboard(color.hex)}
