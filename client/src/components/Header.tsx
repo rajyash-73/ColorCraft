@@ -23,10 +23,13 @@ export default function Header({
     <>
       <header className="bg-white shadow-sm px-4 py-3 flex justify-between items-center z-10">
         <div className="flex items-center space-x-2 cursor-pointer" onClick={() => window.location.href = '/'}>
-          <div className="flex items-center">
-            <div className="relative w-32 sm:w-36 h-8">
-              <img src="/logo.svg" alt="Coolors.in Logo" className="h-full" />
+          <div className="flex items-center gap-2">
+            <div className="w-20 sm:w-24 h-8">
+              <img src="/logo_circles.svg" alt="Coolors.in Logo" className="h-full" />
             </div>
+            <span className="font-bold text-lg sm:text-xl bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+              Coolors.in
+            </span>
           </div>
         </div>
         

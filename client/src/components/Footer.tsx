@@ -15,8 +15,13 @@ export default function Footer({ className }: FooterProps) {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <div className="w-28 h-7">
-              <img src="/logo.svg" alt="Coolors.in Logo" className="h-full" />
+            <div className="flex items-center gap-2">
+              <div className="w-16 h-7">
+                <img src="/logo_circles.svg" alt="Coolors.in Logo" className="h-full" />
+              </div>
+              <span className="font-bold text-lg bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Coolors.in
+              </span>
             </div>
             <p className="mt-2 text-sm text-gray-600 max-w-md">
               Our color palette generator helps designers and developers create beautiful, harmonious color combinations with ease.
@@ -46,20 +51,22 @@ export default function Footer({ className }: FooterProps) {
               <h4 className="font-semibold text-gray-900 mb-3">Application</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/visualize">
-                    <a className="text-gray-600 hover:text-blue-600 transition-colors flex items-center">
-                      Visualizer
-                      <ArrowUpRight className="ml-1" size={12} />
-                    </a>
-                  </Link>
+                  <div 
+                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
+                    onClick={() => window.location.href = '/visualize'}
+                  >
+                    Visualizer
+                    <ArrowUpRight className="ml-1" size={12} />
+                  </div>
                 </li>
                 <li>
-                  <Link href="/image-palette">
-                    <a className="text-gray-600 hover:text-blue-600 transition-colors flex items-center">
-                      Image to Palette
-                      <ArrowUpRight className="ml-1" size={12} />
-                    </a>
-                  </Link>
+                  <div 
+                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
+                    onClick={() => window.location.href = '/image-palette'}
+                  >
+                    Image to Palette
+                    <ArrowUpRight className="ml-1" size={12} />
+                  </div>
                 </li>
               </ul>
             </div>
@@ -68,20 +75,22 @@ export default function Footer({ className }: FooterProps) {
               <h4 className="font-semibold text-gray-900 mb-3">Resources</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/designers-guide">
-                    <a className="text-gray-600 hover:text-blue-600 transition-colors flex items-center">
-                      Designer's Guide
-                      <ArrowUpRight className="ml-1" size={12} />
-                    </a>
-                  </Link>
+                  <div 
+                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
+                    onClick={() => window.location.href = '/designers-guide'}
+                  >
+                    Designer's Guide
+                    <ArrowUpRight className="ml-1" size={12} />
+                  </div>
                 </li>
                 <li>
-                  <Link href="/faq">
-                    <a className="text-gray-600 hover:text-blue-600 transition-colors flex items-center">
-                      FAQ
-                      <ArrowUpRight className="ml-1" size={12} />
-                    </a>
-                  </Link>
+                  <div 
+                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
+                    onClick={() => window.location.href = '/faq'}
+                  >
+                    FAQ
+                    <ArrowUpRight className="ml-1" size={12} />
+                  </div>
                 </li>
               </ul>
             </div>
@@ -90,21 +99,22 @@ export default function Footer({ className }: FooterProps) {
               <h4 className="font-semibold text-gray-900 mb-3">Legal</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/privacy-policy">
-                    <a className="text-gray-600 hover:text-blue-600 transition-colors flex items-center">
-                      Privacy Policy
-                      <ArrowUpRight className="ml-1" size={12} />
-                    </a>
-                  </Link>
+                  <div 
+                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
+                    onClick={() => window.location.href = '/privacy-policy'}
+                  >
+                    Privacy Policy
+                    <ArrowUpRight className="ml-1" size={12} />
+                  </div>
                 </li>
                 <li>
-                  <a 
-                    href="#"
-                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center"
+                  <div 
+                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
+                    onClick={() => window.location.href = '#'}
                   >
                     Terms of Service
                     <ArrowUpRight className="ml-1" size={12} />
-                  </a>
+                  </div>
                 </li>
               </ul>
             </div>
