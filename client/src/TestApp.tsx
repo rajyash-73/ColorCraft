@@ -7,7 +7,7 @@ import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
 import TrendingPalettes from '@/components/TrendingPalettes';
 import WelcomeModal from '@/components/modals/WelcomeModal';
 import Footer from '@/components/Footer';
-import { usePalette } from '@/contexts/PaletteContext';
+import { usePalette, colorTheoryOptions, ColorTheory } from '@/contexts/PaletteContext';
 import { Link } from 'wouter';
 
 // Toast notification component
@@ -31,7 +31,10 @@ function Toast({ message, onClose }: { message: string; onClose: () => void }) {
 function PaletteApp() {
   const { 
     palette, 
+    colorTheory,
+    setColorTheory,
     generatePalette, 
+    generatePaletteWithTheory,
     toggleLock, 
     addColor, 
     removeColor, 
@@ -148,9 +151,27 @@ function PaletteApp() {
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
           Palette Generator
         </h1>
-        <p className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">
-          Press spacebar to generate a new palette. Click a color to lock/unlock. Drag to reorder.
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mt-1 sm:mt-2 gap-2 sm:gap-4">
+          <p className="text-xs sm:text-sm text-gray-600">
+            Press spacebar to generate a new palette. Click a color to lock/unlock. Drag to reorder.
+          </p>
+          
+          <div className="flex items-center gap-2">
+            <label htmlFor="color-theory" className="text-xs sm:text-sm text-gray-700 whitespace-nowrap">Color Theory:</label>
+            <select 
+              id="color-theory"
+              value={colorTheory}
+              onChange={(e) => setColorTheory(e.target.value as ColorTheory)}
+              className="text-xs sm:text-sm border border-gray-300 rounded-lg px-2 py-1 sm:py-1.5 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              {colorTheoryOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </header>
       
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-3 sm:gap-4 mb-8">
