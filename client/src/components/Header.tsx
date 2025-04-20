@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "wouter";
+import { HelpCircle, Download, Save, Eye, Menu } from "lucide-react";
 
 interface HeaderProps {
   onHelp: () => void;
@@ -19,58 +21,63 @@ export default function Header({
 }: HeaderProps) {
   return (
     <>
-      <header className="bg-white shadow-sm px-4 py-2 flex justify-between items-center z-10">
-        <div className="flex items-center space-x-2">
-          <i className="fas fa-palette text-primary text-xl"></i>
-          <h1 className="text-xl font-bold text-gray-800">Palette Pro</h1>
-        </div>
+      <header className="bg-white shadow-sm px-4 py-3 flex justify-between items-center z-10">
+        <Link href="/">
+          <a className="flex items-center space-x-2">
+            <div className="flex items-center">
+              <div className="relative w-32 sm:w-36 h-8">
+                <img src="/logo.svg" alt="Coolors.in Logo" className="h-full" />
+              </div>
+            </div>
+          </a>
+        </Link>
         
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden md:flex items-center space-x-4">
           <button 
-            className="text-gray-600 hover:text-primary flex items-center space-x-1 group relative"
+            className="text-gray-600 hover:text-blue-600 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors group relative"
             onClick={onHelp}
             aria-label="Help"
           >
-            <i className="fas fa-question-circle"></i>
-            <span>Help</span>
-            <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+            <HelpCircle size={16} />
+            <span className="font-medium">Help</span>
+            <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg whitespace-nowrap">
               Get instructions
             </span>
           </button>
           
           <button 
-            className="text-gray-600 hover:text-primary flex items-center space-x-1 group relative"
+            className="text-gray-600 hover:text-blue-600 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors group relative"
             onClick={onExport}
             aria-label="Export palette"
           >
-            <i className="fas fa-download"></i>
-            <span>Export</span>
-            <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+            <Download size={16} />
+            <span className="font-medium">Export</span>
+            <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg whitespace-nowrap">
               Download your palette
             </span>
           </button>
           
           <button 
-            className="text-gray-600 hover:text-primary flex items-center space-x-1 group relative"
+            className="text-gray-600 hover:text-blue-600 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors group relative"
             onClick={onSave}
             aria-label="Save palette"
           >
-            <i className="fas fa-save"></i>
-            <span>Save</span>
-            <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+            <Save size={16} />
+            <span className="font-medium">Save</span>
+            <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg whitespace-nowrap">
               Save to local storage
             </span>
           </button>
           
           {onVisualize && (
             <button 
-              className="text-gray-600 hover:text-primary flex items-center space-x-1 group relative"
+              className="text-gray-600 hover:text-blue-600 flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors group relative"
               onClick={onVisualize}
               aria-label="Visualize palette"
             >
-              <i className="fas fa-eye"></i>
-              <span>Visualize</span>
-              <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">
+              <Eye size={16} />
+              <span className="font-medium">Visualize</span>
+              <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg whitespace-nowrap">
                 Preview in UI templates
               </span>
             </button>
@@ -79,11 +86,11 @@ export default function Header({
         
         <div className="md:hidden">
           <button 
-            className="text-gray-600 p-2"
+            className="text-gray-600 p-2 hover:bg-gray-100 rounded-full transition-colors"
             onClick={toggleMobileMenu}
             aria-label="Toggle mobile menu"
           >
-            <i className="fas fa-bars"></i>
+            <Menu size={20} />
           </button>
         </div>
       </header>
