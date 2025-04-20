@@ -6,4 +6,5 @@ export type Color = {
     b: number;
   };
   locked: boolean;
+  name?: string; // Optional color name property
 };

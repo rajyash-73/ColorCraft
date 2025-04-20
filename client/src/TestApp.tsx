@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, useContext, useRef, useEffect } from 'react';
 import { Color } from './types/Color';
-import { getRandomColor, hexToRgb, isLightColor, rgbToHex } from '@/lib/colorUtils';
+import { getRandomColor, hexToRgb, isLightColor, rgbToHex, getColorName } from '@/lib/colorUtils';
 import { LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
@@ -42,11 +42,13 @@ function PaletteProvider({ children }: { children: React.ReactNode }) {
         
         const hex = getRandomColor();
         const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+        const name = getColorName(hex);
         
         return {
           hex,
           rgb,
-          locked: false
+          locked: false,
+          name
         };
       })
     );
@@ -68,10 +70,11 @@ function PaletteProvider({ children }: { children: React.ReactNode }) {
     
     const hex = getRandomColor();
     const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+    const name = getColorName(hex);
     
     setPaletteState(prevPalette => [
       ...prevPalette,
-      { hex, rgb, locked: false }
+      { hex, rgb, locked: false, name }
     ]);
   }, [palette.length]);
   
