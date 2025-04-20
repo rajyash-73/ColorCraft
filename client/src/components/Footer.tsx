@@ -15,9 +15,9 @@ export default function Footer({ className }: FooterProps) {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div>
-            <h3 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Palette Pro
-            </h3>
+            <div className="w-28 h-7">
+              <img src="/logo.svg" alt="Coolors.in Logo" className="h-full" />
+            </div>
             <p className="mt-2 text-sm text-gray-600 max-w-md">
               Our color palette generator helps designers and developers create beautiful, harmonious color combinations with ease.
             </p>
@@ -32,7 +32,7 @@ export default function Footer({ className }: FooterProps) {
                 <Github size={18} />
               </a>
               <a 
-                href="mailto:support@palettepro.co"
+                href="mailto:support@coolors.in"
                 className="p-2 bg-white text-gray-700 hover:text-blue-600 rounded-full border border-gray-200 shadow-sm transition-colors"
                 aria-label="Email"
               >
@@ -113,7 +113,7 @@ export default function Footer({ className }: FooterProps) {
         
         <div className="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600">
           <div className="flex items-center">
-            © {currentYear} Palette Pro. All rights reserved.
+            © {currentYear} Coolors.in - All rights reserved.
           </div>
           <div className="mt-3 sm:mt-0 flex items-center">
             Made with <Heart size={14} className="mx-1 text-red-500" /> for designers everywhere

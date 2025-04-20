@@ -22,15 +22,13 @@ export default function Header({
   return (
     <>
       <header className="bg-white shadow-sm px-4 py-3 flex justify-between items-center z-10">
-        <Link href="/">
-          <a className="flex items-center space-x-2">
-            <div className="flex items-center">
-              <div className="relative w-32 sm:w-36 h-8">
-                <img src="/logo.svg" alt="Coolors.in Logo" className="h-full" />
-              </div>
+        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => window.location.href = '/'}>
+          <div className="flex items-center">
+            <div className="relative w-32 sm:w-36 h-8">
+              <img src="/logo.svg" alt="Coolors.in Logo" className="h-full" />
             </div>
-          </a>
-        </Link>
+          </div>
+        </div>
         
         <div className="hidden md:flex items-center space-x-4">
           <button 
@@ -97,38 +95,38 @@ export default function Header({
       
       {/* Mobile Menu */}
       <div 
-        className={`md:hidden bg-white shadow-md absolute top-12 right-0 w-48 z-20 rounded-bl-lg transform origin-top-right transition-transform duration-200 ${mobileMenuOpen ? 'scale-100' : 'scale-0'}`} 
+        className={`md:hidden bg-white shadow-lg absolute top-14 right-4 w-56 z-20 rounded-xl transform origin-top-right transition-all duration-200 ${mobileMenuOpen ? 'scale-100 opacity-100' : 'scale-90 opacity-0 pointer-events-none'}`} 
       >
-        <div className="py-2 px-4 flex flex-col space-y-3">
+        <div className="py-3 px-3 flex flex-col space-y-2">
           <button 
-            className="text-gray-600 hover:text-primary flex items-center space-x-2 py-1"
+            className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
             onClick={onHelp}
           >
-            <i className="fas fa-question-circle w-5"></i>
-            <span>Help</span>
+            <HelpCircle size={18} className="text-gray-500" />
+            <span className="font-medium">Help</span>
           </button>
           <button 
-            className="text-gray-600 hover:text-primary flex items-center space-x-2 py-1"
+            className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
             onClick={onExport}
           >
-            <i className="fas fa-download w-5"></i>
-            <span>Export</span>
+            <Download size={18} className="text-gray-500" />
+            <span className="font-medium">Export</span>
           </button>
           <button 
-            className="text-gray-600 hover:text-primary flex items-center space-x-2 py-1"
+            className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
             onClick={onSave}
           >
-            <i className="fas fa-save w-5"></i>
-            <span>Save</span>
+            <Save size={18} className="text-gray-500" />
+            <span className="font-medium">Save</span>
           </button>
           
           {onVisualize && (
             <button 
-              className="text-gray-600 hover:text-primary flex items-center space-x-2 py-1"
+              className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-3 py-2 px-3 rounded-lg transition-colors"
               onClick={onVisualize}
             >
-              <i className="fas fa-eye w-5"></i>
-              <span>Visualize</span>
+              <Eye size={18} className="text-gray-500" />
+              <span className="font-medium">Visualize</span>
             </button>
           )}
         </div>
