@@ -1,56 +1,44 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import { createServer } from 'vite';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..');
 
-// Simplified, performance-optimized request logging
-app.use((req, res, next) => {
-  if (req.path.startsWith("/api")) {
-    const start = Date.now();
-    
-    res.on("finish", () => {
-      const duration = Date.now() - start;
-      const logLine = `${req.method} ${req.path} ${res.statusCode} in ${duration}ms`;
-      log(logLine);
-    });
-  }
+async function startDevServer() {
+  console.log('Starting client-side development server...');
   
-  next();
+  const server = await createServer({
+    configFile: path.join(rootDir, 'client', 'vite.config.js'),
+    root: path.join(rootDir, 'client'),
+    server: {
+      port: 5000,
+      host: '0.0.0.0',
+      hmr: {
+        clientPort: 443
+      },
+      strictPort: true,
+      cors: true,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+      allowedHosts: [
+        'localhost',
+        '0.0.0.0',
+        '172.31.128.17',
+        'a7c2b0e9-c4bd-4912-9db6-d8e76a014543-00-1m0y5conrqvbj.riker.replit.dev',
+        '.replit.dev',
+        '.repl.co'
+      ]
+    }
+  });
+
+  await server.listen();
+  server.printUrls();
+}
+
+startDevServer().catch(err => {
+  console.error('Error starting dev server:', err);
+  process.exit(1);
 });
-
-(async () => {
-  const server = await registerRoutes(app);
-
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    // Don't rethrow the error, just log it
-    console.error(err);
-  });
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await setupVite(app, server);
-  } else {
-    serveStatic(app);
-  }
-
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
-})();
