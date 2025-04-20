@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
+import PrivacyPolicy from "@/pages/privacy-policy";
 import { useEffect } from "react";
 import { AuthProvider } from "./hooks/use-auth";
 import { PaletteProvider } from "./contexts/PaletteContext";
@@ -18,6 +19,7 @@ const PaletteRoutes = () => {
       <Route path="/" component={TestApp} />
       <Route path="/image-palette" component={ImagePalette} />
       <Route path="/visualize" component={PaletteVisualizer} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route component={NotFound} />
     </Switch>
   );
