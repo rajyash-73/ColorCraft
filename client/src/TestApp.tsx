@@ -5,6 +5,7 @@ import { LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sli
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
 import TrendingPalettes, { TRENDING_PALETTES } from '@/components/TrendingPalettes';
+import WelcomeModal from '@/components/modals/WelcomeModal';
 
 // Define context shape
 interface PaletteContextType {
@@ -389,6 +390,7 @@ export default function TestApp() {
   return (
     <PaletteProvider>
       <PaletteApp />
+      <WelcomeModal />
     </PaletteProvider>
   );
 }
