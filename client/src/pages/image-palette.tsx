@@ -1,20 +1,46 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { Link } from 'wouter';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { Link, useLocation } from 'wouter';
 import { Color } from '@/types/Color';
-import { Upload, Image as ImageIcon, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Upload, Image as ImageIcon, ArrowLeft, RefreshCw, X, Info } from 'lucide-react';
 import { usePalette } from '@/contexts/PaletteContext';
 import { hexToRgb, getColorName, rgbToHex } from '@/lib/colorUtils';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ImagePalette() {
   const { setPalette } = usePalette();
+  const { toast } = useToast();
+  const [, setLocation] = useLocation();
   
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [extractedPalette, setExtractedPalette] = useState<Color[]>([]);
   const [isExtracting, setIsExtracting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [showInstructions, setShowInstructions] = useState<boolean>(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  
+  // Show instructions popup when component loads
+  useEffect(() => {
+    // Check if this is the first visit to this page
+    const hasSeenInstructions = localStorage.getItem('hasSeenImagePaletteInstructions');
+    
+    if (!hasSeenInstructions) {
+      setShowInstructions(true);
+      localStorage.setItem('hasSeenImagePaletteInstructions', 'true');
+    } else {
+      // Show a toast notification anyway as a brief reminder
+      toast({
+        title: "Image to Palette Generator",
+        description: "Upload an image to extract a color palette from its dominant colors!",
+        action: (
+          <div className="flex items-center gap-2">
+            <Info size={16} />
+          </div>
+        )
+      });
+    }
+  }, [toast]);
   
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(null);
@@ -133,7 +159,16 @@ export default function ImagePalette() {
   const useExtractedPalette = () => {
     if (extractedPalette.length > 0) {
       setPalette(extractedPalette);
-      window.location.href = '/'; // Redirect to the main page
+      
+      // Show success toast
+      toast({
+        title: "Palette Applied!",
+        description: "The extracted colors have been applied to your palette",
+        variant: "default"
+      });
+      
+      // Use wouter navigation instead of window.location
+      setLocation('/');
     }
   };
   
@@ -167,11 +202,9 @@ export default function ImagePalette() {
           <h1 className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
             Image to Palette
           </h1>
-          <Link href="/">
-            <a className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
-              <ArrowLeft className="mr-1" size={20} />
-              Back to Generator
-            </a>
+          <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+            <ArrowLeft className="mr-1" size={20} />
+            Back to Generator
           </Link>
         </div>
         <p className="text-gray-600 mt-2">
@@ -272,6 +305,75 @@ export default function ImagePalette() {
           <canvas ref={canvasRef} className="hidden" />
         </div>
       </div>
+      
+      {/* Instructions Modal */}
+      {showInstructions && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+            <button 
+              onClick={() => setShowInstructions(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X size={20} />
+            </button>
+            
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">How to Use Image to Palette</h2>
+            
+            <div className="space-y-4 text-gray-600">
+              <div className="flex items-start gap-3">
+                <div className="bg-blue-100 p-2 rounded-full">
+                  <Upload size={18} className="text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-800">1. Upload an Image</h3>
+                  <p>Click the upload button and select any image from your device.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="bg-indigo-100 p-2 rounded-full">
+                  <ImageIcon size={18} className="text-indigo-600" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-800">2. Extract Colors</h3>
+                  <p>Click "Extract Colors" to analyze your image and find its dominant colors.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="bg-green-100 p-2 rounded-full">
+                  <div className="flex -space-x-1">
+                    <div className="w-4 h-4 rounded-full bg-red-500"></div>
+                    <div className="w-4 h-4 rounded-full bg-blue-500"></div>
+                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-800">3. Review Your Palette</h3>
+                  <p>The tool will extract up to 5 dominant colors from your image.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <div className="bg-emerald-100 p-2 rounded-full">
+                  <ArrowLeft size={18} className="text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="font-medium text-gray-800">4. Use Your Palette</h3>
+                  <p>Click "Use This Palette" to apply these colors to the main generator.</p>
+                </div>
+              </div>
+            </div>
+            
+            <button 
+              onClick={() => setShowInstructions(false)}
+              className="w-full mt-6 bg-gradient-to-r from-purple-600 to-blue-500 text-white py-2 rounded-lg font-medium"
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
