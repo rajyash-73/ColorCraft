@@ -247,23 +247,168 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
   
   const generatePalette = useCallback(() => {
     console.log("Generating new palette...");
-    setPaletteState(prevPalette => 
-      prevPalette.map(color => {
-        if (color.locked) return color;
-        
+    
+    // If using auto mode, just do random generation
+    if (colorTheory === 'auto') {
+      setPaletteState(prevPalette => 
+        prevPalette.map(color => {
+          if (color.locked) return color;
+          
+          const hex = getRandomColor();
+          const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+          const name = getColorName(hex);
+          
+          return {
+            hex,
+            rgb,
+            locked: false,
+            name
+          };
+        })
+      );
+      return;
+    }
+    
+    // If using color theory, find a base color
+    setPaletteState(prevPalette => {
+      // Create a copy of the palette
+      const newPalette = [...prevPalette];
+      
+      // Find the first unlocked color to use as base, or generate a new base color
+      const baseIndex = newPalette.findIndex(c => !c.locked);
+      if (baseIndex === -1) {
+        // All colors are locked, just return the palette as-is
+        return newPalette;
+      }
+      
+      // Generate a new base color if the existing one is not locked
+      if (!newPalette[baseIndex].locked) {
         const hex = getRandomColor();
         const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
         const name = getColorName(hex);
         
-        return {
+        newPalette[baseIndex] = {
           hex,
           rgb,
           locked: false,
           name
         };
-      })
-    );
-  }, []);
+      }
+      
+      // Get the base color
+      const baseColor = newPalette[baseIndex];
+      
+      // Generate colors based on color theory using the base color
+      for (let i = 0; i < newPalette.length; i++) {
+        if (newPalette[i].locked || i === baseIndex) continue;
+        
+        let newHex: string;
+        const baseHex = baseColor.hex;
+        
+        switch (colorTheory) {
+          case 'monochromatic':
+            // Vary lightness and saturation while keeping the same hue
+            if (i < baseIndex) {
+              // Darker variations
+              const darkenAmount = -0.15 * (baseIndex - i);
+              newHex = adjustLightness(baseHex, darkenAmount);
+            } else {
+              // Lighter variations
+              const lightenAmount = 0.15 * (i - baseIndex);
+              newHex = adjustLightness(baseHex, lightenAmount);
+            }
+            break;
+            
+          case 'analogous':
+            // Colors next to each other on the color wheel
+            const analogousShift = (i - baseIndex) * 0.08; // Small hue shift
+            newHex = hueShift(baseHex, analogousShift);
+            break;
+            
+          case 'complementary':
+            // Opposite colors
+            if (i === baseIndex + 1 || (baseIndex === newPalette.length - 1 && i === 0)) {
+              // Complementary color (opposite on color wheel)
+              newHex = hueShift(baseHex, 0.5);
+            } else {
+              // Variations of the base and complement
+              const isBaseVariation = i < baseIndex || i > baseIndex + 1;
+              const referenceColor = isBaseVariation ? baseHex : hueShift(baseHex, 0.5);
+              const variationIndex = isBaseVariation ? i : i - baseIndex - 1;
+              
+              // Adjust saturation and lightness for variations
+              newHex = adjustSaturation(
+                adjustLightness(referenceColor, variationIndex * 0.1),
+                1 - variationIndex * 0.1
+              );
+            }
+            break;
+            
+          case 'split-complementary':
+            // Base color + two adjacent to its complement
+            if (i === baseIndex + 1 || (baseIndex === newPalette.length - 1 && i === 0)) {
+              // First split complement
+              newHex = hueShift(baseHex, 0.5 - 0.05);
+            } else if (i === baseIndex + 2 || (baseIndex >= newPalette.length - 2 && i === baseIndex + 2 - newPalette.length)) {
+              // Second split complement
+              newHex = hueShift(baseHex, 0.5 + 0.05);
+            } else {
+              // Variations
+              const shift = (i - baseIndex) * 0.07;
+              newHex = hueShift(baseHex, shift);
+            }
+            break;
+            
+          case 'triadic':
+            // Three evenly spaced colors
+            const triadicShift = Math.floor((i - baseIndex) / Math.ceil(newPalette.length / 3)) * (1/3);
+            newHex = hueShift(baseHex, triadicShift);
+            break;
+            
+          case 'tetradic':
+            // Four evenly spaced colors
+            const tetradicShift = Math.floor((i - baseIndex) / Math.ceil(newPalette.length / 4)) * 0.25;
+            newHex = hueShift(baseHex, tetradicShift);
+            break;
+            
+          case 'neutral':
+            // Desaturated colors
+            // Create a slight hue shift and heavily desaturate
+            const slightShift = (i - baseIndex) * 0.02;
+            newHex = adjustSaturation(hueShift(baseHex, slightShift), 0.3);
+            break;
+            
+          default:
+            // Default to random colors
+            const hex = getRandomColor();
+            const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+            const name = getColorName(hex);
+            
+            newPalette[i] = {
+              hex,
+              rgb,
+              locked: false,
+              name
+            };
+            continue;
+        }
+        
+        // Convert the new color to RGB and get its name
+        const rgb = hexToRgb(newHex) || { r: 0, g: 0, b: 0 };
+        const name = getColorName(newHex);
+        
+        // Update the palette with the new color
+        newPalette[i] = {
+          hex: newHex,
+          rgb,
+          locked: false,
+          name
+        };
+      }
+      
+      return newPalette;
+    });
+  }, [colorTheory]);
   
   const toggleLock = useCallback((index: number) => {
     setPaletteState(prevPalette => 
@@ -279,15 +424,115 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     
-    const hex = getRandomColor();
-    const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
-    const name = getColorName(hex);
+    // In auto mode, just add a random color
+    if (colorTheory === 'auto') {
+      const hex = getRandomColor();
+      const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+      const name = getColorName(hex);
+      
+      setPaletteState(prevPalette => [
+        ...prevPalette,
+        { hex, rgb, locked: false, name }
+      ]);
+      return;
+    }
     
-    setPaletteState(prevPalette => [
-      ...prevPalette,
-      { hex, rgb, locked: false, name }
-    ]);
-  }, [palette.length]);
+    // In color theory mode, add a color that follows the pattern
+    setPaletteState(prevPalette => {
+      const newPalette = [...prevPalette];
+      
+      // Find a good base color (preferably the first unlocked color)
+      const baseIndex = newPalette.findIndex(c => !c.locked);
+      const baseColor = baseIndex !== -1 ? 
+        newPalette[baseIndex] : 
+        newPalette[0]; // Use first color if all are locked
+      
+      let newHex: string;
+      const baseHex = baseColor.hex;
+      const newIndex = newPalette.length;
+      
+      // Calculate position relative to the base color
+      const relativePosition = baseIndex !== -1 ? newIndex - baseIndex : newIndex;
+      
+      switch (colorTheory) {
+        case 'monochromatic':
+          // Add a lighter variation
+          const lightenAmount = 0.15 * relativePosition;
+          newHex = adjustLightness(baseHex, lightenAmount);
+          break;
+          
+        case 'analogous':
+          // Add a color with hue further along the wheel
+          const analogousShift = relativePosition * 0.08;
+          newHex = hueShift(baseHex, analogousShift);
+          break;
+          
+        case 'complementary':
+          // If we have odd number of colors, add a complement
+          // Otherwise add a variation
+          if (newPalette.length % 2 === 0) {
+            newHex = hueShift(baseHex, 0.5); // Complement
+          } else {
+            // Variation of either base or complement
+            const isBaseVariation = Math.random() > 0.5;
+            const referenceColor = isBaseVariation ? baseHex : hueShift(baseHex, 0.5);
+            
+            // Adjust saturation and lightness for variations
+            newHex = adjustSaturation(
+              adjustLightness(referenceColor, 0.1),
+              0.9
+            );
+          }
+          break;
+          
+        case 'split-complementary':
+          // Try to complete the split-complementary triad
+          if (newPalette.length % 3 === 0) {
+            newHex = hueShift(baseHex, 0.5 - 0.05); // First split complement
+          } else if (newPalette.length % 3 === 1) {
+            newHex = hueShift(baseHex, 0.5 + 0.05); // Second split complement
+          } else {
+            // Add a variation
+            const shift = relativePosition * 0.07;
+            newHex = hueShift(baseHex, shift);
+          }
+          break;
+          
+        case 'triadic':
+          // Add the next color in the triad
+          const triadicShift = Math.floor(relativePosition / Math.ceil((newPalette.length + 1) / 3)) * (1/3);
+          newHex = hueShift(baseHex, triadicShift);
+          break;
+          
+        case 'tetradic':
+          // Add the next color in the tetrad
+          const tetradicShift = Math.floor(relativePosition / Math.ceil((newPalette.length + 1) / 4)) * 0.25;
+          newHex = hueShift(baseHex, tetradicShift);
+          break;
+          
+        case 'neutral':
+          // Add another desaturated color
+          const slightShift = relativePosition * 0.02;
+          newHex = adjustSaturation(hueShift(baseHex, slightShift), 0.3);
+          break;
+          
+        default:
+          // Default to random colors
+          const hex = getRandomColor();
+          const rgb = hexToRgb(hex) || { r: 0, g: 0, b: 0 };
+          const name = getColorName(hex);
+          
+          return [...newPalette, { hex, rgb, locked: false, name }];
+      }
+      
+      // Convert the new color to RGB and get its name
+      const rgb = hexToRgb(newHex) || { r: 0, g: 0, b: 0 };
+      const name = getColorName(newHex);
+      
+      // Add the new color to the palette
+      return [...newPalette, { hex: newHex, rgb, locked: false, name }];
+    });
+  }, [palette, colorTheory]);
   
   const removeColor = useCallback((index: number) => {
     if (palette.length <= 2) {
