@@ -52,10 +52,13 @@ export default function FAQPage() {
             <h1 className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
               Frequently Asked Questions
             </h1>
-            <Link href="/" className="flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+            <div 
+              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
+              onClick={() => window.location.href = '/'}
+            >
               <ArrowLeft className="mr-1" size={20} />
               Back to Home
-            </Link>
+            </div>
           </div>
         </header>
 
