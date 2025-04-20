@@ -1,18 +1,51 @@
 import { ChevronLeft } from 'lucide-react';
 import { Link } from 'wouter';
 import Footer from '../components/Footer';
+import { Helmet } from 'react-helmet-async';
 
 export default function DesignersGuide() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex flex-col">
+      <Helmet>
+        <title>Designer's Guide to Color Theory | Coolors.in</title>
+        <meta name="description" content="Learn about color theory, harmonies, and how to create beautiful, effective color palettes for your design projects with our comprehensive designer's guide." />
+        <meta name="keywords" content="color theory, color harmonies, monochromatic, analogous, complementary, triadic, tetradic, designer guide" />
+        <link rel="canonical" href="https://coolors.in/designers-guide" />
+        {/* Dynamic structured data for the designer's guide page */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": "Choosing the Right Color Palette: A Designer's Guide",
+            "description": "Learn about color theory, harmonies, and how to create beautiful, effective color palettes for your design projects.",
+            "author": {
+              "@type": "Organization",
+              "name": "Coolors.in"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "Coolors.in",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://coolors.in/logo.svg"
+              }
+            },
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": "https://coolors.in/designers-guide"
+            }
+          })}
+        </script>
+      </Helmet>
       <header className="border-b border-gray-200 bg-white shadow-sm">
         <div className="container mx-auto px-4 py-3">
-          <Link href="/">
-            <a className="flex items-center text-blue-600 hover:text-blue-800 transition-colors">
-              <ChevronLeft className="mr-1 h-4 w-4" />
-              <span>Back to Home</span>
-            </a>
-          </Link>
+          <div 
+            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors cursor-pointer"
+            onClick={() => window.location.href = '/'}
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            <span>Back to Home</span>
+          </div>
         </div>
       </header>
 
@@ -149,11 +182,12 @@ export default function DesignersGuide() {
             <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-lg text-center my-8">
               <h3 className="text-xl font-bold mb-2">Start exploring colors like a pro!</h3>
               <p className="mb-4">Bring your design ideas to life with the perfect palette</p>
-              <Link href="/">
-                <a className="inline-block bg-white text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-blue-50 transition-colors">
-                  Try Our Color Generator
-                </a>
-              </Link>
+              <div
+                className="inline-block bg-white text-blue-600 px-6 py-2 rounded-lg font-medium hover:bg-blue-50 transition-colors cursor-pointer"
+                onClick={() => window.location.href = '/'}
+              >
+                Try Our Color Generator
+              </div>
             </div>
           </div>
         </div>

@@ -2,10 +2,50 @@ import React from 'react';
 import { Link } from 'wouter';
 import { ArrowLeft, Mail } from 'lucide-react';
 import Footer from '@/components/Footer';
+import { Helmet } from 'react-helmet-async';
 
 export default function FAQPage() {
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
+      <Helmet>
+        <title>Frequently Asked Questions | Coolors.in</title>
+        <meta name="description" content="Find answers to common questions about Coolors.in color palette generator. Learn how to use our tool effectively and get the most out of your design process." />
+        <meta name="keywords" content="FAQ, color palette generator, coolors help, design tools FAQ" />
+        <link rel="canonical" href="https://coolors.in/faq" />
+        {/* Dynamic structured data for the FAQ page */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What is Coolors.in?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Coolors.in is a free online color palette generator that helps you create aesthetic color combinations for your design projects."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need to create an account?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No, you can use the tool right away without any sign-up or login."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I use the palettes for commercial use?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, all palettes are free to use for personal or commercial projects."
+                }
+              }
+            ]
+          })}
+        </script>
+      </Helmet>
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md p-6 md:p-8 mb-6 flex-grow">
         <header className="mb-8">
           <div className="flex items-center justify-between mb-6">
