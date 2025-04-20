@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useContext, useRef, useEffect } from 'react';
 import { Color } from './types/Color';
 import { getRandomColor, hexToRgb, isLightColor, rgbToHex, getColorName } from '@/lib/colorUtils';
-import { LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders } from 'lucide-react';
+import { LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, GripVertical } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
 import TrendingPalettes, { TRENDING_PALETTES } from '@/components/TrendingPalettes';
@@ -17,6 +17,7 @@ interface PaletteContextType {
   resetPalette: () => void;
   updateColor: (index: number, color: Color) => void;
   setPalette: (colors: Color[]) => void;
+  reorderColors: (sourceIndex: number, targetIndex: number) => void;
 }
 
 // Create the context
@@ -103,6 +104,17 @@ function PaletteProvider({ children }: { children: React.ReactNode }) {
     setPaletteState(colors);
   }, []);
   
+  const reorderColors = useCallback((sourceIndex: number, targetIndex: number) => {
+    if (sourceIndex === targetIndex) return;
+    
+    setPaletteState(prevPalette => {
+      const newPalette = [...prevPalette];
+      const [movedColor] = newPalette.splice(sourceIndex, 1);
+      newPalette.splice(targetIndex, 0, movedColor);
+      return newPalette;
+    });
+  }, []);
+  
   const value = useMemo(() => ({
     palette,
     generatePalette,
@@ -111,8 +123,9 @@ function PaletteProvider({ children }: { children: React.ReactNode }) {
     removeColor,
     resetPalette,
     updateColor,
-    setPalette
-  }), [palette, generatePalette, toggleLock, addColor, removeColor, resetPalette, updateColor, setPalette]);
+    setPalette,
+    reorderColors
+  }), [palette, generatePalette, toggleLock, addColor, removeColor, resetPalette, updateColor, setPalette, reorderColors]);
   
   return (
     <PaletteContext.Provider value={value}>
@@ -157,13 +170,15 @@ function PaletteApp() {
     removeColor, 
     resetPalette,
     updateColor,
-    setPalette: setPaletteColors 
+    setPalette: setPaletteColors,
+    reorderColors
   } = usePalette();
   
   const [toast, setToast] = useState<string | null>(null);
   const [showInfoTooltip, setShowInfoTooltip] = useState<number | null>(null);
   const [showAdjustModal, setShowAdjustModal] = useState<boolean>(false);
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const paletteRef = useRef<HTMLDivElement>(null);
   
   // Handle spacebar for generating new palette
@@ -237,6 +252,29 @@ function PaletteApp() {
     setToast("Trending palette applied!");
   };
   
+  // Drag and drop handlers
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+  
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+  };
+  
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === targetIndex) return;
+    
+    reorderColors(draggedIndex, targetIndex);
+    setDraggedIndex(null);
+    setToast("Color order updated");
+  };
+  
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+  
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
       <header className="mb-8">
@@ -244,7 +282,7 @@ function PaletteApp() {
           Palette Generator
         </h1>
         <p className="text-gray-600 mt-2">
-          Press spacebar to generate a new palette. Click on a color to lock/unlock it.
+          Press spacebar to generate a new palette. Click on a color to lock/unlock it. Use the grip handle to drag and reorder colors.
         </p>
       </header>
       
@@ -301,10 +339,23 @@ function PaletteApp() {
             return (
               <div 
                 key={index}
-                className="flex-1 relative transition-all group"
+                className={`flex-1 relative transition-all group ${draggedIndex === index ? 'opacity-50' : ''}`}
                 style={{ backgroundColor: color.hex }}
+                draggable={true}
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDrop={(e) => handleDrop(e, index)}
+                onDragEnd={handleDragEnd}
               >
                 <div className={`absolute inset-0 flex flex-col items-center justify-center p-4 ${textColor}`}>
+                  <div className="absolute top-3 left-3">
+                    <div 
+                      className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all cursor-move"
+                      title="Drag to reorder"
+                    >
+                      <GripVertical size={18} />
+                    </div>
+                  </div>
                   <div className="absolute top-3 right-3 flex space-x-2">
                     <button 
                       className="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all"
@@ -377,7 +428,7 @@ function PaletteApp() {
       <TrendingPalettes onSelectPalette={handleTrendingPaletteSelect} />
       
       <div className="mt-8 text-center text-gray-600 text-sm">
-        <p>Press spacebar to generate a new palette | Click on the lock icon to keep a color</p>
+        <p>Press spacebar to generate a new palette | Click on the lock icon to keep a color | Drag and drop to reorder</p>
       </div>
       
       {/* Modals */}
