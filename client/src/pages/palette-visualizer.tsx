@@ -490,7 +490,7 @@ function AnalyticsTemplate({ palette, getTextColor }: { palette: Color[], getTex
 }
 
 // Chat Template
-function ChatTemplate({ palette }: { palette: Color[] }) {
+function ChatTemplate({ palette, getTextColor }: { palette: Color[], getTextColor: (color: string) => string }) {
   return (
     <div className="h-[500px] flex" style={{ backgroundColor: palette[4]?.hex || '#f8fafc', color: getTextColor(palette[4]?.hex || '#f8fafc') }}>
       {/* Sidebar */}
@@ -624,7 +624,7 @@ function ChatTemplate({ palette }: { palette: Color[] }) {
 }
 
 // Calendar Template
-function CalendarTemplate({ palette }: { palette: Color[] }) {
+function CalendarTemplate({ palette, getTextColor }: { palette: Color[], getTextColor: (color: string) => string }) {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   
   // Generate calendar grid
@@ -636,8 +636,9 @@ function CalendarTemplate({ palette }: { palette: Color[] }) {
         className="p-4 flex justify-between items-center"
         style={{ 
           backgroundColor: palette[0]?.hex || '#1e293b',
-          color: getTextColor(palette[0]?.hex || '#1e293b')
-        }}
+          color: getTextColor(palette[0]?.hex || '#1e293b'),
+          '--ring-color': palette[2]?.hex || '#3b82f6'
+        } as React.CSSProperties}
       >
         <div className="font-bold text-xl">April 2025</div>
         <div className="flex gap-2">
@@ -669,12 +670,12 @@ function CalendarTemplate({ palette }: { palette: Color[] }) {
           {calendarDays.map(day => (
             <div 
               key={day} 
-              className={`aspect-square p-1 rounded-md ${day === 15 ? 'ring-2' : ''}`}
+              className={`aspect-square p-1 rounded-md ${day === 15 ? 'ring-2 ring-opacity-100 ring-color' : ''}`}
               style={{ 
                 backgroundColor: palette[3]?.hex || '#ffffff',
                 color: getTextColor(palette[3]?.hex || '#ffffff'),
-                ringColor: palette[2]?.hex || '#3b82f6'
-              }}
+                '--ring-color': palette[2]?.hex || '#3b82f6'
+              } as React.CSSProperties}
             >
               <div className="h-full flex flex-col">
                 <div className="text-sm font-medium">{day}</div>
