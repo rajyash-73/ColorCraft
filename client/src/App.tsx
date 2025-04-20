@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import { AuthProvider } from "./hooks/use-auth";
 import { PaletteProvider } from "./contexts/PaletteContext";
 import TestApp from "./TestApp";
+import { HelmetProvider } from 'react-helmet-async';
 
 // Components that use the PaletteContext
 const PaletteRoutes = () => {
