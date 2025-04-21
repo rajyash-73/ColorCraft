@@ -181,7 +181,7 @@ export default function Home() {
         {palette.map((color, index) => (
           <div 
             key={index}
-            className={`relative mb-5 ${draggedIndex === index ? 'opacity-60 border-2 border-dashed border-gray-400' : ''}`}
+            className={`relative mb-10 ${draggedIndex === index ? 'opacity-60 border-2 border-dashed border-gray-400' : ''}`}
             draggable={true}
             onDragStart={() => handleDragStart(index)}
             onDragOver={(e) => handleDragOver(e, index)}
@@ -191,14 +191,24 @@ export default function Home() {
             onTouchMove={handleTouchMove}
             onTouchEnd={(e) => handleTouchEnd(e, index)}
           >
-            <div className="absolute top-2 left-2 z-10 p-1.5 rounded-full bg-black bg-opacity-20 touch-manipulation cursor-grab active:cursor-grabbing">
-              <i className="fas fa-grip-lines text-xs text-white"></i>
+            {/* Clear separation between palettes */}
+            <div className="w-full flex flex-col">
+              <div className="bg-gray-100 dark:bg-gray-800 py-1 px-2 rounded-t-md text-xs opacity-80 text-center shadow-sm">
+                Color {index+1} 
+                <span className="ml-2 inline-flex items-center text-gray-500">
+                  <i className="fas fa-grip-lines text-xs mr-1"></i>
+                  drag to reorder
+                </span>
+              </div>
+              <div className="absolute top-10 left-2 z-10 p-2 rounded-full bg-black bg-opacity-30 touch-manipulation cursor-grab active:cursor-grabbing">
+                <i className="fas fa-grip-lines text-xs text-white"></i>
+              </div>
+              <ColorCard 
+                color={color}
+                index={index}
+                onAdjustColor={() => handleAdjustColor(index)}
+              />
             </div>
-            <ColorCard 
-              color={color}
-              index={index}
-              onAdjustColor={() => handleAdjustColor(index)}
-            />
           </div>
         ))}
       </div>
