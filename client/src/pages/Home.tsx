@@ -181,7 +181,7 @@ export default function Home() {
         {palette.map((color, index) => (
           <div 
             key={index}
-            className={`relative ${draggedIndex === index ? 'opacity-60 border-2 border-dashed border-gray-400' : ''}`}
+            className={`relative mb-3 ${draggedIndex === index ? 'opacity-60 border-2 border-dashed border-gray-400' : ''}`}
             draggable={true}
             onDragStart={() => handleDragStart(index)}
             onDragOver={(e) => handleDragOver(e, index)}
