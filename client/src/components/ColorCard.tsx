@@ -120,12 +120,12 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
       >
         {/* Mobile Display */}
         <div className="block md:hidden w-full">
-          <div className="flex flex-row justify-center items-center">
-            <span className="text-[10px] xs:text-xs sm:text-sm font-bold whitespace-nowrap mr-1">
+          <div className="flex flex-col justify-center items-center">
+            <span className="text-[11px] xs:text-xs sm:text-sm font-bold mb-0.5">
               {color.hex}
             </span>
-            <span className="text-[8px] xs:text-[10px] sm:text-xs opacity-80 whitespace-nowrap">
-              {color.name ? color.name : `(${color.rgb.r},${color.rgb.g},${color.rgb.b})`}
+            <span className="text-[9px] xs:text-[10px] sm:text-xs opacity-80">
+              {color.name && color.name.length < 15 ? color.name : ''}
             </span>
           </div>
         </div>
@@ -149,9 +149,17 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
           )}
         </div>
         
-        <div className="mt-2 md:mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className={`${isLightColor(color.hex) ? 'bg-black bg-opacity-10' : 'bg-white bg-opacity-20'} rounded-full px-2 py-0.5 md:px-3 md:py-1 text-[10px] xs:text-xs md:text-sm`}>
+        {/* Desktop "Click to copy" tooltip */}
+        <div className="hidden md:block mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className={`${isLightColor(color.hex) ? 'bg-black bg-opacity-10' : 'bg-white bg-opacity-20'} rounded-full px-3 py-1 text-sm`}>
             Click to copy
+          </div>
+        </div>
+        
+        {/* Mobile simplified indicator */}
+        <div className="md:hidden mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className={`${isLightColor(color.hex) ? 'bg-black bg-opacity-10' : 'bg-white bg-opacity-20'} rounded-full p-1 text-[8px]`}>
+            <i className="fas fa-copy"></i>
           </div>
         </div>
       </div>
