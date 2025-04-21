@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import themePlugin from '@replit/vite-plugin-shadcn-theme-json';
 import path from 'path';
+import tailwindcss from 'tailwindcss';
+import autoprefixer from 'autoprefixer';
 
 // This is a specialized Vite config for Vercel deployment
 export default defineConfig({
@@ -29,10 +31,10 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        require('tailwindcss')({
-          config: path.resolve(__dirname, 'tailwind.config.vercel.js'),
+        tailwindcss({
+          config: path.resolve(__dirname, 'tailwind.config.vercel.mjs'),
         }),
-        require('autoprefixer'),
+        autoprefixer(),
       ],
     },
   },
