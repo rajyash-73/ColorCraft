@@ -17,8 +17,9 @@ export default function Home() {
   const [showAdjustModal, setShowAdjustModal] = useState(false);
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   
-  const { palette, generatePalette, addColor, resetPalette, updateColor } = usePalette();
+  const { palette, generatePalette, addColor, resetPalette, updateColor, reorderColors } = usePalette();
   const { toast } = useToast();
   
   console.log('Home component rendered with palette:', palette);
@@ -94,6 +95,55 @@ export default function Home() {
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
+  
+  // Drag and drop handlers for mobile and desktop
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+  
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  };
+  
+  const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    if (draggedIndex !== null && draggedIndex !== targetIndex) {
+      reorderColors(draggedIndex, targetIndex);
+      
+      toast({
+        title: "Colors reordered",
+        description: "Palette order has been updated",
+        duration: 2000,
+      });
+    }
+  };
+  
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+  
+  // Touch events for mobile drag and drop
+  const handleTouchStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+  
+  const handleTouchMove = (e: React.TouchEvent) => {
+    // Preview of movement handled by CSS
+  };
+  
+  const handleTouchEnd = (e: React.TouchEvent, targetIndex: number) => {
+    if (draggedIndex !== null && draggedIndex !== targetIndex) {
+      reorderColors(draggedIndex, targetIndex);
+      
+      toast({
+        title: "Colors reordered",
+        description: "Palette order has been updated",
+        duration: 2000,
+      });
+    }
+    setDraggedIndex(null);
+  };
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-gray-50">
@@ -126,27 +176,54 @@ export default function Home() {
       
       <KeyboardShortcutsBar />
       
-      {/* Mobile View: Stack colors vertically */}
+      {/* Mobile View: Stack colors vertically with drag support */}
       <div className="flex-1 flex flex-col overflow-auto md:hidden" id="mobilePaletteContainer">
         {palette.map((color, index) => (
-          <ColorCard 
+          <div 
             key={index}
-            color={color}
-            index={index}
-            onAdjustColor={() => handleAdjustColor(index)}
-          />
+            className={`relative ${draggedIndex === index ? 'opacity-60 border-2 border-dashed border-gray-400' : ''}`}
+            draggable={true}
+            onDragStart={() => handleDragStart(index)}
+            onDragOver={(e) => handleDragOver(e, index)}
+            onDrop={(e) => handleDrop(e, index)}
+            onDragEnd={handleDragEnd}
+            onTouchStart={() => handleTouchStart(index)}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={(e) => handleTouchEnd(e, index)}
+          >
+            <div className="absolute top-2 left-2 z-10 p-1.5 rounded-full bg-black bg-opacity-20 touch-manipulation cursor-grab active:cursor-grabbing">
+              <i className="fas fa-grip-lines text-xs text-white"></i>
+            </div>
+            <ColorCard 
+              color={color}
+              index={index}
+              onAdjustColor={() => handleAdjustColor(index)}
+            />
+          </div>
         ))}
       </div>
       
-      {/* Desktop View: Colors side by side */}
+      {/* Desktop View: Colors side by side with drag support */}
       <div className="hidden md:flex flex-1 flex-row overflow-hidden" id="desktopPaletteContainer">
         {palette.map((color, index) => (
-          <ColorCard 
+          <div 
             key={index}
-            color={color}
-            index={index}
-            onAdjustColor={() => handleAdjustColor(index)}
-          />
+            className={`relative flex-1 ${draggedIndex === index ? 'opacity-60 border-2 border-dashed border-gray-400' : ''}`}
+            draggable={true}
+            onDragStart={() => handleDragStart(index)}
+            onDragOver={(e) => handleDragOver(e, index)}
+            onDrop={(e) => handleDrop(e, index)}
+            onDragEnd={handleDragEnd}
+          >
+            <div className="absolute top-3 left-3 z-20 p-2 rounded-full bg-black bg-opacity-20 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity">
+              <i className="fas fa-grip-lines text-white"></i>
+            </div>
+            <ColorCard 
+              color={color}
+              index={index}
+              onAdjustColor={() => handleAdjustColor(index)}
+            />
+          </div>
         ))}
         
         <div className="flex items-center justify-center w-16 bg-gray-100 border-l border-gray-300 hover:bg-gray-200 cursor-pointer transition-colors"
