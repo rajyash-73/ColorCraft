@@ -78,7 +78,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
   
   return (
     <div 
-      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[100px] xs:min-h-[120px] sm:min-h-[150px] md:min-h-0 w-full h-full"
+      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[120px] xs:min-h-[140px] sm:min-h-[160px] md:min-h-0 w-full h-full border-b border-white/10"
       style={{ backgroundColor: color.hex }}
       data-color-index={index}
     >
@@ -115,11 +115,11 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
       
       {/* Color Code Display - Center */}
       <div 
-        className={`flex-1 flex flex-col items-center justify-center ${textColor} py-3 xs:py-4 sm:py-4 px-1 xs:px-2 md:p-4 group-hover:scale-105 md:group-hover:scale-110 transition-transform`}
+        className={`flex-1 flex flex-col items-center justify-center ${textColor} py-6 xs:py-8 sm:py-8 px-1 xs:px-2 md:p-4 group-hover:scale-105 md:group-hover:scale-110 transition-transform`}
         onClick={handleCopyColorCode}
       >
         {/* Mobile Display */}
-        <div className="block md:hidden w-full">
+        <div className="block md:hidden w-full bg-black/5 dark:bg-white/5 py-2 rounded">
           <div className="flex flex-row justify-center items-center space-x-1">
             <span className="text-[10px] xs:text-xs sm:text-sm font-bold whitespace-nowrap">
               {color.hex}
