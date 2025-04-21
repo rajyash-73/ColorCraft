@@ -224,6 +224,9 @@ export default function Home() {
             onDragOver={(e) => handleDragOver(e, index)}
             onDrop={(e) => handleDrop(e, index)}
             onDragEnd={handleDragEnd}
+            onTouchStart={() => handleTouchStart(index)}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={(e) => handleTouchEnd(e, index)}
           >
             <div className="absolute top-3 left-3 z-20 p-2 rounded-full bg-black bg-opacity-20 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity">
               <i className="fas fa-grip-lines text-white"></i>
