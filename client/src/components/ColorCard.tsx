@@ -78,7 +78,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
   
   return (
     <div 
-      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[120px] xs:min-h-[140px] sm:min-h-[160px] md:min-h-0 w-full h-full border-b border-white/10"
+      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[140px] xs:min-h-[160px] sm:min-h-[180px] md:min-h-0 w-full h-full border-b border-white/10"
       style={{ backgroundColor: color.hex }}
       data-color-index={index}
     >
@@ -115,22 +115,22 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
       
       {/* Color Code Display - Center */}
       <div 
-        className={`flex-1 flex flex-col items-center justify-center ${textColor} py-6 xs:py-8 sm:py-8 px-1 xs:px-2 md:p-4 group-hover:scale-105 md:group-hover:scale-110 transition-transform`}
+        className={`flex-1 flex flex-col items-center justify-center ${textColor} py-10 xs:py-12 sm:py-14 px-1 xs:px-2 md:p-4 group-hover:scale-105 md:group-hover:scale-110 transition-transform`}
         onClick={handleCopyColorCode}
       >
         {/* Mobile Display */}
         <div className="block md:hidden w-full flex flex-col items-center justify-center">
           {/* Color info on a dark/light background */}
-          <div className="flex justify-between items-center w-[85%] max-w-[220px] mb-4 bg-black/15 dark:bg-white/15 py-2 px-3 rounded-md">
+          <div className="flex justify-between items-center w-[90%] max-w-[250px] mb-4 bg-black/15 dark:bg-white/15 py-3 px-4 rounded-md">
             {/* Left - Hex code and color name */}
             <div className="flex items-center space-x-1">
-              <span className="text-[10px] xs:text-xs sm:text-sm font-bold whitespace-nowrap">
+              <span className="text-xs xs:text-sm sm:text-base font-bold whitespace-nowrap">
                 {color.hex}
               </span>
               {color.name && color.name.length < 15 && (
                 <>
-                  <span className="opacity-80 text-[8px] xs:text-[9px] mx-0.5">•</span>
-                  <span className="text-[9px] xs:text-[10px] sm:text-xs opacity-90 whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] xs:max-w-[100px] inline-block">
+                  <span className="opacity-80 text-[9px] xs:text-[10px] mx-0.5">•</span>
+                  <span className="text-[10px] xs:text-xs sm:text-sm opacity-90 whitespace-nowrap overflow-hidden text-ellipsis max-w-[90px] xs:max-w-[120px] inline-block">
                     {color.name}
                   </span>
                 </>
@@ -139,7 +139,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
             
             {/* Right - Copy button */}
             <button 
-              className={`${isLightColor(color.hex) ? 'bg-black/20' : 'bg-white/20'} rounded ml-2 py-1 px-2 text-[9px] xs:text-[10px]`}
+              className={`${isLightColor(color.hex) ? 'bg-black/20' : 'bg-white/20'} rounded-md ml-3 py-1.5 px-3 text-[10px] xs:text-xs font-medium hover:${isLightColor(color.hex) ? 'bg-black/30' : 'bg-white/30'} transition-colors`}
               onClick={(e) => {
                 e.stopPropagation();
                 handleCopyColorCode();
