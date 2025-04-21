@@ -95,7 +95,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
           </button>
           
           <button 
-            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
+            className={`${textColor} bg-black/30 dark:bg-white/30 rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-90`}
             onClick={(e) => {
               e.stopPropagation();
               handleCopyColorCode();
@@ -133,24 +133,21 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
         onClick={handleCopyColorCode}
       >
         {/* Mobile Display */}
-        <div className="block md:hidden w-full flex flex-col items-center justify-center">
-          {/* Color info on a dark/light background */}
-          <div className="flex justify-between items-center w-[90%] max-w-[250px] mb-4 bg-black/15 dark:bg-white/15 py-3 px-4 rounded-md">
-            {/* Left - Hex code and color name */}
-            <div className="flex items-center space-x-1">
-              <span className="text-xs xs:text-sm sm:text-base font-bold whitespace-nowrap">
+        <div className="block md:hidden w-full">
+          <div className="text-center">
+            <span className="inline-block bg-black/20 dark:bg-white/20 py-2 px-3 rounded-md">
+              <span className="text-xs xs:text-sm sm:text-base font-bold mr-1">
                 {color.hex}
               </span>
               {color.name && color.name.length < 15 && (
                 <>
                   <span className="opacity-80 text-[9px] xs:text-[10px] mx-0.5">•</span>
-                  <span className="text-[10px] xs:text-xs sm:text-sm opacity-90 whitespace-nowrap overflow-hidden text-ellipsis max-w-[90px] xs:max-w-[120px] inline-block">
+                  <span className="text-[10px] xs:text-xs sm:text-sm opacity-90">
                     {color.name}
                   </span>
                 </>
               )}
-            </div>
-            {/* No need for separate copy button as we have copy icon now */}
+            </span>
           </div>
         </div>
         
