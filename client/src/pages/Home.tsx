@@ -200,8 +200,8 @@ export default function Home() {
                   drag to reorder
                 </span>
               </div>
-              <div className="absolute top-10 left-2 z-10 p-2 rounded-full bg-black bg-opacity-30 touch-manipulation cursor-grab active:cursor-grabbing">
-                <i className="fas fa-grip-lines text-xs text-white"></i>
+              <div className="absolute top-10 left-2 z-10 p-3 rounded-full bg-black bg-opacity-50 touch-manipulation cursor-grab active:cursor-grabbing">
+                <i className="fas fa-grip-lines text-sm text-white"></i>
               </div>
               <ColorCard 
                 color={color}
@@ -228,7 +228,7 @@ export default function Home() {
             onTouchMove={handleTouchMove}
             onTouchEnd={(e) => handleTouchEnd(e, index)}
           >
-            <div className="absolute top-3 left-3 z-20 p-2 rounded-full bg-black bg-opacity-20 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute top-3 left-3 z-20 p-3 rounded-full bg-black bg-opacity-40 cursor-grab active:cursor-grabbing transition-opacity opacity-70 hover:opacity-100">
               <i className="fas fa-grip-lines text-white"></i>
             </div>
             <ColorCard 
