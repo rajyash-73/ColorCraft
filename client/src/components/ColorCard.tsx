@@ -78,19 +78,19 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
   
   return (
     <div 
-      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[100px] xs:min-h-[120px] sm:min-h-[150px] md:min-h-0"
+      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[100px] xs:min-h-[120px] sm:min-h-[150px] md:min-h-0 w-full h-full"
       style={{ backgroundColor: color.hex }}
       data-color-index={index}
     >
       {/* Color Controls - Top */}
       <div className="absolute top-0 left-0 right-0 p-2 md:p-4 flex justify-between items-center">
         <button 
-          className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
+          className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0 ml-8 md:ml-0`}
           onClick={handleToggleLock}
           aria-label={color.locked ? "Unlock color" : "Lock color"}
           title={color.locked ? "Unlock color" : "Lock color"}
         >
-          <i className={`fas ${color.locked ? 'fa-lock' : 'fa-unlock'}`}></i>
+          <i className={`fas ${color.locked ? 'fa-lock' : 'fa-unlock'} text-xs md:text-base`}></i>
         </button>
         
         <div className="flex space-x-1 md:space-x-2">
@@ -100,7 +100,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
             aria-label="Adjust color"
             title="Adjust color"
           >
-            <i className="fas fa-sliders-h"></i>
+            <i className="fas fa-sliders-h text-xs md:text-base"></i>
           </button>
           <button 
             className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
@@ -108,7 +108,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
             aria-label="Remove color"
             title="Remove color"
           >
-            <i className="fas fa-times"></i>
+            <i className="fas fa-times text-xs md:text-base"></i>
           </button>
         </div>
       </div>
