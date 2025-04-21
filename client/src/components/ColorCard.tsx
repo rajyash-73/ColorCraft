@@ -86,7 +86,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
       <div className="absolute top-0 left-0 right-0 p-2 md:p-4 flex justify-between items-center">
         <div className="flex space-x-1">
           <button 
-            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
+            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-90`}
             onClick={handleToggleLock}
             aria-label={color.locked ? "Unlock color" : "Lock color"}
             title={color.locked ? "Unlock color" : "Lock color"}
@@ -109,7 +109,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
         
         <div className="flex space-x-1 md:space-x-2">
           <button 
-            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
+            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-90`}
             onClick={handleAdjustColor}
             aria-label="Adjust color"
             title="Adjust color"
@@ -117,7 +117,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
             <i className="fas fa-sliders-h text-xs md:text-base"></i>
           </button>
           <button 
-            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
+            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-90`}
             onClick={handleRemoveColor}
             aria-label="Remove color"
             title="Remove color"
@@ -132,22 +132,24 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
         className={`flex-1 flex flex-col items-center justify-center ${textColor} py-10 xs:py-12 sm:py-14 px-1 xs:px-2 md:p-4 group-hover:scale-105 md:group-hover:scale-110 transition-transform`}
         onClick={handleCopyColorCode}
       >
-        {/* Mobile Display */}
+        {/* Mobile Display - Simplified with no copy buttons */}
         <div className="block md:hidden w-full">
           <div className="text-center">
-            <span className="inline-block bg-black/20 dark:bg-white/20 py-2 px-3 rounded-md">
-              <span className="text-xs xs:text-sm sm:text-base font-bold mr-1">
-                {color.hex}
-              </span>
-              {color.name && color.name.length < 15 && (
-                <>
-                  <span className="opacity-80 text-[9px] xs:text-[10px] mx-0.5">•</span>
-                  <span className="text-[10px] xs:text-xs sm:text-sm opacity-90">
-                    {color.name}
-                  </span>
-                </>
-              )}
-            </span>
+            <div className="bg-black/20 dark:bg-white/20 py-2 px-3 mx-auto inline-block rounded-md">
+              <div className="flex items-center justify-center">
+                <span className="text-xs xs:text-sm sm:text-base font-bold mr-1">
+                  {color.hex}
+                </span>
+                {color.name && (
+                  <>
+                    <span className="opacity-80 text-[9px] xs:text-[10px] mx-0.5">•</span>
+                    <span className="text-[10px] xs:text-xs sm:text-sm opacity-90 truncate max-w-[80px]">
+                      {color.name}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         </div>
         
