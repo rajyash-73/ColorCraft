@@ -119,19 +119,34 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
         onClick={handleCopyColorCode}
       >
         {/* Mobile Display */}
-        <div className="block md:hidden w-full bg-black/5 dark:bg-white/5 py-2 rounded">
-          <div className="flex flex-row justify-center items-center space-x-1">
-            <span className="text-[10px] xs:text-xs sm:text-sm font-bold whitespace-nowrap">
-              {color.hex}
-            </span>
-            {color.name && color.name.length < 15 && (
-              <>
-                <span className="opacity-60 text-[8px] xs:text-[9px]">•</span>
-                <span className="text-[9px] xs:text-[10px] sm:text-xs opacity-90 whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] xs:max-w-[100px] inline-block">
-                  {color.name}
-                </span>
-              </>
-            )}
+        <div className="block md:hidden w-full flex flex-col items-center justify-center">
+          {/* Color info on a dark/light background */}
+          <div className="flex justify-between items-center w-[85%] max-w-[220px] mb-4 bg-black/15 dark:bg-white/15 py-2 px-3 rounded-md">
+            {/* Left - Hex code and color name */}
+            <div className="flex items-center space-x-1">
+              <span className="text-[10px] xs:text-xs sm:text-sm font-bold whitespace-nowrap">
+                {color.hex}
+              </span>
+              {color.name && color.name.length < 15 && (
+                <>
+                  <span className="opacity-80 text-[8px] xs:text-[9px] mx-0.5">•</span>
+                  <span className="text-[9px] xs:text-[10px] sm:text-xs opacity-90 whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] xs:max-w-[100px] inline-block">
+                    {color.name}
+                  </span>
+                </>
+              )}
+            </div>
+            
+            {/* Right - Copy button */}
+            <button 
+              className={`${isLightColor(color.hex) ? 'bg-black/20' : 'bg-white/20'} rounded ml-2 py-1 px-2 text-[9px] xs:text-[10px]`}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCopyColorCode();
+              }}
+            >
+              Copy
+            </button>
           </div>
         </div>
         
@@ -161,12 +176,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
           </div>
         </div>
         
-        {/* Mobile simplified indicator */}
-        <div className="md:hidden mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className={`${isLightColor(color.hex) ? 'bg-black bg-opacity-10' : 'bg-white bg-opacity-20'} rounded-full p-1 text-[8px]`}>
-            <i className="fas fa-copy"></i>
-          </div>
-        </div>
+        {/* We don't need the mobile hover indicator anymore since we have a dedicated Copy button */}
       </div>
     </div>
   );
