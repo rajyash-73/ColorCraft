@@ -84,14 +84,28 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
     >
       {/* Color Controls - Top */}
       <div className="absolute top-0 left-0 right-0 p-2 md:p-4 flex justify-between items-center">
-        <button 
-          className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0 ml-8 md:ml-0`}
-          onClick={handleToggleLock}
-          aria-label={color.locked ? "Unlock color" : "Lock color"}
-          title={color.locked ? "Unlock color" : "Lock color"}
-        >
-          <i className={`fas ${color.locked ? 'fa-lock' : 'fa-unlock'} text-xs md:text-base`}></i>
-        </button>
+        <div className="flex space-x-1">
+          <button 
+            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
+            onClick={handleToggleLock}
+            aria-label={color.locked ? "Unlock color" : "Lock color"}
+            title={color.locked ? "Unlock color" : "Lock color"}
+          >
+            <i className={`fas ${color.locked ? 'fa-lock' : 'fa-unlock'} text-xs md:text-base`}></i>
+          </button>
+          
+          <button 
+            className={`${textColor} ${buttonBg} rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-70 md:group-hover:opacity-100 md:opacity-0`}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleCopyColorCode();
+            }}
+            aria-label="Copy color code"
+            title="Copy color code"
+          >
+            <i className="fas fa-copy text-xs md:text-base"></i>
+          </button>
+        </div>
         
         <div className="flex space-x-1 md:space-x-2">
           <button 
@@ -136,17 +150,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
                 </>
               )}
             </div>
-            
-            {/* Right - Copy button */}
-            <button 
-              className={`${isLightColor(color.hex) ? 'bg-black/20' : 'bg-white/20'} rounded-md ml-3 py-1.5 px-3 text-[10px] xs:text-xs font-medium hover:${isLightColor(color.hex) ? 'bg-black/30' : 'bg-white/30'} transition-colors`}
-              onClick={(e) => {
-                e.stopPropagation();
-                handleCopyColorCode();
-              }}
-            >
-              Copy
-            </button>
+            {/* No need for separate copy button as we have copy icon now */}
           </div>
         </div>
         
@@ -155,18 +159,14 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
           <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold tracking-wider mb-2 text-center">
             {color.hex}
           </h2>
-          {color.name ? (
-            <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 items-center">
+            {color.name && (
               <p className="text-base opacity-90 font-medium">{color.name}</p>
-              <p className="text-sm opacity-70">
-                RGB: {color.rgb.r}, {color.rgb.g}, {color.rgb.b}
-              </p>
-            </div>
-          ) : (
-            <p className="text-base opacity-80">
+            )}
+            <p className="text-sm opacity-70">
               RGB: {color.rgb.r}, {color.rgb.g}, {color.rgb.b}
             </p>
-          )}
+          </div>
         </div>
         
         {/* Desktop "Click to copy" tooltip */}
