@@ -1,5 +1,5 @@
 [build]
-  command = "cp client/src/main.vercel.tsx client/src/main.tsx && cp client/src/index.vercel.css client/src/index.css && cd client && vite build --config vite.config.vercel.js"
+  command = "cd client && node build-vercel.js"
   publish = "client/dist"
 
 [[redirects]]
