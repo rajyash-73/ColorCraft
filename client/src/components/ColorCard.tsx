@@ -78,7 +78,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
   
   return (
     <div 
-      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[140px] xs:min-h-[160px] sm:min-h-[180px] md:min-h-0 w-full h-full border-b border-white/10"
+      className="flex-1 relative flex flex-col justify-between transition-all cursor-pointer group min-h-[150px] xs:min-h-[170px] sm:min-h-[190px] md:min-h-0 w-full h-full border-2 border-white/20 rounded-md shadow-md"
       style={{ backgroundColor: color.hex }}
       data-color-index={index}
     >
