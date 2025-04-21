@@ -95,7 +95,7 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
           </button>
           
           <button 
-            className={`${textColor} bg-black/30 dark:bg-white/30 rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-90`}
+            className={`${textColor} bg-black/30 dark:bg-white/30 rounded-full p-1.5 md:p-2 transition-all transform hover:scale-110 opacity-90 ml-1 md:opacity-90`}
             onClick={(e) => {
               e.stopPropagation();
               handleCopyColorCode();
