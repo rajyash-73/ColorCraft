@@ -120,13 +120,18 @@ export default function ColorCard({ color, index, onAdjustColor }: ColorCardProp
       >
         {/* Mobile Display */}
         <div className="block md:hidden w-full">
-          <div className="flex flex-col justify-center items-center">
-            <span className="text-[11px] xs:text-xs sm:text-sm font-bold mb-0.5">
+          <div className="flex flex-row justify-center items-center space-x-1">
+            <span className="text-[10px] xs:text-xs sm:text-sm font-bold whitespace-nowrap">
               {color.hex}
             </span>
-            <span className="text-[9px] xs:text-[10px] sm:text-xs opacity-80">
-              {color.name && color.name.length < 15 ? color.name : ''}
-            </span>
+            {color.name && color.name.length < 15 && (
+              <>
+                <span className="opacity-60 text-[8px] xs:text-[9px]">•</span>
+                <span className="text-[9px] xs:text-[10px] sm:text-xs opacity-90 whitespace-nowrap overflow-hidden text-ellipsis max-w-[80px] xs:max-w-[100px] inline-block">
+                  {color.name}
+                </span>
+              </>
+            )}
           </div>
         </div>
         
