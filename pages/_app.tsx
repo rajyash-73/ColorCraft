@@ -1,14 +1,16 @@
+import React from 'react';
 import type { AppProps } from 'next/app';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '../client/src/lib/queryClient';
 import { PaletteProvider } from '../client/src/contexts/PaletteContext';
 import { AuthProvider } from '../client/src/hooks/use-auth';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '../client/src/components/ui/toaster';
 import Head from 'next/head';
 import '../styles/globals.css';
 
-// Import Google Analytics and Google AdSense scripts
+// Import Google Analytics and AdSense setup
 import Script from 'next/script';
+import { AdSenseSetup } from '../components/AdSense';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -40,13 +42,8 @@ function MyApp({ Component, pageProps }: AppProps) {
         `}
       </Script>
 
-      {/* Google AdSense - load after pageload */}
-      <Script
-        id="google-adsense"
-        strategy="lazyOnload"
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5617109574785382`}
-        crossOrigin="anonymous"
-      />
+      {/* Google AdSense setup component */}
+      <AdSenseSetup />
 
       <QueryClientProvider client={queryClient}>
         <AuthProvider>

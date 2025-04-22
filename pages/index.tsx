@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
 import { useToast } from '../client/src/hooks/use-toast';
 import Header from '../client/src/components/Header';
 import KeyboardShortcutsBar from '../client/src/components/KeyboardShortcutsBar';

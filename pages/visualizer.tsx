@@ -1,6 +1,6 @@
+import React, { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useState, useEffect } from 'react';
 import { usePalette } from '../client/src/contexts/PaletteContext';
 import Header from '../client/src/components/Header';
 import Footer from '../client/src/components/Footer';
