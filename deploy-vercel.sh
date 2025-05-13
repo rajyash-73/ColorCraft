@@ -17,7 +17,7 @@ npx tsc --noEmit
 
 # Create production build for testing locally
 echo "🏗️ Creating production build for testing..."
-cd client && node build-vercel.js
+cd client && npm run build
 cd ..
 
 # Check if the build was successful

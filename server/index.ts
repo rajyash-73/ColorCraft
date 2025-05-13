@@ -10,7 +10,7 @@ async function startDevServer() {
   console.log('Starting client-side development server...');
   
   const server = await createServer({
-    configFile: path.join(rootDir, 'client', 'vite.config.js'),
+    configFile: path.join(rootDir, 'client', 'vite.config.replit.js'),
     root: path.join(rootDir, 'client'),
     server: {
       port: 5000,
