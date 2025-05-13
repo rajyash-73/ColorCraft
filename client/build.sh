@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Simple build script for Vercel deployment
+echo "Starting Vercel build process..."
+echo "Current directory: $(pwd)"
+echo "Listing source directory:"
+ls -la ./src/
+
+# Copy Vercel-specific files
+echo "Copying Vercel-specific files..."
+if [ -f "./src/main.vercel.tsx" ]; then
+    cp ./src/main.vercel.tsx ./src/main.tsx
+    echo "main.vercel.tsx copied to main.tsx"
+else
+    echo "WARNING: ./src/main.vercel.tsx not found"
+    ls -la ./src/main*
+fi
+
+if [ -f "./src/index.vercel.css" ]; then
+    cp ./src/index.vercel.css ./src/index.css
+    echo "index.vercel.css copied to index.css"
+else
+    echo "WARNING: ./src/index.vercel.css not found"
+    ls -la ./src/index*
+fi
+
+# Check config file
+echo "Checking for config file..."
+if [ -f "./vite.config.vercel.mjs" ]; then
+    echo "Using vite.config.vercel.mjs"
+    CONFIG="vite.config.vercel.mjs"
+else
+    echo "vite.config.vercel.mjs not found, using default config"
+    CONFIG="vite.config.js"
+fi
+
+# Run Vite build with config
+echo "Running Vite build with config: $CONFIG"
+echo "Node version: $(node --version)"
+echo "NPM version: $(npm --version)"
+NODE_OPTIONS="--no-warnings" npx vite build --config $CONFIG
+
+if [ $? -eq 0 ]; then
+    echo "Build completed successfully!"
+    echo "Content of dist directory:"
+    ls -la ./dist/
+else
+    echo "Build failed with error code: $?"
+    exit 1
+fi
