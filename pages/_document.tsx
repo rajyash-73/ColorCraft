@@ -8,6 +8,21 @@ export default function Document() {
         {/* Any additional meta tags that should be present on all pages */}
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="theme-color" content="#3b82f6" />
+        <meta name="application-name" content="Coolors.in" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Coolors.in" />
+        <meta name="format-detection" content="telephone=no" />
+        
+        {/* Preconnect to critical resources */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+        
+        {/* Preload critical assets */}
+        <link rel="preload" href="/logo_circles.svg" as="image" type="image/svg+xml" />
         
         {/* Structured data for organization */}
         <script

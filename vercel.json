@@ -2,7 +2,7 @@
   "rewrites": [
     { "source": "/(.*)", "destination": "/" }
   ],
-  "buildCommand": "cd client && node build-vercel.js",
+  "buildCommand": "cd client && node --no-warnings build-vercel.cjs",
   "outputDirectory": "client/dist",
   "framework": "vite",
   "headers": [
