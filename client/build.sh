@@ -34,6 +34,13 @@ else
     CONFIG="vite.config.js"
 fi
 
+# Ensure terser is installed
+echo "Checking for terser..."
+if ! npm list terser --depth=0 > /dev/null 2>&1; then
+    echo "terser not found, installing..."
+    npm install --no-save terser
+fi
+
 # Run Vite build with config
 echo "Running Vite build with config: $CONFIG"
 echo "Node version: $(node --version)"

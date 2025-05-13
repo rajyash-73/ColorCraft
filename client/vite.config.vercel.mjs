@@ -22,7 +22,9 @@ export default defineConfig({
     assetsDir: 'assets',
     emptyOutDir: true,
     sourcemap: false,
-    minify: 'terser',
+    // Use esbuild as a fallback if terser is not available
+    minify: true,
+    // Add terser options that will be used if terser is available
     terserOptions: {
       compress: {
         drop_console: true,
