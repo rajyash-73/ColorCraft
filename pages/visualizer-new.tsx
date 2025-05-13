@@ -1,83 +1,129 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'wouter';
-import { ArrowLeft, Layout, Monitor, PieChart, MessageSquare, Calendar, ArrowRight, Check } from 'lucide-react';
-import { usePalette } from '@/contexts/PaletteContext';
-import { Color } from '@/types/Color';
-import { cn } from '@/lib/utils';
-import Footer from '@/components/Footer';
-import { isLightColor } from '@/lib/colorUtils';
-import { Helmet } from 'react-helmet-async';
-import html2canvas from 'html2canvas';
+import type { NextPage } from 'next';
+import Link from 'next/link';
+import Head from 'next/head';
+import { Layout, Monitor, PieChart, MessageSquare, Calendar, ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import { isLightColor } from '../client/src/lib/colorUtils';
+import { Color } from '../shared/schema';
+import CommonHead from '../components/CommonHead';
+import Footer from '../client/src/components/Footer';
 
 // Template types
 type TemplateType = 'dashboard' | 'landing' | 'analytics' | 'chat' | 'calendar';
 
-export default function PaletteVisualizer() {
-  const { palette } = usePalette();
+// Server-side props to pass initial palette data
+export async function getServerSideProps() {
+  // Default palette for initial render
+  const defaultPalette: Color[] = [
+    { hex: '#1e293b', rgb: { r: 30, g: 41, b: 59 }, locked: false },
+    { hex: '#334155', rgb: { r: 51, g: 65, b: 85 }, locked: false },
+    { hex: '#3b82f6', rgb: { r: 59, g: 130, b: 246 }, locked: false },
+    { hex: '#ffffff', rgb: { r: 255, g: 255, b: 255 }, locked: false },
+    { hex: '#f8fafc', rgb: { r: 248, g: 250, b: 252 }, locked: false }
+  ];
+  
+  return {
+    props: {
+      initialPalette: defaultPalette
+    }
+  };
+}
+
+const VisualizerPage: NextPage<{ initialPalette: Color[] }> = ({ initialPalette }) => {
+  const [palette, setPalette] = useState<Color[]>(initialPalette);
   const [activeTemplate, setActiveTemplate] = useState<TemplateType>('dashboard');
   const [showExportToast, setShowExportToast] = useState(false);
   const [colorIndicators, setColorIndicators] = useState(false);
-
-  // Helper to get a specific color from palette by index
-  const getColor = (index: number): string => {
-    if (palette.length <= index) {
-      return '#ffffff';
+  
+  // Check if we're in the browser to access localStorage
+  useEffect(() => {
+    try {
+      const savedPaletteJson = localStorage.getItem('currentPalette');
+      if (savedPaletteJson) {
+        const savedPalette = JSON.parse(savedPaletteJson);
+        if (Array.isArray(savedPalette) && savedPalette.length > 0) {
+          setPalette(savedPalette);
+        }
+      }
+    } catch (err) {
+      console.error('Error loading palette from localStorage:', err);
     }
-    return palette[index].hex;
-  };
+  }, []);
+
+  // Listen for palette updates from the generator page
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'currentPalette') {
+        try {
+          const updatedPalette = JSON.parse(e.newValue || '[]');
+          if (Array.isArray(updatedPalette) && updatedPalette.length > 0) {
+            setPalette(updatedPalette);
+          }
+        } catch (err) {
+          console.error('Error parsing palette from storage event:', err);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Helper to get text color based on background for contrast
   const getTextColor = (bgColor: string): string => {
     return isLightColor(bgColor) ? '#1f2937' : '#ffffff';
   };
 
-  // Export current template as PNG
-  const exportAsPNG = async () => {
-    const visualizerEl = document.getElementById('template-visualizer');
-    if (!visualizerEl) return;
-    
-    try {
-      const canvas = await html2canvas(visualizerEl, {
-        backgroundColor: null,
-        scale: 2 // Higher resolution
-      });
-      
-      const image = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.href = image;
-      link.download = `${activeTemplate}-template-${new Date().getTime()}.png`;
-      link.click();
-      
-      // Show success toast
-      setShowExportToast(true);
-      setTimeout(() => setShowExportToast(false), 3000);
-    } catch (err) {
-      console.error('Error exporting template:', err);
+  // Export current template as image
+  const exportAsImage = async () => {
+    if (typeof window !== 'undefined') {
+      try {
+        // Dynamically import html2canvas (client-side only)
+        const html2canvas = (await import('html2canvas')).default;
+        const visualizerEl = document.getElementById('template-visualizer');
+        
+        if (!visualizerEl) return;
+        
+        const canvas = await html2canvas(visualizerEl, {
+          backgroundColor: null,
+          scale: 2 // Higher resolution
+        });
+        
+        const image = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = image;
+        link.download = `${activeTemplate}-template-${new Date().getTime()}.png`;
+        link.click();
+        
+        // Show success toast
+        setShowExportToast(true);
+        setTimeout(() => setShowExportToast(false), 3000);
+      } catch (err) {
+        console.error('Error exporting template:', err);
+      }
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
-      <Helmet>
-        <title>Palette Visualizer | See Your Colors in Real UI Templates - Coolors.in</title>
-        <meta name="description" content="Visualize your color palette in real UI templates. See how your colors work together in dashboards, landing pages, and app interfaces." />
-        <meta name="keywords" content="palette visualizer, color combinations, UI templates, color schemes in action" />
-        <link rel="canonical" href="https://coolors.in/visualize" />
-        {/* Dynamic structured data for the visualizer page */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebPage",
-            "name": "Palette Visualizer | Coolors.in",
-            "url": "https://coolors.in/visualize",
-            "description": "Visualize your color palette in real UI templates with Coolors.in's Palette Visualizer",
-            "isPartOf": {
-              "@type": "WebApplication",
-              "name": "Coolors.in"
-            }
-          })}
-        </script>
-      </Helmet>
+      <CommonHead 
+        title="Palette Visualizer | See Your Colors in Real UI Templates - Coolors.in"
+        description="Visualize your color palette in real UI templates. See how your colors work together in dashboards, landing pages, and app interfaces."
+        keywords="palette visualizer, color combinations, UI templates, color schemes in action"
+        canonicalUrl="https://coolors.in/visualizer"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "name": "Palette Visualizer | Coolors.in",
+          "url": "https://coolors.in/visualizer",
+          "description": "Visualize your color palette in real UI templates with Coolors.in's Palette Visualizer",
+          "isPartOf": {
+            "@type": "WebApplication",
+            "name": "Coolors.in"
+          }
+        }}
+      />
+      
       <header className="mb-6">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
@@ -92,7 +138,7 @@ export default function PaletteVisualizer() {
           See how your color palette would look in different UI templates
         </p>
       </header>
-
+      
       {/* Top action bar */}
       <div className="bg-white rounded-lg shadow-md p-4 mb-4">
         <div className="flex flex-wrap justify-between items-center">
@@ -140,7 +186,7 @@ export default function PaletteVisualizer() {
               <label htmlFor="color-indicators" className="text-sm text-gray-600">Show color indicators</label>
             </div>
             <button 
-              onClick={exportAsPNG} 
+              onClick={exportAsImage} 
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-1"
             >
               <ArrowRight size={16} />
@@ -149,7 +195,7 @@ export default function PaletteVisualizer() {
           </div>
         </div>
       </div>
-
+      
       {/* Template visualization */}
       <div 
         id="template-visualizer" 
@@ -171,7 +217,7 @@ export default function PaletteVisualizer() {
           <CalendarTemplate palette={palette} getTextColor={getTextColor} showIndicators={colorIndicators} />
         )}
       </div>
-
+      
       {/* Color palette reference */}
       <div className="bg-white rounded-lg shadow p-4">
         <h3 className="text-lg font-medium mb-2">Your Palette</h3>
@@ -204,7 +250,7 @@ export default function PaletteVisualizer() {
       <Footer />
     </div>
   );
-}
+};
 
 // Template button component
 interface TemplateButtonProps {
@@ -218,12 +264,11 @@ function TemplateButton({ active, onClick, icon, label }: TemplateButtonProps) {
   return (
     <button
       onClick={onClick}
-      className={cn(
-        "px-4 py-2 rounded-md font-medium flex items-center gap-2 transition-colors",
+      className={`px-4 py-2 rounded-md font-medium flex items-center gap-2 transition-colors ${
         active 
           ? "bg-gradient-to-r from-purple-600 to-blue-500 text-white" 
           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-      )}
+      }`}
     >
       {icon}
       {label}
@@ -880,3 +925,5 @@ function CalendarTemplate({
     </div>
   );
 }
+
+export default VisualizerPage;

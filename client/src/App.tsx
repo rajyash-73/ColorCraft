@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
+import PaletteVisualizerNew from "@/pages/palette-visualizer-new";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import FAQPage from "@/pages/faq";
 import DesignersGuide from "@/pages/designers-guide";
@@ -21,7 +22,8 @@ const PaletteRoutes = () => {
     <Switch>
       <Route path="/" component={TestApp} />
       <Route path="/image-palette" component={ImagePalette} />
-      <Route path="/visualize" component={PaletteVisualizer} />
+      <Route path="/visualize" component={PaletteVisualizerNew} />
+      <Route path="/visualize-old" component={PaletteVisualizer} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/faq" component={FAQPage} />
       <Route path="/designers-guide" component={DesignersGuide} />
