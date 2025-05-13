@@ -13,7 +13,8 @@ import html2canvas from 'html2canvas';
 type TemplateType = 'dashboard' | 'landing' | 'analytics' | 'chat' | 'calendar';
 
 export default function PaletteVisualizer() {
-  const { palette: contextPalette, setPalette } = usePalette();
+  const paletteContext = usePalette();
+  const { palette: contextPalette, setPalette } = paletteContext;
   const [activeTemplate, setActiveTemplate] = useState<TemplateType>('dashboard');
   const [showExportToast, setShowExportToast] = useState(false);
   const [colorIndicators, setColorIndicators] = useState(false);
@@ -258,7 +259,7 @@ interface ColorIndicatorProps {
   showIndicators: boolean;
 }
 
-function ColorIndicator({ color, index, showIndicators }: ColorIndicatorProps) {
+function ColorIndicator({ color, index, showIndicators }: { color: string; index: number; showIndicators: boolean; }) {
   if (!showIndicators) return null;
   
   return (
