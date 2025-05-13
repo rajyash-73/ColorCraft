@@ -13,17 +13,37 @@ import html2canvas from 'html2canvas';
 type TemplateType = 'dashboard' | 'landing' | 'analytics' | 'chat' | 'calendar';
 
 export default function PaletteVisualizer() {
-  const { palette } = usePalette();
+  const { palette: contextPalette, setPalette } = usePalette();
   const [activeTemplate, setActiveTemplate] = useState<TemplateType>('dashboard');
   const [showExportToast, setShowExportToast] = useState(false);
   const [colorIndicators, setColorIndicators] = useState(false);
+  const [localPalette, setLocalPalette] = useState<Color[]>(contextPalette);
+  
+  // Load palette from localStorage if available
+  useEffect(() => {
+    try {
+      // Check localStorage for palette data
+      const savedPaletteStr = localStorage.getItem('currentPalette');
+      if (savedPaletteStr) {
+        const savedPalette = JSON.parse(savedPaletteStr);
+        if (Array.isArray(savedPalette) && savedPalette.length > 0) {
+          console.log('Loaded palette from localStorage:', savedPalette);
+          setLocalPalette(savedPalette);
+          // Also update the context palette
+          setPalette(savedPalette);
+        }
+      }
+    } catch (err) {
+      console.error('Error loading palette from localStorage:', err);
+    }
+  }, [setPalette]);
 
   // Helper to get a specific color from palette by index
   const getColor = (index: number): string => {
-    if (palette.length <= index) {
+    if (localPalette.length <= index) {
       return '#ffffff';
     }
-    return palette[index].hex;
+    return localPalette[index].hex;
   };
 
   // Helper to get text color based on background for contrast
@@ -156,19 +176,19 @@ export default function PaletteVisualizer() {
         className="bg-white rounded-xl shadow-lg overflow-hidden flex-1 mb-6 relative"
       >
         {activeTemplate === 'dashboard' && (
-          <DashboardTemplate palette={palette} getTextColor={getTextColor} showIndicators={colorIndicators} />
+          <DashboardTemplate palette={localPalette} getTextColor={getTextColor} showIndicators={colorIndicators} />
         )}
         {activeTemplate === 'landing' && (
-          <LandingTemplate palette={palette} getTextColor={getTextColor} showIndicators={colorIndicators} />
+          <LandingTemplate palette={localPalette} getTextColor={getTextColor} showIndicators={colorIndicators} />
         )}
         {activeTemplate === 'analytics' && (
-          <AnalyticsTemplate palette={palette} getTextColor={getTextColor} showIndicators={colorIndicators} />
+          <AnalyticsTemplate palette={localPalette} getTextColor={getTextColor} showIndicators={colorIndicators} />
         )}
         {activeTemplate === 'chat' && (
-          <ChatTemplate palette={palette} getTextColor={getTextColor} showIndicators={colorIndicators} />
+          <ChatTemplate palette={localPalette} getTextColor={getTextColor} showIndicators={colorIndicators} />
         )}
         {activeTemplate === 'calendar' && (
-          <CalendarTemplate palette={palette} getTextColor={getTextColor} showIndicators={colorIndicators} />
+          <CalendarTemplate palette={localPalette} getTextColor={getTextColor} showIndicators={colorIndicators} />
         )}
       </div>
 
@@ -176,7 +196,7 @@ export default function PaletteVisualizer() {
       <div className="bg-white rounded-lg shadow p-4">
         <h3 className="text-lg font-medium mb-2">Your Palette</h3>
         <div className="flex h-12 rounded-md overflow-hidden">
-          {palette.map((color, index) => (
+          {localPalette.map((color, index) => (
             <div 
               key={index} 
               className="flex-1" 

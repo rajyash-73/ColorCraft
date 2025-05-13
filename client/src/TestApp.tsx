@@ -140,6 +140,7 @@ function PaletteApp() {
   
   const handleVisualize = () => {
     // Save current palette to localStorage for the visualizer to use
+    console.log('Saving palette to localStorage before visualization:', palette);
     localStorage.setItem('currentPalette', JSON.stringify(palette));
     
     // Navigate to visualizer page
