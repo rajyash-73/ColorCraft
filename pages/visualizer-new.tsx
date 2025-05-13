@@ -42,13 +42,14 @@ const VisualizerPage: NextPage<{ initialPalette: Color[] }> = ({ initialPalette 
       if (savedPaletteJson) {
         const savedPalette = JSON.parse(savedPaletteJson);
         if (Array.isArray(savedPalette) && savedPalette.length > 0) {
+          console.log('Next.js: Loaded palette from localStorage:', savedPalette);
           setPalette(savedPalette);
         }
       }
     } catch (err) {
       console.error('Error loading palette from localStorage:', err);
     }
-  }, []);
+  }, [setPalette]);
 
   // Listen for palette updates from the generator page
   useEffect(() => {
