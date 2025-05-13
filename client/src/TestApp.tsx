@@ -324,14 +324,14 @@ function PaletteApp() {
       <div className="flex-1">
         <div 
           ref={paletteRef} 
-          className="flex flex-col md:flex-row h-[350px] md:h-[500px] rounded-2xl overflow-hidden shadow-2xl border border-gray-200"
+          className="flex flex-col md:flex-row h-auto md:h-[500px] rounded-2xl overflow-hidden shadow-2xl border border-gray-200"
         >
           {palette.map((color, index) => {
             const textColor = isLightColor(color.hex) ? 'text-gray-800' : 'text-white';
             return (
               <div 
                 key={index}
-                className={`flex-1 relative transition-all group ${draggedIndex === index ? 'opacity-50' : ''}`}
+                className={`flex-1 relative transition-all group ${draggedIndex === index ? 'opacity-50' : ''} min-h-[200px] md:min-h-0`}
                 style={{ backgroundColor: color.hex }}
                 draggable={true}
                 onDragStart={() => handleDragStart(index)}
@@ -412,15 +412,15 @@ function PaletteApp() {
                   
                   <div className="mt-auto mb-3 sm:mb-5 text-center w-full px-2">
                     <div className="mb-2">
-                      <h3 className="text-lg sm:text-2xl font-bold tracking-wide">{color.hex}</h3>
+                      <h3 className="text-lg sm:text-2xl font-bold tracking-wide truncate">{color.hex}</h3>
                       {color.name && (
-                        <p className="text-xs sm:text-sm opacity-90 font-medium mt-0.5">{color.name}</p>
+                        <p className="text-xs sm:text-sm opacity-90 font-medium mt-0.5 truncate">{color.name}</p>
                       )}
                     </div>
                     
-                    <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                    <div className="flex flex-wrap gap-2 justify-center">
                       <button 
-                        className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm transition-all flex items-center justify-center gap-1.5 mx-auto text-xs sm:text-sm font-medium"
+                        className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm transition-all flex items-center justify-center gap-1.5 text-xs sm:text-sm font-medium"
                         onClick={() => copyToClipboard(color.hex)}
                       >
                         <Copy size={14} className="sm:w-4 sm:h-4" />
@@ -429,7 +429,7 @@ function PaletteApp() {
                       
                       {colorTheory !== 'auto' && (
                         <button 
-                          className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm transition-all flex items-center justify-center gap-1.5 mx-auto text-xs sm:text-sm font-medium"
+                          className="px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm transition-all flex items-center justify-center gap-1.5 text-xs sm:text-sm font-medium"
                           onClick={() => {
                             generatePaletteWithTheory(color);
                             setToast(`Generated palette using ${colorTheory} theory with ${color.hex} as base`);
