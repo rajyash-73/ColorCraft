@@ -138,6 +138,14 @@ function PaletteApp() {
     setToast("Trending palette applied!");
   };
   
+  const handleVisualize = () => {
+    // Save current palette to localStorage for the visualizer to use
+    localStorage.setItem('currentPalette', JSON.stringify(palette));
+    
+    // Navigate to visualizer page
+    window.location.href = '/visualize';
+  };
+  
   // Drag and drop handlers
   const handleDragStart = (index: number) => {
     setDraggedIndex(index);
@@ -288,7 +296,7 @@ function PaletteApp() {
           
           <div
             className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:from-emerald-600 hover:to-teal-600 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium cursor-pointer"
-            onClick={() => window.location.href = '/visualize'}
+            onClick={handleVisualize}
           >
             <Eye size={18} className="sm:w-5 sm:h-5" />
             <span>Visualize</span>
