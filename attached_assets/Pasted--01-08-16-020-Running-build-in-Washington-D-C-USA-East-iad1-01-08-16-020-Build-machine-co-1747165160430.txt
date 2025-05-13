@@ -1,0 +1,61 @@
+[01:08:16.020] Running build in Washington, D.C., USA (East) – iad1
+[01:08:16.020] Build machine configuration: 2 cores, 8 GB
+[01:08:16.070] Cloning github.com/rajyash-73/ColorCraft (Branch: main, Commit: 7bc2689)
+[01:08:16.359] Cloning completed: 289.000ms
+[01:08:22.276] Restored build cache from previous deployment (UX5e6M4xjLrPqn93a37WrzfpWJSq)
+[01:08:23.292] Running "vercel build"
+[01:08:23.673] Vercel CLI 41.7.3
+[01:08:24.215] Installing dependencies...
+[01:08:25.746] 
+[01:08:25.747] up to date in 1s
+[01:08:25.747] 
+[01:08:25.747] 74 packages are looking for funding
+[01:08:25.747]   run `npm fund` for details
+[01:08:25.898] 
+[01:08:25.898] > coolors-client@1.0.0 build
+[01:08:25.899] > bash ./build.sh
+[01:08:25.899] 
+[01:08:25.904] Starting Vercel build process...
+[01:08:25.904] Current directory: /vercel/path0/client
+[01:08:25.905] Listing source directory:
+[01:08:25.916] total 52
+[01:08:25.917] drwxr-xr-x 8 root root   227 May 13 19:38 .
+[01:08:25.917] drwxr-xr-x 4 root root  4096 May 13 19:38 ..
+[01:08:25.917] -rw-r--r-- 1 root root  2239 May 13 19:38 App.tsx
+[01:08:25.917] -rw-r--r-- 1 root root   510 May 13 19:38 ContextTest.tsx
+[01:08:25.917] -rw-r--r-- 1 root root 22762 May 13 19:38 TestApp.tsx
+[01:08:25.917] drwxr-xr-x 4 root root   221 May 13 19:38 components
+[01:08:25.917] drwxr-xr-x 2 root root    32 May 13 19:38 contexts
+[01:08:25.918] drwxr-xr-x 2 root root    68 May 13 19:38 hooks
+[01:08:25.918] -rw-r--r-- 1 root root  1845 May 13 19:38 index.css
+[01:08:25.918] -rw-r--r-- 1 root root  1845 May 13 19:38 index.vercel.css
+[01:08:25.918] drwxr-xr-x 2 root root   122 May 13 19:38 lib
+[01:08:25.918] -rw-r--r-- 1 root root   198 May 13 19:38 main.tsx
+[01:08:25.918] -rw-r--r-- 1 root root   198 May 13 19:38 main.vercel.tsx
+[01:08:25.918] drwxr-xr-x 2 root root   297 May 13 19:38 pages
+[01:08:25.918] drwxr-xr-x 2 root root    55 May 13 19:38 types
+[01:08:25.919] Copying Vercel-specific files...
+[01:08:25.920] main.vercel.tsx copied to main.tsx
+[01:08:25.921] index.vercel.css copied to index.css
+[01:08:25.921] Checking for config file...
+[01:08:25.922] Using vite.config.vercel.mjs
+[01:08:25.922] Running Vite build with config: vite.config.vercel.mjs
+[01:08:25.926] Node version: v22.15.0
+[01:08:26.025] NPM version: 10.9.2
+[01:08:27.208] [36mvite v5.4.14 [32mbuilding for production...[36m[39m
+[01:08:27.287] transforming...
+[01:08:27.409] Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+[01:08:27.409]   npx update-browserslist-db@latest
+[01:08:27.410]   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[01:08:31.793] [32m✓[39m 1714 modules transformed.
+[01:08:32.254] [31mx[39m Build failed in 5.02s
+[01:08:32.255] [31merror during build:
+[01:08:32.256] [31m[vite:terser] terser not found. Since Vite v3, terser has become an optional dependency. You need to install it.[31m
+[01:08:32.256]     at loadTerserPath (file:///vercel/path0/node_modules/vite/dist/node/chunks/dep-CHZK6zbr.js:19705:13)
+[01:08:32.256]     at Object.renderChunk (file:///vercel/path0/node_modules/vite/dist/node/chunks/dep-CHZK6zbr.js:19740:27)
+[01:08:32.256]     at file:///vercel/path0/node_modules/rollup/dist/es/shared/node-entry.js:20789:40
+[01:08:32.256]     at process.processTicksAndRejections (node:internal/process/task_queues:105:5)[39m
+[01:08:32.319] Build failed with error code: 1
+[01:08:32.362] Error: Command "cd client && npm run build" exited with 1
+[01:08:32.642] 
+[01:08:35.668] Exiting build container
