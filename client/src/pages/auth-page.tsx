@@ -167,7 +167,10 @@ export default function AuthPage() {
             </Tabs>
           </CardContent>
           <CardFooter className="text-sm text-center text-muted-foreground">
-            By logging in, you agree to our Terms of Service and Privacy Policy.
+            By logging in, you agree to our <span 
+              className="text-blue-600 hover:underline cursor-pointer"
+              onClick={() => window.location.href = '/privacy-policy'}
+            >Privacy Policy</span>.
           </CardFooter>
         </Card>
       </div>
