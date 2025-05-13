@@ -15,6 +15,10 @@ fi
 echo "🔍 Running type check..."
 npx tsc --noEmit
 
+# Make sure terser is installed
+echo "📦 Ensuring terser is installed..."
+npm list terser || npm install terser
+
 # Create production build for testing locally
 echo "🏗️ Creating production build for testing..."
 cd client && npm run build
