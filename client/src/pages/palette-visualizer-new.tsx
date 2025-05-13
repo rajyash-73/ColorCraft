@@ -12,7 +12,7 @@ type TemplateType = 'dashboard' | 'landing' | 'analytics' | 'chat' | 'calendar';
 
 export default function PaletteVisualizer() {
   const { palette } = usePalette();
-  const [activeTemplate, setActiveTemplate] = useState<TemplateType>('landing');
+  const [activeTemplate, setActiveTemplate] = useState<TemplateType>('dashboard');
 
   // Helper to get a specific color from palette by index
   const getColor = (index: number): string => {
@@ -45,8 +45,8 @@ export default function PaletteVisualizer() {
       </header>
 
       {/* Template selector */}
-      <div className="bg-white rounded-lg shadow-md p-4 mb-8 overflow-x-auto">
-        <div className="flex flex-nowrap md:flex-wrap gap-2 min-w-max md:min-w-0">
+      <div className="bg-white rounded-lg shadow-md p-4 mb-8">
+        <div className="flex flex-wrap gap-2">
           <TemplateButton 
             active={activeTemplate === 'dashboard'} 
             onClick={() => setActiveTemplate('dashboard')}
@@ -269,28 +269,25 @@ function DashboardTemplate({ palette, getTextColor }: { palette: Color[], getTex
   );
 }
 
-// Landing Template - Modern Design
+// Landing Template
 function LandingTemplate({ palette, getTextColor }: { palette: Color[], getTextColor: (color: string) => string }) {
   return (
     <div className="h-[500px] overflow-auto" style={{ backgroundColor: palette[4]?.hex || '#f8fafc', color: getTextColor(palette[4]?.hex || '#f8fafc') }}>
-      {/* Navigation - Glass morphism navbar */}
+      {/* Navigation */}
       <header 
-        className="px-6 py-4 flex justify-between items-center sticky top-0 backdrop-blur-md z-10"
+        className="px-6 py-4 flex justify-between items-center sticky top-0"
         style={{ 
-          backgroundColor: `${palette[0]?.hex}CC` || 'rgba(30, 41, 59, 0.8)',
+          backgroundColor: palette[0]?.hex || '#1e293b',
           color: getTextColor(palette[0]?.hex || '#1e293b')
         }}
       >
-        <div className="font-bold text-xl flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full" style={{ backgroundColor: palette[2]?.hex }}></div>
-          <span>Coolors.in</span>
-        </div>
-        <nav className="flex items-center gap-3 md:gap-6">
-          <div className="hidden md:block hover:opacity-80 cursor-pointer transition-opacity">Products</div>
-          <div className="hidden md:block hover:opacity-80 cursor-pointer transition-opacity">Solutions</div>
-          <div className="hidden md:block hover:opacity-80 cursor-pointer transition-opacity">Pricing</div>
+        <div className="font-bold text-xl">Landing Page</div>
+        <nav className="flex items-center gap-6">
+          <div>Features</div>
+          <div>Pricing</div>
+          <div>About</div>
           <div 
-            className="px-3 py-1.5 md:px-4 md:py-2 rounded-full font-medium transition-transform hover:scale-105 text-sm md:text-base"
+            className="px-4 py-2 rounded"
             style={{ 
               backgroundColor: palette[2]?.hex || '#3b82f6',
               color: getTextColor(palette[2]?.hex || '#3b82f6')
@@ -301,38 +298,29 @@ function LandingTemplate({ palette, getTextColor }: { palette: Color[], getTextC
         </nav>
       </header>
 
-      {/* Hero Section with gradients */}
+      {/* Hero Section */}
       <div 
-        className="px-6 py-16 flex flex-col md:flex-row gap-8 justify-between relative overflow-hidden" 
+        className="px-6 py-16 flex gap-8 justify-between" 
         style={{ 
           backgroundColor: palette[1]?.hex || '#334155',
           color: getTextColor(palette[1]?.hex || '#334155')
         }}
       >
-        {/* Background decorative elements */}
-        <div className="absolute -top-24 -left-24 w-64 h-64 rounded-full opacity-20" 
-          style={{ background: `radial-gradient(circle at center, ${palette[2]?.hex}, transparent 70%)` }}></div>
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full opacity-20" 
-          style={{ background: `radial-gradient(circle at center, ${palette[3]?.hex}, transparent 70%)` }}></div>
-        
-        <div className="max-w-md z-10">
-          <h1 className="text-5xl font-bold mb-4 leading-tight">
-            Create stunning<br />
-            <span className="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">color palettes</span>
-          </h1>
-          <p className="mb-8 opacity-90 text-lg">Discover how our platform helps you find the perfect color combinations for your next design project.</p>
+        <div className="max-w-md">
+          <h1 className="text-4xl font-bold mb-4">Welcome to Our Platform</h1>
+          <p className="mb-6 opacity-90">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisi vel consectetur interdum.</p>
           <div className="flex gap-4">
             <div 
-              className="px-6 py-3 rounded-full font-medium transition-transform hover:scale-105 shadow-lg"
+              className="px-4 py-2 rounded font-medium"
               style={{ 
                 backgroundColor: palette[2]?.hex || '#3b82f6',
                 color: getTextColor(palette[2]?.hex || '#3b82f6')
               }}
             >
-              Try it Free
+              Get Started
             </div>
             <div 
-              className="px-6 py-3 rounded-full font-medium border transition-colors hover:bg-white hover:bg-opacity-10"
+              className="px-4 py-2 rounded font-medium border"
               style={{ 
                 borderColor: getTextColor(palette[1]?.hex || '#334155')
               }}
@@ -341,86 +329,41 @@ function LandingTemplate({ palette, getTextColor }: { palette: Color[], getTextC
             </div>
           </div>
         </div>
-        
-        {/* Modern mockup with color palette display */}
-        <div className="relative z-10 mx-auto md:mx-0">
-          <div 
-            className="w-full sm:w-80 h-64 rounded-xl shadow-2xl overflow-hidden border border-white border-opacity-20"
-            style={{ 
-              backgroundColor: palette[0]?.hex || '#1e293b',
-              color: getTextColor(palette[0]?.hex || '#1e293b')
-            }}
-          >
-            <div className="h-10 flex items-center px-4 border-b border-white border-opacity-10">
-              <div className="flex gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              </div>
-            </div>
-            <div className="p-4">
-              <div className="text-sm mb-2 opacity-70">Your Color Palette</div>
-              <div className="flex h-20 rounded-md overflow-hidden mb-4">
-                {palette.map((color, index) => (
-                  <div key={index} className="flex-1" style={{ backgroundColor: color.hex }}></div>
-                ))}
-              </div>
-              <div className="flex justify-between text-xs opacity-70">
-                <div>Perfect for your brand</div>
-                <div>Press space to generate</div>
-              </div>
-            </div>
-          </div>
-          {/* Floating elements for decoration */}
-          <div 
-            className="absolute -bottom-4 -right-4 w-16 h-16 rounded-lg shadow-xl"
-            style={{ backgroundColor: palette[3]?.hex }}
-          ></div>
-          <div 
-            className="absolute -top-4 -left-4 w-12 h-12 rounded-full shadow-xl"
-            style={{ backgroundColor: palette[2]?.hex }}
-          ></div>
+        <div 
+          className="w-80 h-48 rounded flex items-center justify-center"
+          style={{ 
+            backgroundColor: palette[3]?.hex || '#ffffff',
+            color: getTextColor(palette[3]?.hex || '#ffffff')
+          }}
+        >
+          <span className="text-center">Hero Image</span>
         </div>
       </div>
 
-      {/* Features with cards */}
-      <div className="px-6 py-16">
-        <h2 className="text-3xl font-bold text-center mb-2" style={{ color: getTextColor(palette[4]?.hex) }}>Why Choose Us</h2>
-        <p className="text-center max-w-lg mx-auto mb-12 opacity-80" style={{ color: getTextColor(palette[4]?.hex) }}>
-          Our platform offers the best tools for creating and managing color palettes
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            { title: "AI-Powered", desc: "Generate harmonious color schemes with our advanced AI engine" },
-            { title: "Simple Export", desc: "Export your palettes in multiple formats for any project" },
-            { title: "Live Preview", desc: "See your colors in real-world UI components instantly" },
-          ].map((feature, i) => (
+      {/* Features */}
+      <div className="px-6 py-12">
+        <h2 className="text-2xl font-bold text-center mb-8">Features</h2>
+        <div className="grid grid-cols-3 gap-6">
+          {[1, 2, 3].map(i => (
             <div 
               key={i} 
-              className="p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow relative overflow-hidden group"
+              className="p-4 rounded-lg text-center"
               style={{ 
                 backgroundColor: palette[3]?.hex || '#ffffff',
                 color: getTextColor(palette[3]?.hex || '#ffffff')
               }}
             >
-              {/* Hover effect */}
               <div 
-                className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity"
-                style={{ backgroundColor: palette[2]?.hex }}
-              ></div>
-              
-              <div 
-                className="w-12 h-12 rounded-xl mb-4 flex items-center justify-center font-bold text-xl"
+                className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center"
                 style={{ 
-                  backgroundColor: palette[0]?.hex || '#1e293b',
-                  color: getTextColor(palette[0]?.hex || '#1e293b')
+                  backgroundColor: palette[2]?.hex || '#3b82f6',
+                  color: getTextColor(palette[2]?.hex || '#3b82f6')
                 }}
               >
-                {i + 1}
+                {i}
               </div>
-              <h3 className="font-bold text-xl mb-3">{feature.title}</h3>
-              <p className="opacity-80">{feature.desc}</p>
+              <h3 className="font-bold mb-2">Feature {i}</h3>
+              <p className="text-sm opacity-80">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio.</p>
             </div>
           ))}
         </div>

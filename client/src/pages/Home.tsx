@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { useLocation } from "wouter";
 import Header from "@/components/Header";
 import KeyboardShortcutsBar from "@/components/KeyboardShortcutsBar";
 import ActionButtons from "@/components/ActionButtons";
@@ -22,7 +21,6 @@ export default function Home() {
   
   const { palette, generatePalette, addColor, resetPalette, updateColor, reorderColors } = usePalette();
   const { toast } = useToast();
-  const [, navigate] = useLocation();
   
   console.log('Home component rendered with palette:', palette);
 
@@ -87,17 +85,6 @@ export default function Home() {
 
   const handleExport = () => {
     setShowExportModal(true);
-  };
-
-  const handleVisualize = () => {
-    // Navigate to the palette visualizer with the current palette
-    navigate("/palette-visualizer-new");
-    
-    toast({
-      title: "Visualizing palette",
-      description: "See how your palette looks in UI templates",
-      duration: 2000,
-    });
   };
 
   const handleAdjustColor = (index: number) => {
@@ -183,7 +170,6 @@ export default function Home() {
         onHelp={handleHelp} 
         onExport={handleExport} 
         onSave={handleSavePalette}
-        onVisualize={handleVisualize}
         mobileMenuOpen={mobileMenuOpen}
         toggleMobileMenu={toggleMobileMenu}
       />
