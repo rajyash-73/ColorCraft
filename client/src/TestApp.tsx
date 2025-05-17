@@ -3,7 +3,7 @@ import { Color } from './types/Color';
 import { isLightColor } from '@/lib/colorUtils';
 import { 
   LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, 
-  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock, Save
+  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock 
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
@@ -12,7 +12,6 @@ import WelcomeModal from '@/components/modals/WelcomeModal';
 import Footer from '@/components/Footer';
 import { usePalette, colorTheoryOptions, ColorTheory } from '@/contexts/PaletteContext';
 import { Link } from 'wouter';
-import { useAuth } from './hooks/use-auth';
 
 // Toast notification component
 function Toast({ message, onClose }: { message: string; onClose: () => void }) {
@@ -61,8 +60,6 @@ function PaletteApp() {
     reorderColors
   } = usePalette();
   
-  const { user } = useAuth();
-  const [, navigate] = useLocation();
   const [toast, setToast] = useState<string | null>(null);
   const [showInfoTooltip, setShowInfoTooltip] = useState<number | null>(null);
   const [showAdjustModal, setShowAdjustModal] = useState<boolean>(false);
@@ -288,22 +285,6 @@ function PaletteApp() {
           >
             <Plus size={18} className="sm:w-5 sm:h-5" />
             <span>Add Color</span>
-          </button>
-          
-          <button 
-            className="bg-white text-gray-700 border border-gray-200 px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:bg-gray-50 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
-            onClick={() => {
-              if (user) {
-                // User is logged in, show a message about the feature
-                setToast("Palette saving available in your profile!");
-              } else {
-                // Redirect to auth page
-                navigate('/auth');
-              }
-            }}
-          >
-            <Save size={18} className="sm:w-5 sm:h-5" />
-            <span>Save Palette</span>
           </button>
           
           <div

@@ -1,199 +1,179 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { useAuth } from '../hooks/use-auth';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
+import { Redirect, useLocation } from "wouter";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { insertUserSchema } from "@shared/schema";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Loader2 } from "lucide-react";
 
-// Form validation schema
-const authSchema = z.object({
-  username: z.string()
-    .min(3, "Username must be at least 3 characters")
-    .max(20, "Username cannot exceed 20 characters"),
-  password: z.string()
-    .min(8, "Password must be at least 8 characters")
-    .max(50, "Password cannot exceed 50 characters"),
+// Extend the user schema to add validation rules
+const authFormSchema = insertUserSchema.extend({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-type AuthFormValues = z.infer<typeof authSchema>;
+type AuthFormValues = z.infer<typeof authFormSchema>;
 
-const AuthPage: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [, navigate] = useLocation();
-  const { user, loginMutation, registerMutation } = useAuth();
-  
-  // Create form with validation
-  const form = useForm<AuthFormValues>({
-    resolver: zodResolver(authSchema),
+export default function AuthPage() {
+  const [, setLocation] = useLocation();
+  const { user, loginMutation, registerMutation, isLoading } = useAuth();
+  const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+
+  // If user is already logged in, redirect to home page
+  if (user) {
+    return <Redirect to="/" />;
+  }
+
+  const loginForm = useForm<AuthFormValues>({
+    resolver: zodResolver(authFormSchema),
     defaultValues: {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
     },
   });
-  
-  // Redirect to home if already logged in
-  useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, navigate]);
-  
-  // Handle form submission
-  const onSubmit = async (data: AuthFormValues) => {
-    if (isLogin) {
-      loginMutation.mutate(data);
-    } else {
-      registerMutation.mutate(data);
-    }
+
+  const registerForm = useForm<AuthFormValues>({
+    resolver: zodResolver(authFormSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const onLoginSubmit = (data: AuthFormValues) => {
+    loginMutation.mutate(data);
   };
-  
+
+  const onRegisterSubmit = (data: AuthFormValues) => {
+    registerMutation.mutate(data);
+  };
+
+  const isPending = loginMutation.isPending || registerMutation.isPending;
+
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Form Section */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
-        <div className="max-w-md w-full space-y-8">
-          <div>
-            <h1 className="text-center text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-500">
-              {isLogin ? 'Welcome Back' : 'Create Your Account'}
-            </h1>
-            <p className="mt-2 text-center text-sm text-gray-600">
-              {isLogin ? "Sign in to access your saved palettes" : "Join to save and share your color palettes"}
-            </p>
+    <div className="flex min-h-screen flex-col md:flex-row">
+      {/* Hero Section */}
+      <div className="w-full md:w-1/2 bg-gradient-to-b from-primary/20 to-primary/5 p-8 flex items-center justify-center">
+        <div className="max-w-md space-y-4 text-center md:text-left">
+          <h1 className="text-4xl font-bold tracking-tight">Color Palette Generator</h1>
+          <p className="text-lg text-muted-foreground">
+            Create beautiful color palettes for your designs. Save your favorites and access them anytime.
+          </p>
+          <div className="flex justify-center md:justify-start space-x-2 pt-4">
+            <div className="w-8 h-8 rounded-full bg-red-500"></div>
+            <div className="w-8 h-8 rounded-full bg-yellow-500"></div>
+            <div className="w-8 h-8 rounded-full bg-green-500"></div>
+            <div className="w-8 h-8 rounded-full bg-blue-500"></div>
+            <div className="w-8 h-8 rounded-full bg-purple-500"></div>
           </div>
-          
-          <form className="mt-8 space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="rounded-md shadow-sm -space-y-px">
-              <div>
-                <label htmlFor="username" className="sr-only">Username</label>
-                <input
-                  id="username"
-                  type="text"
-                  autoComplete="username"
-                  required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Username"
-                  {...form.register('username')}
-                  disabled={loginMutation.isPending || registerMutation.isPending}
-                />
-              </div>
-              <div>
-                <label htmlFor="password" className="sr-only">Password</label>
-                <input
-                  id="password"
-                  type="password"
-                  autoComplete={isLogin ? "current-password" : "new-password"}
-                  required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                  placeholder="Password"
-                  {...form.register('password')}
-                  disabled={loginMutation.isPending || registerMutation.isPending}
-                />
-              </div>
-            </div>
-            
-            {/* Form validation errors */}
-            {(form.formState.errors.username || form.formState.errors.password) && (
-              <div className="rounded-md bg-red-50 p-4">
-                <div className="flex">
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-800">There were errors with your submission</h3>
-                    <div className="mt-2 text-sm text-red-700">
-                      <ul className="list-disc pl-5 space-y-1">
-                        {form.formState.errors.username && (
-                          <li>{form.formState.errors.username.message}</li>
-                        )}
-                        {form.formState.errors.password && (
-                          <li>{form.formState.errors.password.message}</li>
-                        )}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {/* API errors */}
-            {(loginMutation.error || registerMutation.error) && (
-              <div className="rounded-md bg-red-50 p-4">
-                <div className="flex">
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-800">Authentication error</h3>
-                    <div className="mt-2 text-sm text-red-700">
-                      <p>{isLogin ? loginMutation.error?.message : registerMutation.error?.message}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            <div>
-              <button
-                type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                disabled={loginMutation.isPending || registerMutation.isPending}
-              >
-                {(loginMutation.isPending || registerMutation.isPending) ? (
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                ) : null}
-                {isLogin ? "Sign in" : "Create account"}
-              </button>
-            </div>
-            
-            <div className="text-center">
-              <button 
-                type="button" 
-                onClick={() => setIsLogin(!isLogin)} 
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
-                {isLogin ? "Need an account? Sign up" : "Already have an account? Sign in"}
-              </button>
-            </div>
-          </form>
         </div>
       </div>
-      
-      {/* Hero/Information Section */}
-      <div className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-12 hidden md:flex md:flex-col md:justify-center">
-        <div className="max-w-md mx-auto">
-          <h2 className="text-3xl font-bold mb-6">Coolors.in</h2>
-          <h3 className="text-xl font-semibold mb-4">Your Color Palette Companion</h3>
-          
-          <div className="space-y-4">
-            <div className="flex items-start">
-              <svg className="h-6 w-6 mr-3 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-              <p>Generate beautiful color schemes with a single click</p>
-            </div>
-            
-            <div className="flex items-start">
-              <svg className="h-6 w-6 mr-3 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-              <p>Save your favorite palettes to your account</p>
-            </div>
-            
-            <div className="flex items-start">
-              <svg className="h-6 w-6 mr-3 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-              <p>Share your palettes with others via unique links</p>
-            </div>
-            
-            <div className="flex items-start">
-              <svg className="h-6 w-6 mr-3 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-              <p>Visualize how your palettes look in real UI components</p>
-            </div>
-          </div>
-        </div>
+
+      {/* Auth Form Section */}
+      <div className="w-full md:w-1/2 p-8 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Welcome</CardTitle>
+            <CardDescription>
+              Sign in to your account or create a new one to save your color palettes.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "login" | "register")}>
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="login">Login</TabsTrigger>
+                <TabsTrigger value="register">Register</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="login">
+                <Form {...loginForm}>
+                  <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+                    <FormField
+                      control={loginForm.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Username</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Enter your username" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={loginForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" placeholder="Enter your password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="w-full" disabled={isPending}>
+                      {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      Sign In
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
+
+              <TabsContent value="register">
+                <Form {...registerForm}>
+                  <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+                    <FormField
+                      control={registerForm.control}
+                      name="username"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Username</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Choose a username" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={registerForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <Input type="password" placeholder="Choose a password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="w-full" disabled={isPending}>
+                      {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                      Create Account
+                    </Button>
+                  </form>
+                </Form>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+          <CardFooter className="text-sm text-center text-muted-foreground">
+            By logging in, you agree to our <span 
+              className="text-blue-600 hover:underline cursor-pointer"
+              onClick={() => window.location.href = '/privacy-policy'}
+            >Privacy Policy</span>.
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );
-};
-
-export default AuthPage;
+}
