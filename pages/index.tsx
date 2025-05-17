@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
-import Head from 'next/head';
+import dynamic from 'next/dynamic';
 import { useToast } from '../client/src/hooks/use-toast';
 import Header from '../client/src/components/Header';
 import KeyboardShortcutsBar from '../client/src/components/KeyboardShortcutsBar';
@@ -11,7 +11,7 @@ import ExportModal from '../client/src/components/modals/ExportModal';
 import AdjustColorModal from '../client/src/components/modals/AdjustColorModal';
 import { usePalette } from '../client/src/contexts/PaletteContext';
 import { type Color } from '../client/src/types/Color';
-import dynamic from 'next/dynamic';
+import SEO from '../components/SEO';
 
 // Define any components that must be client-side only
 const ClientSideShortcutsBar = dynamic(
@@ -163,12 +163,27 @@ const HomePage: NextPage = () => {
   if (!isClient) {
     return (
       <div className="flex flex-col h-screen overflow-hidden bg-gray-50">
-        <Head>
-          <title>Coolors.in - Free Color Palette Generator | Create Beautiful Color Schemes</title>
-          <meta name="description" content="Create and explore beautiful color combinations with Coolors.in, the free color palette generator. Design with confidence using our intuitive color tools." />
-          <meta name="keywords" content="color palette generator, color scheme, color combinations, design tools" />
-          <link rel="canonical" href="https://coolors.in/" />
-        </Head>
+        <SEO 
+          title="Coolors.in - Free Color Palette Generator | Create Beautiful Color Schemes"
+          description="Create and explore beautiful color combinations with Coolors.in, the free color palette generator. Design with confidence using our intuitive color tools."
+          keywords="color palette generator, color scheme, color combinations, design tools, color inspiration"
+          canonical="https://coolors.in/"
+          structuredData={{
+            '@context': 'https://schema.org',
+            '@type': 'WebApplication',
+            'name': 'Coolors.in Color Palette Generator',
+            'url': 'https://coolors.in/',
+            'description': 'Create beautiful color combinations with our intuitive color generator',
+            'applicationCategory': 'DesignApplication',
+            'operatingSystem': 'Any',
+            'offers': {
+              '@type': 'Offer',
+              'price': '0',
+              'priceCurrency': 'USD'
+            },
+            'featureList': 'Generate color palettes, Save palettes, Export in multiple formats, Visualize palettes in UI templates'
+          }}
+        />
         
         <Header 
           onHelp={() => {}} 
@@ -178,37 +193,37 @@ const HomePage: NextPage = () => {
           toggleMobileMenu={() => {}}
         />
         
-        <div className="flex-1 flex flex-col items-center justify-center">
+        <main className="flex-1 flex flex-col items-center justify-center">
           <div className="text-2xl font-bold mb-4">Loading Color Palette Generator...</div>
           <div className="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
-        </div>
+        </main>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-gray-50">
-      <Head>
-        <title>Coolors.in - Free Color Palette Generator | Create Beautiful Color Schemes</title>
-        <meta name="description" content="Create and explore beautiful color combinations with Coolors.in, the free color palette generator. Design with confidence using our intuitive color tools." />
-        <meta name="keywords" content="color palette generator, color scheme, color combinations, design tools" />
-        <link rel="canonical" href="https://coolors.in/" />
-        {/* Dynamic structured data for the home page */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'WebApplication',
-              'name': 'Coolors.in Color Palette Generator',
-              'url': 'https://coolors.in/',
-              'description': 'Create beautiful color combinations with our intuitive color generator',
-              'applicationCategory': 'DesignApplication',
-              'operatingSystem': 'Any'
-            })
-          }}
-        />
-      </Head>
+      <SEO 
+        title="Coolors.in - Free Color Palette Generator | Create Beautiful Color Schemes"
+        description="Create and explore beautiful color combinations with Coolors.in, the free color palette generator. Design with confidence using our intuitive color tools."
+        keywords="color palette generator, color scheme, color combinations, design tools, color inspiration"
+        canonical="https://coolors.in/"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'WebApplication',
+          'name': 'Coolors.in Color Palette Generator',
+          'url': 'https://coolors.in/',
+          'description': 'Create beautiful color combinations with our intuitive color generator',
+          'applicationCategory': 'DesignApplication',
+          'operatingSystem': 'Any',
+          'offers': {
+            '@type': 'Offer',
+            'price': '0',
+            'priceCurrency': 'USD'
+          },
+          'featureList': 'Generate color palettes, Save palettes, Export in multiple formats, Visualize palettes in UI templates'
+        }}
+      />
       
       <Header 
         onHelp={handleHelp} 
@@ -220,77 +235,82 @@ const HomePage: NextPage = () => {
       
       <ClientSideShortcutsBar />
       
-      {/* Mobile View: Stack colors vertically with drag support */}
-      <div className="flex-1 flex flex-col overflow-auto md:hidden" id="mobilePaletteContainer">
-        {palette.map((color, index) => (
-          <div 
-            key={index}
-            className={`relative mb-10 ${draggedIndex === index ? 'opacity-60 border-2 border-dashed border-gray-400' : ''}`}
-            draggable={true}
-            onDragStart={() => handleDragStart(index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDrop={(e) => handleDrop(e, index)}
-            onDragEnd={handleDragEnd}
-            onTouchStart={() => handleTouchStart(index)}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={(e) => handleTouchEnd(e, index)}
-          >
-            {/* Clear separation between palettes */}
-            <div className="w-full flex flex-col">
-              <div className="bg-gray-100 dark:bg-gray-800 py-1 px-2 rounded-t-md text-xs opacity-80 text-center shadow-sm">
-                Color {index+1} 
-                <span className="ml-2 inline-flex items-center text-gray-500">
-                  <i className="fas fa-grip-lines text-xs mr-1"></i>
-                  drag to reorder
-                </span>
+      <main>
+        {/* Mobile View: Stack colors vertically with drag support */}
+        <section className="flex-1 flex flex-col overflow-auto md:hidden" id="mobilePaletteContainer" aria-label="Color Palette - Mobile View">
+          {palette.map((color, index) => (
+            <article 
+              key={index}
+              className={`relative mb-10 ${draggedIndex === index ? 'opacity-60 border-2 border-dashed border-gray-400' : ''}`}
+              draggable={true}
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+              onTouchStart={() => handleTouchStart(index)}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={(e) => handleTouchEnd(e, index)}
+            >
+              {/* Clear separation between palettes */}
+              <div className="w-full flex flex-col">
+                <header className="bg-gray-100 dark:bg-gray-800 py-1 px-2 rounded-t-md text-xs opacity-80 text-center shadow-sm">
+                  <h2>Color {index+1}</h2> 
+                  <span className="ml-2 inline-flex items-center text-gray-500">
+                    <i className="fas fa-grip-lines text-xs mr-1" aria-hidden="true"></i>
+                    <span className="sr-only">Draggable</span>
+                    drag to reorder
+                  </span>
+                </header>
+                <div className="absolute top-10 left-2 z-10 p-3 rounded-full bg-black bg-opacity-50 touch-manipulation cursor-grab active:cursor-grabbing">
+                  <i className="fas fa-grip-lines text-sm text-white" aria-hidden="true"></i>
+                  <span className="sr-only">Drag handle</span>
+                </div>
+                <ColorCard 
+                  color={color}
+                  index={index}
+                  onAdjustColor={() => handleAdjustColor(index)}
+                />
               </div>
-              <div className="absolute top-10 left-2 z-10 p-3 rounded-full bg-black bg-opacity-50 touch-manipulation cursor-grab active:cursor-grabbing">
-                <i className="fas fa-grip-lines text-sm text-white"></i>
+            </article>
+          ))}
+        </section>
+        
+        {/* Desktop View: Colors side by side with drag support */}
+        <section className="hidden md:flex flex-1 flex-row overflow-hidden" id="desktopPaletteContainer" aria-label="Color Palette - Desktop View">
+          {palette.map((color, index) => (
+            <article 
+              key={index}
+              className={`relative flex-1 ${draggedIndex === index ? 'opacity-60 border-2 border-dashed border-gray-400' : ''}`}
+              draggable={true}
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+              onTouchStart={() => handleTouchStart(index)}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={(e) => handleTouchEnd(e, index)}
+            >
+              <div className="absolute top-3 left-3 z-20 p-3 rounded-full bg-black bg-opacity-40 cursor-grab active:cursor-grabbing transition-opacity opacity-70 hover:opacity-100">
+                <i className="fas fa-grip-lines text-white" aria-hidden="true"></i>
+                <span className="sr-only">Drag handle for color {index+1}</span>
               </div>
               <ColorCard 
                 color={color}
                 index={index}
                 onAdjustColor={() => handleAdjustColor(index)}
               />
+            </article>
+          ))}
+          
+          <div className="flex items-center justify-center w-16 bg-gray-100 border-l border-gray-300 hover:bg-gray-200 cursor-pointer transition-colors"
+              onClick={() => addColor()} aria-label="Add new color">
+            <div className="flex flex-col items-center justify-center text-gray-500 space-y-2">
+              <i className="fas fa-plus text-xl" aria-hidden="true"></i>
+              <span className="text-xs font-medium">Add</span>
             </div>
           </div>
-        ))}
-      </div>
-      
-      {/* Desktop View: Colors side by side with drag support */}
-      <div className="hidden md:flex flex-1 flex-row overflow-hidden" id="desktopPaletteContainer">
-        {palette.map((color, index) => (
-          <div 
-            key={index}
-            className={`relative flex-1 ${draggedIndex === index ? 'opacity-60 border-2 border-dashed border-gray-400' : ''}`}
-            draggable={true}
-            onDragStart={() => handleDragStart(index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDrop={(e) => handleDrop(e, index)}
-            onDragEnd={handleDragEnd}
-            onTouchStart={() => handleTouchStart(index)}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={(e) => handleTouchEnd(e, index)}
-          >
-            <div className="absolute top-3 left-3 z-20 p-3 rounded-full bg-black bg-opacity-40 cursor-grab active:cursor-grabbing transition-opacity opacity-70 hover:opacity-100">
-              <i className="fas fa-grip-lines text-white"></i>
-            </div>
-            <ColorCard 
-              color={color}
-              index={index}
-              onAdjustColor={() => handleAdjustColor(index)}
-            />
-          </div>
-        ))}
-        
-        <div className="flex items-center justify-center w-16 bg-gray-100 border-l border-gray-300 hover:bg-gray-200 cursor-pointer transition-colors"
-            onClick={() => addColor()}>
-          <div className="flex flex-col items-center justify-center text-gray-500 space-y-2">
-            <i className="fas fa-plus text-xl"></i>
-            <span className="text-xs font-medium">Add</span>
-          </div>
-        </div>
-      </div>
+        </section>
+      </main>
       
       <ActionButtons 
         onGenerate={handleGeneratePalette}

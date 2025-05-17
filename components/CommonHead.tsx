@@ -13,40 +13,41 @@ interface CommonHeadProps {
 /**
  * A reusable head component for consistent SEO across pages
  */
-const CommonHead = ({
+export const CommonHead = ({
   title,
   description,
-  keywords = '',
-  ogImage = 'https://coolors.in/og-image.jpg',
+  keywords = "color palette generator, color scheme, color combinations, design tools",
+  ogImage = "/og-default.jpg",
   canonicalUrl,
-  structuredData
+  structuredData,
 }: CommonHeadProps) => {
-  // Set default canonical URL if not provided
-  const canonical = canonicalUrl || `https://coolors.in${typeof window !== 'undefined' ? window.location.pathname : ''}`;
+  const siteUrl = "https://coolors.in";
+  const fullTitle = title.includes("Coolors.in") ? title : `${title} | Coolors.in`;
   
   return (
     <Head>
-      <title>{title}</title>
+      {/* Core Meta Tags */}
+      <title>{fullTitle}</title>
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
       
-      {/* Open Graph / Social Media Meta Tags */}
+      {/* Canonical URL */}
+      {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+      
+      {/* Open Graph / Facebook */}
       <meta property="og:type" content="website" />
-      <meta property="og:url" content={canonical} />
-      <meta property="og:title" content={title} />
+      <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
-      <meta property="og:image" content={ogImage} />
+      <meta property="og:image" content={`${siteUrl}${ogImage}`} />
+      {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
       
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
+      <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={ogImage} />
+      <meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
       
-      {/* Canonical Link */}
-      <link rel="canonical" href={canonical} />
-      
-      {/* Structured Data (JSON-LD) */}
+      {/* Structured Data */}
       {structuredData && (
         <script
           type="application/ld+json"
@@ -58,5 +59,3 @@ const CommonHead = ({
     </Head>
   );
 };
-
-export default CommonHead;
