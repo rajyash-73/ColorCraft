@@ -1,13 +1,15 @@
-import { db } from './db';
-import { users, palettes, type User, type InsertUser, type Palette, type InsertPalette } from '../shared/schema';
-import { eq } from 'drizzle-orm';
-import session from 'express-session';
-import connectPg from 'connect-pg-simple';
-import { pool } from './db';
+import { users, palettes, type User, type InsertUser, type Palette, type InsertPalette } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
+import connectPg from "connect-pg-simple";
+import session from "express-session";
+import { pool } from "./db";
 
+// Session store for PostgreSQL
 const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
+  // User methods
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(insertUser: InsertUser): Promise<User>;
@@ -22,76 +24,109 @@ export interface IStorage {
   sessionStore: session.Store;
 }
 
-// Database storage implementation
 export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
   
   constructor() {
     this.sessionStore = new PostgresSessionStore({ 
       pool, 
-      createTableIfMissing: true 
+      createTableIfMissing: true,
+      tableName: 'user_sessions'
     });
   }
   
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    try {
+      const [user] = await db.select().from(users).where(eq(users.id, id));
+      return user || undefined;
+    } catch (error) {
+      console.error('Error getting user:', error);
+      return undefined;
+    }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user;
+    try {
+      const [user] = await db.select().from(users).where(eq(users.username, username));
+      return user || undefined;
+    } catch (error) {
+      console.error('Error getting user by username:', error);
+      return undefined;
+    }
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(insertUser)
-      .returning();
-    return user;
+    try {
+      const [user] = await db
+        .insert(users)
+        .values(insertUser)
+        .returning();
+      return user;
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
   }
   
   // Palette methods
   async getPalettes(userId?: number): Promise<Palette[]> {
-    if (userId) {
-      // Get palettes for a specific user
-      return await db
-        .select()
-        .from(palettes)
-        .where(eq(palettes.userId, userId))
-        .orderBy(palettes.createdAt);
-    } else {
-      // Get all palettes
-      return await db
-        .select()
-        .from(palettes)
-        .orderBy(palettes.createdAt);
+    try {
+      if (userId) {
+        return await db
+          .select()
+          .from(palettes)
+          .where(eq(palettes.userId, userId))
+          .orderBy(palettes.createdAt);
+      } else {
+        return await db
+          .select()
+          .from(palettes)
+          .orderBy(palettes.createdAt);
+      }
+    } catch (error) {
+      console.error('Error getting palettes:', error);
+      return [];
     }
   }
   
   async getPalette(id: number): Promise<Palette | undefined> {
-    const [palette] = await db
-      .select()
-      .from(palettes)
-      .where(eq(palettes.id, id));
-    return palette;
+    try {
+      const [palette] = await db
+        .select()
+        .from(palettes)
+        .where(eq(palettes.id, id));
+      return palette || undefined;
+    } catch (error) {
+      console.error('Error getting palette:', error);
+      return undefined;
+    }
   }
   
   async createPalette(insertPalette: InsertPalette): Promise<Palette> {
-    const [palette] = await db
-      .insert(palettes)
-      .values(insertPalette)
-      .returning();
-    return palette;
+    try {
+      const [palette] = await db
+        .insert(palettes)
+        .values(insertPalette)
+        .returning();
+      return palette;
+    } catch (error) {
+      console.error('Error creating palette:', error);
+      throw error;
+    }
   }
   
   async deletePalette(id: number): Promise<void> {
-    await db
-      .delete(palettes)
-      .where(eq(palettes.id, id));
+    try {
+      await db
+        .delete(palettes)
+        .where(eq(palettes.id, id));
+    } catch (error) {
+      console.error('Error deleting palette:', error);
+      throw error;
+    }
   }
 }
 
-// Create and export storage instance
+// Create and export a single instance of the storage implementation
 export const storage = new DatabaseStorage();

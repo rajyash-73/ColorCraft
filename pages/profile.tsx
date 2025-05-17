@@ -1,218 +1,181 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import type { NextPage } from 'next';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { Trash2, Eye, Clipboard, Check } from 'lucide-react';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import SEO from '../components/SEO';
-import Header from '../client/src/components/Header';
-import Footer from '../components/Footer';
+import Navigation from '../components/Navigation';
 import { useAuth } from '../client/src/hooks/use-auth';
-import { Loader2, Share2, Trash2, PlusCircle, Eye } from 'lucide-react';
-import { User, Palette, Color } from '../shared/schema';
+import { Color, Palette } from '../shared/schema';
 
 const ProfilePage: NextPage = () => {
   const router = useRouter();
-  const { user, isLoading, error } = useAuth();
-  const [palettes, setPalettes] = useState<Palette[]>([]);
-  const [fetchingPalettes, setFetchingPalettes] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [shareUrl, setShareUrl] = useState<string>('');
-  const [showShareModal, setShowShareModal] = useState(false);
-  const [deletingPaletteId, setDeletingPaletteId] = useState<number | null>(null);
+  const { user } = useAuth();
+  const [copiedId, setCopiedId] = useState<number | null>(null);
   
-  useEffect(() => {
-    // Redirect if not logged in
-    if (!isLoading && !user) {
+  // Redirect to login if not authenticated
+  if (!user) {
+    if (typeof window !== 'undefined') {
       router.push('/auth');
     }
-  }, [user, isLoading, router]);
-  
-  // Fetch user's palettes
-  useEffect(() => {
-    const fetchPalettes = async () => {
-      if (!user) return;
-      
-      try {
-        setFetchingPalettes(true);
-        const response = await fetch(`/api/palettes?userId=${user.id}`);
-        if (response.ok) {
-          const data = await response.json();
-          setPalettes(data);
-        } else {
-          console.error('Failed to fetch palettes:', await response.text());
-        }
-      } catch (err) {
-        console.error('Error fetching palettes:', err);
-      } finally {
-        setFetchingPalettes(false);
-      }
-    };
-    
-    fetchPalettes();
-  }, [user]);
-  
-  const handleDeletePalette = async (paletteId: number) => {
-    if (!user) return;
-    
-    try {
-      setDeletingPaletteId(paletteId);
-      const response = await fetch(`/api/palettes/${paletteId}`, {
-        method: 'DELETE',
-      });
-      
-      if (response.ok) {
-        // Remove from local state
-        setPalettes(palettes.filter(palette => palette.id !== paletteId));
-      } else {
-        console.error('Failed to delete palette:', await response.text());
-      }
-    } catch (err) {
-      console.error('Error deleting palette:', err);
-    } finally {
-      setDeletingPaletteId(null);
-    }
-  };
-  
-  const handleSharePalette = (paletteId: number) => {
-    const shareUrl = `${window.location.origin}/palette/${paletteId}`;
-    setShareUrl(shareUrl);
-    setShowShareModal(true);
-  };
-  
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(shareUrl)
-      .then(() => {
-        alert('Share link copied to clipboard!');
-        setShowShareModal(false);
-      })
-      .catch(err => {
-        console.error('Failed to copy:', err);
-      });
-  };
-  
-  // If loading auth state, show loading spinner
-  if (isLoading) {
-    return (
-      <div className="flex flex-col min-h-screen">
-        <SEO title="Loading User Profile | Coolors.in" />
-        <Header
-          onHelp={() => {}} 
-          onExport={() => {}} 
-          onSave={() => {}}
-          mobileMenuOpen={mobileMenuOpen}
-          toggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
-        />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <Loader2 className="h-10 w-10 animate-spin mx-auto text-blue-500" />
-            <p className="mt-4 text-lg">Loading your profile...</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-  
-  // If no user, render nothing (will be redirected)
-  if (!user) {
     return null;
   }
   
+  // Fetch user's palettes
+  const { data: palettes, isLoading, error, refetch } = useQuery<Palette[]>({
+    queryKey: ['/api/palettes'],
+    enabled: !!user,
+  });
+  
+  // Delete palette mutation
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/palettes/${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete palette');
+      }
+    },
+    onSuccess: () => {
+      // Refetch palettes after deletion
+      refetch();
+    },
+  });
+  
+  // Handle delete palette
+  const handleDelete = (id: number) => {
+    if (confirm('Are you sure you want to delete this palette?')) {
+      deleteMutation.mutate(id);
+    }
+  };
+  
+  // Handle copy share link
+  const handleCopyShareLink = (id: number) => {
+    const shareUrl = `${window.location.origin}/palette/${id}`;
+    navigator.clipboard.writeText(shareUrl);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+  
+  // Parse colors from JSON string
+  const parseColors = (colorsJson: string): Color[] => {
+    try {
+      return JSON.parse(colorsJson);
+    } catch (err) {
+      console.error('Error parsing colors:', err);
+      return [];
+    }
+  };
+  
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <>
       <SEO 
         title="My Profile | Coolors.in"
-        description="View and manage your saved color palettes on Coolors.in."
+        description="View and manage your saved color palettes on Coolors.in"
       />
       
-      <Header
-        onHelp={() => {}} 
-        onExport={() => {}} 
-        onSave={() => {}}
-        mobileMenuOpen={mobileMenuOpen}
-        toggleMobileMenu={() => setMobileMenuOpen(!mobileMenuOpen)}
-      />
-      
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">My Profile</h1>
-          <p className="text-gray-600 mt-2">Welcome back, {user.username}!</p>
-        </div>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Navigation />
         
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-semibold text-gray-800">My Saved Palettes</h2>
-            <Link 
-              href="/"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center"
-            >
-              <PlusCircle size={18} className="mr-2" />
-              Create New Palette
-            </Link>
+        <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900">My Palettes</h1>
+            <p className="text-gray-600 mt-2">
+              View, manage, and share your saved color palettes
+            </p>
           </div>
           
-          {fetchingPalettes ? (
-            <div className="text-center py-10">
-              <Loader2 className="h-8 w-8 animate-spin mx-auto text-blue-500" />
-              <p className="mt-2">Loading your palettes...</p>
+          {isLoading ? (
+            <div className="flex justify-center my-12">
+              <svg className="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
             </div>
-          ) : palettes.length > 0 ? (
+          ) : error ? (
+            <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-md">
+              <p className="text-red-700">
+                Error loading palettes. Please try again later.
+              </p>
+            </div>
+          ) : palettes && palettes.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {palettes.map(palette => {
-                // Parse colors from string to Color array
-                const colors: Color[] = JSON.parse(palette.colors);
+              {palettes.map((palette) => {
+                const colors = parseColors(palette.colors);
                 
                 return (
                   <div key={palette.id} className="bg-white rounded-lg shadow-md overflow-hidden">
                     {/* Palette preview */}
-                    <div className="h-20 flex">
-                      {colors.map((color, idx) => (
-                        <div 
-                          key={idx}
-                          className="flex-1" 
+                    <div className="h-24 flex">
+                      {colors.map((color, index) => (
+                        <div
+                          key={index}
+                          className="flex-1"
                           style={{ backgroundColor: color.hex }}
                         />
                       ))}
                     </div>
                     
-                    {/* Palette details */}
+                    {/* Palette info */}
                     <div className="p-4">
-                      <h3 className="font-semibold text-lg mb-1">{palette.name}</h3>
-                      <p className="text-gray-500 text-sm mb-3">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                        {palette.name}
+                      </h3>
+                      
+                      <p className="text-sm text-gray-500 mb-4">
                         Created on {new Date(palette.createdAt).toLocaleDateString()}
                       </p>
                       
                       {/* Action buttons */}
-                      <div className="flex justify-between mt-2">
-                        <div className="space-x-2">
-                          <button
-                            onClick={() => handleSharePalette(palette.id)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
-                            aria-label="Share palette"
-                          >
-                            <Share2 size={18} />
-                          </button>
-                          
-                          <button
-                            onClick={() => handleDeletePalette(palette.id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
-                            aria-label="Delete palette"
-                            disabled={deletingPaletteId === palette.id}
-                          >
-                            {deletingPaletteId === palette.id ? (
-                              <Loader2 size={18} className="animate-spin" />
-                            ) : (
-                              <Trash2 size={18} />
-                            )}
-                          </button>
-                        </div>
-                        
-                        <Link 
+                      <div className="flex flex-wrap gap-2">
+                        <Link
                           href={`/palette/${palette.id}`}
-                          className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md text-sm"
+                          className="inline-flex items-center px-3 py-1.5 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors"
                         >
-                          <Eye size={16} className="mr-1" />
+                          <Eye size={16} className="mr-1.5" />
                           View
                         </Link>
+                        
+                        <Link
+                          href={`/visualizer?palette=${encodeURIComponent(palette.colors)}`}
+                          className="inline-flex items-center px-3 py-1.5 text-sm bg-purple-50 text-purple-700 rounded-md hover:bg-purple-100 transition-colors"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="9" y1="21" x2="9" y2="9"></line>
+                          </svg>
+                          Visualize
+                        </Link>
+                        
+                        <button
+                          onClick={() => handleCopyShareLink(palette.id)}
+                          className="inline-flex items-center px-3 py-1.5 text-sm bg-green-50 text-green-700 rounded-md hover:bg-green-100 transition-colors"
+                        >
+                          {copiedId === palette.id ? (
+                            <>
+                              <Check size={16} className="mr-1.5" />
+                              Copied!
+                            </>
+                          ) : (
+                            <>
+                              <Clipboard size={16} className="mr-1.5" />
+                              Share
+                            </>
+                          )}
+                        </button>
+                        
+                        <button
+                          onClick={() => handleDelete(palette.id)}
+                          className="inline-flex items-center px-3 py-1.5 text-sm bg-red-50 text-red-700 rounded-md hover:bg-red-100 transition-colors ml-auto"
+                          disabled={deleteMutation.isPending}
+                        >
+                          <Trash2 size={16} className="mr-1.5" />
+                          Delete
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -220,56 +183,22 @@ const ProfilePage: NextPage = () => {
               })}
             </div>
           ) : (
-            <div className="bg-white rounded-lg shadow-md p-8 text-center">
-              <p className="text-gray-600 mb-4">You haven't saved any palettes yet.</p>
-              <Link 
+            <div className="bg-white rounded-lg shadow-md p-6 text-center">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No palettes saved yet</h3>
+              <p className="text-gray-600 mb-4">
+                Start creating and saving color palettes to view them here.
+              </p>
+              <Link
                 href="/"
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors inline-flex items-center"
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
-                <PlusCircle size={18} className="mr-2" />
-                Create Your First Palette
+                Create a Palette
               </Link>
             </div>
           )}
-        </div>
-      </main>
-      
-      <Footer />
-      
-      {/* Share Modal */}
-      {showShareModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4">Share Palette</h3>
-            <p className="text-gray-600 mb-4">Copy the link below to share this palette with others:</p>
-            
-            <div className="flex">
-              <input
-                type="text"
-                value={shareUrl}
-                readOnly
-                className="flex-1 border border-gray-300 p-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                onClick={copyToClipboard}
-                className="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-700"
-              >
-                Copy
-              </button>
-            </div>
-            
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setShowShareModal(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+        </main>
+      </div>
+    </>
   );
 };
 

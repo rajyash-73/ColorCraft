@@ -1,13 +1,12 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { Express } from 'express';
+import { Express, Request } from 'express';
 import session from 'express-session';
 import { scrypt, randomBytes, timingSafeEqual } from 'crypto';
 import { promisify } from 'util';
 import { storage } from './storage';
-import { User } from '../shared/schema';
+import { User } from '@shared/schema';
 
-// Extend Express.Request type to include user property
 declare global {
   namespace Express {
     interface User extends User {}
@@ -17,17 +16,14 @@ declare global {
   }
 }
 
-// Convert callback-based scrypt to Promise-based
 const scryptAsync = promisify(scrypt);
 
-// Password hashing function
 async function hashPassword(password: string) {
   const salt = randomBytes(16).toString('hex');
   const buf = (await scryptAsync(password, salt, 64)) as Buffer;
   return `${buf.toString('hex')}.${salt}`;
 }
 
-// Password verification function
 async function comparePasswords(supplied: string, stored: string) {
   const [hashed, salt] = stored.split('.');
   const hashedBuf = Buffer.from(hashed, 'hex');
@@ -35,128 +31,118 @@ async function comparePasswords(supplied: string, stored: string) {
   return timingSafeEqual(hashedBuf, suppliedBuf);
 }
 
-// Set up authentication and routes
 export function setupAuth(app: Express) {
-  // Session configuration
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || 'keyboard cat', // Change in production
+    secret: process.env.SESSION_SECRET || 'coolors-app-secret-key',
     resave: false,
     saveUninitialized: false,
     store: storage.sessionStore,
     cookie: {
       secure: process.env.NODE_ENV === 'production',
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
     }
   };
 
-  // Trust first proxy if in production
-  if (process.env.NODE_ENV === 'production') {
-    app.set('trust proxy', 1);
-  }
-
-  // Set up session and passport middleware
+  app.set('trust proxy', 1);
   app.use(session(sessionSettings));
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Configure local strategy
   passport.use(
     new LocalStrategy(async (username, password, done) => {
       try {
         const user = await storage.getUserByUsername(username);
         
-        // If user not found or password doesn't match
-        if (!user || !(await comparePasswords(password, user.password))) {
+        if (!user) {
           return done(null, false, { message: 'Invalid username or password' });
         }
         
-        // Success
+        const isValidPassword = await comparePasswords(password, user.password);
+        
+        if (!isValidPassword) {
+          return done(null, false, { message: 'Invalid username or password' });
+        }
+        
         return done(null, user);
-      } catch (err) {
-        return done(err);
+      } catch (error) {
+        return done(error);
       }
-    })
+    }),
   );
 
-  // Serialize user to session
   passport.serializeUser((user, done) => {
     done(null, user.id);
   });
 
-  // Deserialize user from session
   passport.deserializeUser(async (id: number, done) => {
     try {
       const user = await storage.getUser(id);
       done(null, user);
-    } catch (err) {
-      done(err);
+    } catch (error) {
+      done(error);
     }
   });
 
-  // Authentication API endpoints
+  // User registration
   app.post('/api/register', async (req, res, next) => {
     try {
+      const { username, password } = req.body;
+      
       // Check if username already exists
-      const existingUser = await storage.getUserByUsername(req.body.username);
+      const existingUser = await storage.getUserByUsername(username);
       if (existingUser) {
         return res.status(400).json({ error: 'Username already exists' });
       }
-
-      // Create new user with hashed password
+      
+      // Create user with hashed password
+      const hashedPassword = await hashPassword(password);
       const user = await storage.createUser({
-        ...req.body,
-        password: await hashPassword(req.body.password),
+        username,
+        password: hashedPassword,
       });
-
-      // Log user in
+      
+      // Log in the new user
       req.login(user, (err) => {
         if (err) return next(err);
-        
-        // Return user data (excluding password)
-        const { password, ...userData } = user;
-        res.status(201).json(userData);
+        res.status(201).json(user);
       });
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      console.error('Registration error:', error);
+      res.status(500).json({ error: 'Failed to register user' });
     }
   });
 
-  // Login endpoint
+  // User login
   app.post('/api/login', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
       if (err) return next(err);
-      
       if (!user) {
-        return res.status(401).json({ error: info?.message || 'Invalid credentials' });
+        return res.status(401).json({ error: info?.message || 'Authentication failed' });
       }
       
       req.login(user, (err) => {
         if (err) return next(err);
-        
-        // Return user data (excluding password)
-        const { password, ...userData } = user;
-        res.status(200).json(userData);
+        res.json(user);
       });
     })(req, res, next);
   });
 
-  // Logout endpoint
-  app.post('/api/logout', (req, res, next) => {
+  // User logout
+  app.post('/api/logout', (req, res) => {
     req.logout((err) => {
-      if (err) return next(err);
+      if (err) {
+        return res.status(500).json({ error: 'Failed to logout' });
+      }
       res.status(200).json({ message: 'Logged out successfully' });
     });
   });
 
-  // Current user endpoint
+  // Get current user
   app.get('/api/user', (req, res) => {
     if (!req.isAuthenticated()) {
       return res.status(401).json({ error: 'Not authenticated' });
     }
     
-    // Return user data (excluding password)
-    const { password, ...userData } = req.user;
-    res.json(userData);
+    res.json(req.user);
   });
 }
