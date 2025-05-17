@@ -13,7 +13,6 @@ import Footer from '@/components/Footer';
 import { usePalette, colorTheoryOptions, ColorTheory } from '@/contexts/PaletteContext';
 import { Link } from 'wouter';
 import { useAuth } from './hooks/use-auth';
-import SavePaletteModal from '../components/SavePaletteModal';
 
 // Toast notification component
 function Toast({ message, onClose }: { message: string; onClose: () => void }) {
@@ -63,12 +62,12 @@ function PaletteApp() {
   } = usePalette();
   
   const { user } = useAuth();
+  const [, navigate] = useLocation();
   const [toast, setToast] = useState<string | null>(null);
   const [showInfoTooltip, setShowInfoTooltip] = useState<number | null>(null);
   const [showAdjustModal, setShowAdjustModal] = useState<boolean>(false);
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [showSavePaletteModal, setShowSavePaletteModal] = useState<boolean>(false);
   const paletteRef = useRef<HTMLDivElement>(null);
   
   // Handle spacebar for generating new palette
@@ -293,7 +292,15 @@ function PaletteApp() {
           
           <button 
             className="bg-white text-gray-700 border border-gray-200 px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:bg-gray-50 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
-            onClick={() => setShowSavePaletteModal(true)}
+            onClick={() => {
+              if (user) {
+                // User is logged in, show a message about the feature
+                setToast("Palette saving available in your profile!");
+              } else {
+                // Redirect to auth page
+                navigate('/auth');
+              }
+            }}
           >
             <Save size={18} className="sm:w-5 sm:h-5" />
             <span>Save Palette</span>
@@ -504,53 +511,10 @@ function PaletteApp() {
 
 // Main component export
 export default function TestApp() {
-  const [showSavePaletteModal, setShowSavePaletteModal] = useState(false);
-  const [currentPalette, setCurrentPalette] = useState<Color[]>([]);
-  const [savePaletteSuccess, setSavePaletteSuccess] = useState(false);
-  
-  // Event handler for the custom save palette event
-  useEffect(() => {
-    const handleSavePalette = (event: CustomEvent<Color[]>) => {
-      setCurrentPalette(event.detail);
-      setShowSavePaletteModal(true);
-    };
-    
-    // Add event listener for custom save palette event
-    document.addEventListener('savePalette', handleSavePalette as EventListener);
-    
-    return () => {
-      document.removeEventListener('savePalette', handleSavePalette as EventListener);
-    };
-  }, []);
-  
   return (
     <>
       <PaletteApp />
       <WelcomeModal />
-      
-      {/* Save Palette Modal */}
-      {showSavePaletteModal && (
-        <SavePaletteModal
-          isOpen={showSavePaletteModal}
-          onClose={() => setShowSavePaletteModal(false)} 
-          palette={currentPalette}
-          onSuccess={() => {
-            setShowSavePaletteModal(false);
-            setSavePaletteSuccess(true);
-            setTimeout(() => setSavePaletteSuccess(false), 3000);
-          }}
-        />
-      )}
-      
-      {/* Success Notification */}
-      {savePaletteSuccess && (
-        <div className="fixed bottom-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-md flex items-center z-50">
-          <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-          </svg>
-          <span>Palette saved successfully!</span>
-        </div>
-      )}
     </>
   );
 }
