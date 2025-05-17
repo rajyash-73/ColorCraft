@@ -1,3 +1,4 @@
+import React from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
@@ -33,13 +34,11 @@ export default function SEO({
 
   return (
     <Head>
-      {/* Primary meta tags */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
       <link rel="canonical" href={currentUrl} />
       
-      {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />
       <meta property="og:url" content={currentUrl} />
       <meta property="og:title" content={fullTitle} />
@@ -47,14 +46,12 @@ export default function SEO({
       <meta property="og:image" content={`${siteUrl}${ogImage}`} />
       <meta property="og:site_name" content="Coolors.in" />
       
-      {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:url" content={currentUrl} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={`${siteUrl}${ogImage}`} />
       
-      {/* Structured data */}
       {structuredData && (
         <script
           type="application/ld+json"
@@ -64,7 +61,6 @@ export default function SEO({
         />
       )}
       
-      {/* Additional meta tags */}
       {children}
     </Head>
   );
