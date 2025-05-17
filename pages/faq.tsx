@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import type { NextPage } from 'next';
-import Head from 'next/head';
 import Link from 'next/link';
 import Header from '../client/src/components/Header';
+import SEO from '../components/SEO';
+import { generateFAQSchema, generateBreadcrumbSchema } from '../utils/structuredData';
 
 // Define the FAQ data structure
 type FAQ = {
@@ -119,34 +120,36 @@ const FAQPage: NextPage = () => {
     },
   ];
 
+  // Create plain text versions of answers for structured data
+  const plainTextFaqs = faqs.map(faq => ({
+    question: faq.question,
+    answer: typeof faq.answer === 'string' 
+      ? faq.answer 
+      : 'See our FAQ page for more details.'
+  }));
+
+  // Define breadcrumb for structured data
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: 'FAQ', url: '/faq' }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Head>
-        <title>FAQ - Coolors.in | Color Palette Generator</title>
-        <meta name="description" content="Find answers to frequently asked questions about Coolors.in's color palette generator, features, and how to make the most of our tools." />
-        <meta name="keywords" content="color palette FAQ, color generator help, Coolors.in tutorial" />
-        <link rel="canonical" href="https://coolors.in/faq" />
+      <SEO
+        title="FAQ - Coolors.in | Color Palette Generator"
+        description="Find answers to frequently asked questions about Coolors.in's color palette generator, features, and how to make the most of our tools."
+        keywords="color palette FAQ, color generator help, Coolors.in tutorial, color scheme questions, palette creator help"
+        canonical="https://coolors.in/faq"
+        structuredData={generateFAQSchema(plainTextFaqs)}
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'FAQPage',
-              'mainEntity': faqs.map(faq => ({
-                '@type': 'Question',
-                'name': faq.question,
-                'acceptedAnswer': {
-                  '@type': 'Answer',
-                  // Convert React nodes to plain text for structured data
-                  'text': typeof faq.answer === 'string' 
-                    ? faq.answer 
-                    : 'See our FAQ page for more details.'
-                }
-              }))
-            })
+            __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbs))
           }}
         />
-      </Head>
+      </SEO>
       
       <Header 
         onHelp={() => {}} 
@@ -157,29 +160,49 @@ const FAQPage: NextPage = () => {
       />
       
       <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8 mt-4">Frequently Asked Questions</h1>
+        {/* Breadcrumb navigation for better user experience and SEO */}
+        <nav aria-label="Breadcrumb" className="mb-6">
+          <ol className="flex text-sm text-gray-500">
+            <li>
+              <Link href="/" className="hover:text-blue-600 transition-colors">
+                Home
+              </Link>
+              <span className="mx-2" aria-hidden="true">/</span>
+            </li>
+            <li aria-current="page" className="font-medium text-gray-700">FAQ</li>
+          </ol>
+        </nav>
         
-        <div className="rounded-lg bg-white shadow-md">
-          {faqs.map((faq, index) => (
-            <div 
-              key={index} 
-              className={`p-5 border-b border-gray-200 ${index === faqs.length - 1 ? 'border-b-0' : ''}`}
-            >
-              <h2 className="text-xl font-semibold text-gray-800 mb-3">{faq.question}</h2>
-              <div className="text-gray-600 leading-relaxed">{faq.answer}</div>
-            </div>
-          ))}
-        </div>
+        <header>
+          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8 mt-4">Frequently Asked Questions</h1>
+        </header>
         
-        <div className="mt-10 bg-blue-50 rounded-lg p-6 shadow-sm">
-          <h2 className="text-xl font-semibold text-blue-800 mb-3">Still need help?</h2>
-          <p className="text-blue-700 mb-4">
-            If you couldn't find the answer you're looking for, check out our <Link href="/designers-guide" className="text-blue-600 hover:text-blue-800 underline">Designer's Guide</Link> for more in-depth information about color theory and best practices.
-          </p>
-          <p className="text-blue-700">
-            For additional support, contact us at <a href="mailto:coolors.in@gmail.com" className="text-blue-600 hover:text-blue-800 underline">coolors.in@gmail.com</a>
-          </p>
-        </div>
+        <section aria-labelledby="faq-section">
+          <div className="rounded-lg bg-white shadow-md">
+            {faqs.map((faq, index) => (
+              <article 
+                key={index} 
+                className={`p-5 border-b border-gray-200 ${index === faqs.length - 1 ? 'border-b-0' : ''}`}
+                id={`faq-${index}`}
+              >
+                <h2 className="text-xl font-semibold text-gray-800 mb-3">{faq.question}</h2>
+                <div className="text-gray-600 leading-relaxed prose max-w-none">{faq.answer}</div>
+              </article>
+            ))}
+          </div>
+        </section>
+        
+        <section aria-labelledby="help-section" className="mt-10">
+          <div className="bg-blue-50 rounded-lg p-6 shadow-sm">
+            <h2 id="help-section" className="text-xl font-semibold text-blue-800 mb-3">Still need help?</h2>
+            <p className="text-blue-700 mb-4">
+              If you couldn't find the answer you're looking for, check out our <Link href="/designers-guide" className="text-blue-600 hover:text-blue-800 underline focus:ring-2 focus:ring-blue-500">Designer's Guide</Link> for more in-depth information about color theory and best practices.
+            </p>
+            <p className="text-blue-700">
+              For additional support, contact us at <a href="mailto:coolors.in@gmail.com" className="text-blue-600 hover:text-blue-800 underline focus:ring-2 focus:ring-blue-500">coolors.in@gmail.com</a>
+            </p>
+          </div>
+        </section>
       </main>
       
       <footer className="bg-gray-800 text-white py-8 mt-10">
@@ -190,20 +213,30 @@ const FAQPage: NextPage = () => {
               <p className="text-gray-400 text-sm mt-1">The super fast color palette generator</p>
             </div>
             
-            <div className="flex flex-wrap justify-center space-x-6">
-              <Link href="/" className="text-gray-300 hover:text-white transition-colors">
-                Home
-              </Link>
-              <Link href="/designers-guide" className="text-gray-300 hover:text-white transition-colors">
-                Designer's Guide
-              </Link>
-              <Link href="/faq" className="text-gray-300 hover:text-white transition-colors">
-                FAQ
-              </Link>
-              <Link href="/privacy-policy" className="text-gray-300 hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-            </div>
+            <nav aria-label="Footer Navigation">
+              <ul className="flex flex-wrap justify-center space-x-6">
+                <li>
+                  <Link href="/" className="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/designers-guide" className="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Designer's Guide
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq" className="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <span aria-current="page">FAQ</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy-policy" className="text-gray-300 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Privacy Policy
+                  </Link>
+                </li>
+              </ul>
+            </nav>
           </div>
           
           <div className="mt-8 text-center text-gray-400 text-sm">
