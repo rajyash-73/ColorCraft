@@ -43,3 +43,15 @@ export type Color = {
   };
   locked: boolean;
 };
+
+// Relations setup for users and palettes
+export const usersRelations = relations(users, ({ many }) => ({
+  palettes: many(palettes)
+}));
+
+export const palettesRelations = relations(palettes, ({ one }) => ({
+  user: one(users, {
+    fields: [palettes.userId],
+    references: [users.id]
+  })
+}));
