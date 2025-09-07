@@ -5,11 +5,8 @@ import { z } from "zod";
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
-  username: text("username"),
-  password: text("password"), // Optional for OAuth users
-  googleId: text("google_id"), // For Google OAuth
-  provider: text("provider").notNull().default("email"), // "email" or "google"
-  profileImageUrl: text("profile_image_url"),
+  username: text("username").notNull(),
+  password: text("password").notNull(), // Required for email/password auth
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

@@ -1,6 +1,5 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Express } from "express";
 import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
@@ -77,52 +76,6 @@ export function setupAuth(app: Express) {
     )
   );
 
-  // Google OAuth Strategy
-  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-    passport.use(
-      new GoogleStrategy(
-        {
-          clientID: process.env.GOOGLE_CLIENT_ID,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-          callbackURL: "/api/auth/google/callback",
-        },
-        async (accessToken, refreshToken, profile, done) => {
-          try {
-            const email = profile.emails?.[0]?.value;
-            if (!email) {
-              return done(new Error("No email found in Google profile"));
-            }
-
-            // Check if user already exists with this Google ID
-            let user = await storage.getUserByGoogleId(profile.id);
-            
-            if (!user) {
-              // Check if user exists with this email (from email/password registration)
-              user = await storage.getUserByEmail(email);
-              
-              if (user) {
-                // Link Google account to existing email account
-                // This would require updating the user record - we'll keep them separate for now
-                return done(null, false, { message: "Email already registered with password. Please sign in with email/password." });
-              } else {
-                // Create new user from Google profile
-                user = await storage.createUserFromGoogle({
-                  email,
-                  googleId: profile.id,
-                  username: profile.displayName || email.split('@')[0],
-                  profileImageUrl: profile.photos?.[0]?.value,
-                });
-              }
-            }
-
-            return done(null, user);
-          } catch (error) {
-            return done(error);
-          }
-        }
-      )
-    );
-  }
 
   // Passport serialization
   passport.serializeUser((user, done) => done(null, user.id));
@@ -155,7 +108,6 @@ export function setupAuth(app: Express) {
         email: validatedData.email,
         username: validatedData.username,
         password: hashedPassword,
-        provider: "email",
       });
 
       // Log user in
@@ -166,8 +118,6 @@ export function setupAuth(app: Express) {
             id: user.id, 
             email: user.email, 
             username: user.username,
-            provider: user.provider,
-            profileImageUrl: user.profileImageUrl,
           } 
         });
       });
@@ -197,8 +147,6 @@ export function setupAuth(app: Express) {
               id: user.id, 
               email: user.email, 
               username: user.username,
-              provider: user.provider,
-              profileImageUrl: user.profileImageUrl,
             } 
           });
         });
@@ -211,19 +159,6 @@ export function setupAuth(app: Express) {
     }
   });
 
-  // Google OAuth routes
-  if (process.env.GOOGLE_CLIENT_ID) {
-    app.get("/api/auth/google",
-      passport.authenticate("google", { scope: ["profile", "email"] })
-    );
-
-    app.get("/api/auth/google/callback",
-      passport.authenticate("google", { failureRedirect: "/auth?error=google_auth_failed" }),
-      (req, res) => {
-        res.redirect("/"); // Redirect to home page on successful login
-      }
-    );
-  }
 
   // Logout endpoint
   app.post("/api/auth/logout", (req, res, next) => {
@@ -245,8 +180,6 @@ export function setupAuth(app: Express) {
         id: user.id,
         email: user.email,
         username: user.username,
-        provider: user.provider,
-        profileImageUrl: user.profileImageUrl,
       }
     });
   });
