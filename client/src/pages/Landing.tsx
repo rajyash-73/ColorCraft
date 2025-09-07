@@ -66,9 +66,9 @@ export default function Landing() {
           {/* Secondary Actions */}
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/pricing">
-              <div className="flex items-center gap-2 px-6 py-3 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer">
-                <span>💎</span>
-                <span>Premium Features</span>
+              <div className="flex items-center gap-2 px-6 py-3 bg-green-50 text-green-600 hover:bg-green-100 rounded-lg transition-colors cursor-pointer">
+                <span>🎉</span>
+                <span>All Features Free</span>
               </div>
             </Link>
             <Link href="/designers-guide">
