@@ -1,11 +1,17 @@
-import { pgTable, text, serial, integer, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  email: text("email").notNull().unique(),
+  username: text("username"),
+  password: text("password"), // Optional for OAuth users
+  googleId: text("google_id"), // For Google OAuth
+  provider: text("provider").notNull().default("email"), // "email" or "google"
+  profileImageUrl: text("profile_image_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const palettes = pgTable("palettes", {
@@ -16,9 +22,21 @@ export const palettes = pgTable("palettes", {
   createdAt: text("created_at").notNull(),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const loginUserSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export const registerUserSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  username: z.string().min(2, "Username must be at least 2 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 export const insertPaletteSchema = createInsertSchema(palettes).pick({
@@ -29,6 +47,8 @@ export const insertPaletteSchema = createInsertSchema(palettes).pick({
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type LoginUser = z.infer<typeof loginUserSchema>;
+export type RegisterUser = z.infer<typeof registerUserSchema>;
 export type User = typeof users.$inferSelect;
 
 export type InsertPalette = z.infer<typeof insertPaletteSchema>;
