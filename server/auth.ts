@@ -7,7 +7,7 @@ import { promisify } from "util";
 import { storage } from "./storage";
 import { User as DatabaseUser } from "@shared/schema";
 import { ZodError } from "zod";
-import { registerUserSchema, loginUserSchema } from "@shared/schema";
+import { registerUserSchema, loginUserSchema, createPaletteSchema } from "../shared/schema";
 
 declare global {
   namespace Express {
@@ -182,6 +182,104 @@ export function setupAuth(app: Express) {
         username: user.username,
       }
     });
+  });
+
+  // Middleware to check authentication
+  const requireAuthMiddleware = (req: any, res: any, next: any) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+    next();
+  };
+
+  // Palette routes
+  app.get("/api/palettes", requireAuthMiddleware, async (req, res) => {
+    try {
+      const palettes = await storage.getPalettes(req.user.id);
+      res.json(palettes);
+    } catch (error) {
+      console.error("Error fetching palettes:", error);
+      res.status(500).json({ error: "Failed to fetch palettes" });
+    }
+  });
+
+  app.post("/api/palettes", requireAuthMiddleware, async (req, res) => {
+    try {
+      const validatedData = createPaletteSchema.parse(req.body);
+      const palette = await storage.createPalette({
+        ...validatedData,
+        userId: req.user.id,
+      });
+      res.status(201).json(palette);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ error: "Invalid palette data", details: error.errors });
+      }
+      console.error("Error creating palette:", error);
+      res.status(500).json({ error: "Failed to create palette" });
+    }
+  });
+
+  app.get("/api/palettes/:id", requireAuthMiddleware, async (req, res) => {
+    try {
+      const paletteId = parseInt(req.params.id);
+      if (isNaN(paletteId)) {
+        return res.status(400).json({ error: "Invalid palette ID" });
+      }
+
+      const palette = await storage.getPalette(paletteId, req.user.id);
+      if (!palette) {
+        return res.status(404).json({ error: "Palette not found" });
+      }
+
+      res.json(palette);
+    } catch (error) {
+      console.error("Error fetching palette:", error);
+      res.status(500).json({ error: "Failed to fetch palette" });
+    }
+  });
+
+  app.put("/api/palettes/:id", requireAuthMiddleware, async (req, res) => {
+    try {
+      const paletteId = parseInt(req.params.id);
+      if (isNaN(paletteId)) {
+        return res.status(400).json({ error: "Invalid palette ID" });
+      }
+
+      const validatedData = createPaletteSchema.partial().parse(req.body);
+      const palette = await storage.updatePalette(paletteId, req.user.id, validatedData);
+      
+      if (!palette) {
+        return res.status(404).json({ error: "Palette not found" });
+      }
+
+      res.json(palette);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.status(400).json({ error: "Invalid palette data", details: error.errors });
+      }
+      console.error("Error updating palette:", error);
+      res.status(500).json({ error: "Failed to update palette" });
+    }
+  });
+
+  app.delete("/api/palettes/:id", requireAuthMiddleware, async (req, res) => {
+    try {
+      const paletteId = parseInt(req.params.id);
+      if (isNaN(paletteId)) {
+        return res.status(400).json({ error: "Invalid palette ID" });
+      }
+
+      const success = await storage.deletePalette(paletteId, req.user.id);
+      if (!success) {
+        return res.status(404).json({ error: "Palette not found" });
+      }
+
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting palette:", error);
+      res.status(500).json({ error: "Failed to delete palette" });
+    }
   });
 }
 

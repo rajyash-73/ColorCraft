@@ -1,6 +1,6 @@
-import { users, palettes, type User, type InsertUser, type Palette, type InsertPalette, type RegisterUser } from "@shared/schema";
+import { users, palettes, type User, type InsertUser, type Palette, type InsertPalette, type CreatePalette } from "../shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 
@@ -12,7 +12,10 @@ export interface IStorage {
   
   // Palette operations
   getPalettes(userId: number): Promise<Palette[]>;
+  getPalette(id: number, userId: number): Promise<Palette | undefined>;
   createPalette(palette: InsertPalette): Promise<Palette>;
+  updatePalette(id: number, userId: number, updates: Partial<CreatePalette>): Promise<Palette | undefined>;
+  deletePalette(id: number, userId: number): Promise<boolean>;
   
   // Session store
   sessionStore: session.Store;
@@ -48,18 +51,78 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPalettes(userId: number): Promise<Palette[]> {
-    return await db
+    const results = await db
       .select()
       .from(palettes)
       .where(eq(palettes.userId, userId));
+    
+    // Parse colors from JSON strings back to arrays
+    return results.map(palette => ({
+      ...palette,
+      colors: JSON.parse(palette.colors),
+    }));
+  }
+
+  async getPalette(id: number, userId: number): Promise<Palette | undefined> {
+    const [palette] = await db
+      .select()
+      .from(palettes)
+      .where(and(eq(palettes.id, id), eq(palettes.userId, userId)));
+    
+    if (!palette) return undefined;
+    
+    // Parse colors from JSON string back to array
+    return {
+      ...palette,
+      colors: JSON.parse(palette.colors),
+    };
   }
 
   async createPalette(paletteData: InsertPalette): Promise<Palette> {
+    const paletteToInsert = {
+      ...paletteData,
+      colors: JSON.stringify(paletteData.colors), // Convert array to JSON string
+    };
+    
     const [palette] = await db
       .insert(palettes)
-      .values(paletteData)
+      .values(paletteToInsert)
       .returning();
-    return palette;
+    
+    // Parse colors back to array for return
+    return {
+      ...palette,
+      colors: JSON.parse(palette.colors),
+    };
+  }
+
+  async updatePalette(id: number, userId: number, updates: Partial<CreatePalette>): Promise<Palette | undefined> {
+    const updateData = {
+      ...updates,
+      colors: updates.colors ? JSON.stringify(updates.colors) : undefined,
+      updatedAt: new Date(),
+    };
+    
+    const [palette] = await db
+      .update(palettes)
+      .set(updateData)
+      .where(and(eq(palettes.id, id), eq(palettes.userId, userId)))
+      .returning();
+    
+    if (!palette) return undefined;
+    
+    // Parse colors from JSON string back to array
+    return {
+      ...palette,
+      colors: JSON.parse(palette.colors),
+    };
+  }
+
+  async deletePalette(id: number, userId: number): Promise<boolean> {
+    const result = await db
+      .delete(palettes)
+      .where(and(eq(palettes.id, id), eq(palettes.userId, userId)));
+    return (result.rowCount || 0) > 0;
   }
 }
 
