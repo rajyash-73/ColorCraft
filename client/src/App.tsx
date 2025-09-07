@@ -3,7 +3,8 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
-import Home from "@/pages/Home";
+import AuthPage from "@/pages/auth-page";
+import TestApp from "./TestApp";
 import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
 import PaletteVisualizerNew from "@/pages/palette-visualizer-new";
@@ -13,7 +14,6 @@ import DesignersGuide from "@/pages/designers-guide";
 import { useEffect } from "react";
 import { AuthProvider } from "./hooks/use-auth";
 import { PaletteProvider } from "./contexts/PaletteContext";
-import TestApp from "./TestApp";
 import { HelmetProvider } from 'react-helmet-async';
 
 // Components that use the PaletteContext
@@ -21,6 +21,7 @@ const PaletteRoutes = () => {
   return (
     <Switch>
       <Route path="/" component={TestApp} />
+      <Route path="/auth" component={AuthPage} />
       <Route path="/image-palette" component={ImagePalette} />
       <Route path="/visualize" component={PaletteVisualizerNew} />
       <Route path="/visualize-old" component={PaletteVisualizer} />

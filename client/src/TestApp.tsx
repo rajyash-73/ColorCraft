@@ -10,6 +10,7 @@ import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
 import TrendingPalettes from '@/components/TrendingPalettes';
 import WelcomeModal from '@/components/modals/WelcomeModal';
 import Footer from '@/components/Footer';
+import Header from '@/components/Header';
 import { usePalette, colorTheoryOptions, ColorTheory } from '@/contexts/PaletteContext';
 import { Link } from 'wouter';
 
@@ -65,6 +66,7 @@ function PaletteApp() {
   const [showAdjustModal, setShowAdjustModal] = useState<boolean>(false);
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const paletteRef = useRef<HTMLDivElement>(null);
   
   // Handle spacebar for generating new palette
@@ -146,6 +148,28 @@ function PaletteApp() {
     // Navigate to visualizer page
     window.location.href = '/visualize';
   };
+
+  const handleSave = () => {
+    // Save palette to localStorage
+    const savedPalettes = JSON.parse(localStorage.getItem('savedPalettes') || '[]');
+    const newPalette = {
+      id: Date.now(),
+      colors: palette.map(c => c.hex),
+      created: new Date().toISOString()
+    };
+    savedPalettes.push(newPalette);
+    localStorage.setItem('savedPalettes', JSON.stringify(savedPalettes));
+    setToast('Palette saved to local storage!');
+  };
+
+  const handleHelp = () => {
+    // Show help/welcome modal or navigate to help page
+    window.location.href = '/faq';
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
   
   // Drag and drop handlers
   const handleDragStart = (index: number) => {
@@ -171,9 +195,20 @@ function PaletteApp() {
   };
   
   return (
-    <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
-      {/* Hero Section */}
-      <header className="relative mb-8 sm:mb-12 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 sm:p-8 overflow-hidden shadow-sm">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      {/* Header */}
+      <Header 
+        onHelp={handleHelp}
+        onExport={exportPalette}
+        onSave={handleSave}
+        onVisualize={handleVisualize}
+        mobileMenuOpen={mobileMenuOpen}
+        toggleMobileMenu={toggleMobileMenu}
+      />
+      
+      <div className="p-4 md:p-8 flex flex-col flex-1">
+        {/* Hero Section */}
+        <header className="relative mb-8 sm:mb-12 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 sm:p-8 overflow-hidden shadow-sm">
         {/* Decorative Elements */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10">
           <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-500 rounded-full"></div>
@@ -473,19 +508,20 @@ function PaletteApp() {
         </div>
       </div>
       
-      {/* Footer */}
-      <Footer className="mt-8" />
-      
-      {/* Modals */}
-      {showAdjustModal && activeColorIndex !== null && (
-        <ColorAdjustmentModal 
-          color={palette[activeColorIndex]}
-          onClose={() => setShowAdjustModal(false)}
-          onApply={handleApplyColorAdjustment}
-        />
-      )}
-      
-      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+        {/* Footer */}
+        <Footer className="mt-8" />
+        
+        {/* Modals */}
+        {showAdjustModal && activeColorIndex !== null && (
+          <ColorAdjustmentModal 
+            color={palette[activeColorIndex]}
+            onClose={() => setShowAdjustModal(false)}
+            onApply={handleApplyColorAdjustment}
+          />
+        )}
+        
+        {toast && <Toast message={toast} onClose={() => setToast(null)} />}
+      </div>
     </div>
   );
 }
