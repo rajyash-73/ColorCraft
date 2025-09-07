@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
+import LandingPage from "@/pages/landing-page";
 import TestApp from "./TestApp";
 import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
@@ -12,17 +13,29 @@ import PrivacyPolicy from "@/pages/privacy-policy";
 import FAQPage from "@/pages/faq";
 import DesignersGuide from "@/pages/designers-guide";
 import { useEffect } from "react";
-import { AuthProvider } from "./hooks/use-auth";
+import { AuthProvider, useAuth } from "./hooks/use-auth";
 import { PaletteProvider } from "./contexts/PaletteContext";
 import { HelmetProvider } from 'react-helmet-async';
 
 // Components that use the PaletteContext
 const PaletteRoutes = () => {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
     <Switch>
-      <Route path="/" component={TestApp} />
+      <Route path="/" component={user ? TestApp : LandingPage} />
+      <Route path="/generate" component={TestApp} />
+      <Route path="/palettes" component={TestApp} />
+      <Route path="/image-picker" component={ImagePalette} />
       <Route path="/auth" component={AuthPage} />
-      <Route path="/image-palette" component={ImagePalette} />
       <Route path="/visualize" component={PaletteVisualizerNew} />
       <Route path="/visualize-old" component={PaletteVisualizer} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
