@@ -23,7 +23,7 @@ export interface IStorage {
   incrementPaletteViews(paletteId: number): Promise<void>;
 
   // Trending palettes
-  getTrendingPalettes(limit?: number): Promise<Palette[]>;
+  getTrendingPalettes(limit?: number, theme?: string): Promise<Palette[]>;
   
   // Session store
   sessionStore: session.Store;
@@ -154,13 +154,20 @@ export class DatabaseStorage implements IStorage {
       .where(eq(palettes.id, paletteId));
   }
 
-  async getTrendingPalettes(limit: number = 5): Promise<Palette[]> {
+  async getTrendingPalettes(limit: number = 5, theme?: string): Promise<Palette[]> {
     // Calculate trending score based on saves, downloads, and views
     // Formula: (saves * 3) + (downloads * 2) + views
-    const results = await db
+    let query = db
       .select()
       .from(palettes)
-      .where(eq(palettes.isPublic, true))
+      .where(eq(palettes.isPublic, true));
+
+    // Add theme filter if specified
+    if (theme && theme !== 'all') {
+      query = query.where(and(eq(palettes.isPublic, true), eq(palettes.theme, theme)));
+    }
+
+    const results = await query
       .orderBy(desc(sql`(${palettes.saves} * 3) + (${palettes.downloads} * 2) + ${palettes.views}`))
       .limit(limit);
     

@@ -18,6 +18,7 @@ export const palettes = pgTable("palettes", {
   colors: text("colors").notNull(), // JSON string of hex colors array
   description: text("description"),
   isPublic: boolean("is_public").default(false),
+  theme: text("theme").default("mixed"), // pastel, warm, cold, vibrant, neutral, dark, light, mixed
   saves: integer("saves").default(0),
   downloads: integer("downloads").default(0),
   views: integer("views").default(0),
