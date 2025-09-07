@@ -3,18 +3,15 @@ import { Color } from './types/Color';
 import { isLightColor } from '@/lib/colorUtils';
 import { 
   LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, 
-  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock, Crown 
+  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock 
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
 import TrendingPalettes from '@/components/TrendingPalettes';
-import ProfessionalPalettes from '@/components/ProfessionalPalettes';
 import WelcomeModal from '@/components/modals/WelcomeModal';
 import Footer from '@/components/Footer';
 import { usePalette, colorTheoryOptions, ColorTheory } from '@/contexts/PaletteContext';
 import { Link } from 'wouter';
-import { useAuth } from '@/hooks/use-auth';
-import { useToast } from '@/hooks/use-toast';
 
 // Toast notification component
 function Toast({ message, onClose }: { message: string; onClose: () => void }) {
@@ -63,18 +60,12 @@ function PaletteApp() {
     reorderColors
   } = usePalette();
   
-  const { user } = useAuth();
-  const { toast: showToast } = useToast();
   const [toast, setToast] = useState<string | null>(null);
   const [showInfoTooltip, setShowInfoTooltip] = useState<number | null>(null);
   const [showAdjustModal, setShowAdjustModal] = useState<boolean>(false);
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [generationCount, setGenerationCount] = useState(0);
   const paletteRef = useRef<HTMLDivElement>(null);
-
-  // All features are now free
-  const isPremium = true;
   
   // Handle spacebar for generating new palette
   useEffect(() => {
@@ -84,19 +75,13 @@ function PaletteApp() {
           document.activeElement?.tagName !== "TEXTAREA" &&
           !showAdjustModal) {
         e.preventDefault();
-        handleGenerateWithLimits();
+        generatePalette();
       }
     };
     
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [showAdjustModal]);
-
-  const handleGenerateWithLimits = () => {
-    generatePalette();
-    setGenerationCount(prev => prev + 1);
-    setToast("New palette generated! Press space for another.");
-  };
+  }, [generatePalette, showAdjustModal]);
   
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -223,7 +208,6 @@ function PaletteApp() {
                 <span>Press <kbd className="px-1.5 py-0.5 bg-white rounded text-xs font-semibold border border-gray-200 shadow-sm">spacebar</kbd> to generate</span>
               </div>
               
-              
               <div className="flex items-center px-3 py-1.5 bg-gray-100 rounded-full text-sm text-gray-700">
                 <LockIcon size={14} className="mr-1.5 text-gray-500" />
                 <span>Click lock to keep a color</span>
@@ -288,7 +272,7 @@ function PaletteApp() {
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4">
           <button 
             className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 sm:px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-indigo-700 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
-            onClick={handleGenerateWithLimits}
+            onClick={generatePalette}
           >
             <RefreshCw size={18} className="sm:w-5 sm:h-5" />
             <span>Generate</span>
@@ -336,7 +320,6 @@ function PaletteApp() {
           </button>
         </div>
       </div>
-
       
       <div className="flex-1">
         <div 
@@ -466,8 +449,6 @@ function PaletteApp() {
       </div>
       
       {/* Trending Palettes Section */}
-      <ProfessionalPalettes onSelectPalette={handleTrendingPaletteSelect} />
-      
       <TrendingPalettes onSelectPalette={handleTrendingPaletteSelect} />
       
       <div className="mt-10 sm:mt-14 p-6 sm:p-8 bg-white rounded-2xl border border-gray-200 shadow-sm text-center">
@@ -485,9 +466,9 @@ function PaletteApp() {
           </div>
           <div
             className="bg-white text-gray-700 border border-gray-200 px-5 py-3 rounded-lg shadow hover:shadow-md transition-all font-medium cursor-pointer"
-            onClick={() => window.location.href = '/cloth-color'}
+            onClick={() => window.location.href = '/visualize'}
           >
-            Cloth Color Recommendations
+            Try Visualizer
           </div>
         </div>
       </div>
