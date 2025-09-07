@@ -4,15 +4,12 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
-import Landing from "@/pages/Landing";
-import Pricing from "@/pages/pricing";
 import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
 import PaletteVisualizerNew from "@/pages/palette-visualizer-new";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import FAQPage from "@/pages/faq";
 import DesignersGuide from "@/pages/designers-guide";
-import ClothColorPage from "@/pages/cloth-color";
 import { useEffect } from "react";
 import { AuthProvider } from "./hooks/use-auth";
 import { PaletteProvider } from "./contexts/PaletteContext";
@@ -23,16 +20,13 @@ import { HelmetProvider } from 'react-helmet-async';
 const PaletteRoutes = () => {
   return (
     <Switch>
-      <Route path="/" component={Landing} />
-      <Route path="/generate" component={TestApp} />
-      <Route path="/pricing" component={Pricing} />
+      <Route path="/" component={TestApp} />
       <Route path="/image-palette" component={ImagePalette} />
       <Route path="/visualize" component={PaletteVisualizerNew} />
       <Route path="/visualize-old" component={PaletteVisualizer} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/faq" component={FAQPage} />
       <Route path="/designers-guide" component={DesignersGuide} />
-      <Route path="/cloth-color" component={ClothColorPage} />
       <Route component={NotFound} />
     </Switch>
   );
