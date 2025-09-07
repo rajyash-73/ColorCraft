@@ -43,18 +43,9 @@ export default function ClothColorPage() {
   const [generatedPalette, setGeneratedPalette] = useState<Color[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const isPremium = user?.subscriptionStatus === 'active' && user?.subscriptionPlan === 'premium';
+  const isPremium = true; // All features are now free
 
   const generateClothPalette = () => {
-    if (!isPremium) {
-      toast({
-        title: "Premium Feature",
-        description: "Personalized cloth color recommendations are available with Premium subscription.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     if (!selectedSkinTone || !selectedUndertone || !selectedHairColor) {
       toast({
         title: "Missing Selection",
@@ -105,60 +96,6 @@ export default function ClothColorPage() {
     return colorNames[hex] || 'Color';
   };
 
-  if (!isPremium) {
-    return (
-      <div className="min-h-screen bg-gray-100 p-4 md:p-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <Link href="/">
-              <button className="text-blue-600 hover:text-blue-800 mb-4">← Back to Generator</button>
-            </Link>
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Personalized Cloth Color Recommendations
-            </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Get AI-powered color recommendations for clothing that complement your skin tone and hair color.
-            </p>
-          </div>
-
-          {/* Premium Upgrade */}
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-8 text-center">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Crown className="w-8 h-8 text-purple-600" />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Premium Feature</h2>
-            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-              Get personalized cloth color recommendations based on your unique skin tone and hair color. 
-              Our AI analyzes your features to suggest the most flattering colors for your wardrobe.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 max-w-3xl mx-auto">
-              <div className="bg-white p-4 rounded-lg border border-purple-100">
-                <Camera className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                <h3 className="font-semibold mb-1">AI Analysis</h3>
-                <p className="text-sm text-gray-600">Advanced skin tone and hair color detection</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg border border-purple-100">
-                <Palette className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                <h3 className="font-semibold mb-1">Custom Palettes</h3>
-                <p className="text-sm text-gray-600">Personalized color recommendations just for you</p>
-              </div>
-              <div className="bg-white p-4 rounded-lg border border-purple-100">
-                <Sparkles className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                <h3 className="font-semibold mb-1">Style Guide</h3>
-                <p className="text-sm text-gray-600">Professional styling tips and combinations</p>
-              </div>
-            </div>
-            <Link href="/pricing">
-              <button className="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 transition-colors font-semibold text-lg">
-                Upgrade to Premium
-              </button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 md:p-8">
@@ -168,12 +105,9 @@ export default function ClothColorPage() {
           <Link href="/">
             <button className="text-blue-600 hover:text-blue-800 mb-4">← Back to Generator</button>
           </Link>
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Crown className="w-8 h-8 text-yellow-600" />
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Cloth Color Recommendations
-            </h1>
-          </div>
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            Cloth Color Recommendations
+          </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Get personalized color recommendations based on your skin tone and hair color.
           </p>

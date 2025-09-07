@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, RefreshCw } from 'lucide-react';
+import { Crown, RefreshCw, Palette as PaletteIcon } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
 import { Palette } from '@/types/Palette';
@@ -18,18 +18,9 @@ export default function ProfessionalPalettes({ onSelectPalette }: ProfessionalPa
   const [palettes, setPalettes] = useState<Palette[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const isPremium = user?.subscriptionStatus === 'active' && user?.subscriptionPlan === 'premium';
+  const isPremium = true; // All features are now free
 
   const fetchProfessionalPalettes = async () => {
-    if (!isPremium) {
-      toast({
-        title: "Premium Feature",
-        description: "Professional palettes are available with Premium subscription.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setLoading(true);
     try {
       const response = await fetch('/api/professional-palettes');
@@ -93,11 +84,8 @@ export default function ProfessionalPalettes({ onSelectPalette }: ProfessionalPa
     <div className="bg-white rounded-xl p-6 mb-8 shadow-md border border-gray-100">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
-          <Crown className="w-6 h-6 text-yellow-600" />
+          <PaletteIcon className="w-6 h-6 text-blue-600" />
           <h2 className="text-xl font-semibold text-gray-800">Professional Palettes</h2>
-          <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-            Premium
-          </span>
         </div>
         <button
           onClick={fetchProfessionalPalettes}
