@@ -6,6 +6,7 @@ import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import LandingPage from "@/pages/landing-page";
 import FontsPage from "@/pages/fonts-page";
+import ClothingPalettePage from "@/pages/clothing-palette-page";
 import TestApp from "./TestApp";
 import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
@@ -37,6 +38,7 @@ const PaletteRoutes = () => {
       <Route path="/palettes" component={TestApp} />
       <Route path="/image-picker" component={ImagePalette} />
       <Route path="/fonts" component={FontsPage} />
+      <Route path="/clothing-palette" component={ClothingPalettePage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/visualize" component={PaletteVisualizerNew} />
       <Route path="/visualize-old" component={PaletteVisualizer} />
