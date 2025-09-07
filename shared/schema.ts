@@ -18,6 +18,9 @@ export const palettes = pgTable("palettes", {
   colors: text("colors").notNull(), // JSON string of hex colors array
   description: text("description"),
   isPublic: boolean("is_public").default(false),
+  saves: integer("saves").default(0),
+  downloads: integer("downloads").default(0),
+  views: integer("views").default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
