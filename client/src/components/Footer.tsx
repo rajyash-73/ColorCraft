@@ -26,6 +26,17 @@ export default function Footer({ className }: FooterProps) {
             <p className="mt-2 text-sm text-gray-600 max-w-md">
               Our color palette generator helps designers and developers create beautiful, harmonious color combinations with ease.
             </p>
+            <div className="mt-3">
+              <p className="text-sm text-gray-600">
+                Created by <span className="font-medium text-gray-900">Yash</span>
+              </p>
+              <a 
+                href="mailto:rajyash73@gmail.com" 
+                className="text-blue-600 hover:text-blue-700 text-sm transition-colors"
+              >
+                rajyash73@gmail.com
+              </a>
+            </div>
             <div className="flex items-center mt-4 space-x-2">
               <a 
                 href="https://github.com" 
@@ -37,9 +48,9 @@ export default function Footer({ className }: FooterProps) {
                 <Github size={18} />
               </a>
               <a 
-                href="mailto:coolors.in@gmail.com"
+                href="mailto:rajyash73@gmail.com"
                 className="p-2 bg-white text-gray-700 hover:text-blue-600 rounded-full border border-gray-200 shadow-sm transition-colors"
-                aria-label="Email"
+                aria-label="Email Yash"
               >
                 <Mail size={18} />
               </a>
@@ -107,7 +118,15 @@ export default function Footer({ className }: FooterProps) {
                     <ArrowUpRight className="ml-1" size={12} />
                   </div>
                 </li>
-
+                <li>
+                  <div 
+                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
+                    onClick={() => window.location.href = '/contact'}
+                  >
+                    Contact Us
+                    <ArrowUpRight className="ml-1" size={12} />
+                  </div>
+                </li>
               </ul>
             </div>
           </div>
