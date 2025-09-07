@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import AuthPage from "@/pages/auth-page";
 import LandingPage from "@/pages/landing-page";
+import FontsPage from "@/pages/fonts-page";
 import TestApp from "./TestApp";
 import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
@@ -35,6 +36,7 @@ const PaletteRoutes = () => {
       <Route path="/generate" component={TestApp} />
       <Route path="/palettes" component={TestApp} />
       <Route path="/image-picker" component={ImagePalette} />
+      <Route path="/fonts" component={FontsPage} />
       <Route path="/auth" component={AuthPage} />
       <Route path="/visualize" component={PaletteVisualizerNew} />
       <Route path="/visualize-old" component={PaletteVisualizer} />
