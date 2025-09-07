@@ -12,6 +12,7 @@ import PaletteVisualizerNew from "@/pages/palette-visualizer-new";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import FAQPage from "@/pages/faq";
 import DesignersGuide from "@/pages/designers-guide";
+import ClothColorPage from "@/pages/cloth-color";
 import { useEffect } from "react";
 import { AuthProvider } from "./hooks/use-auth";
 import { PaletteProvider } from "./contexts/PaletteContext";
@@ -31,6 +32,7 @@ const PaletteRoutes = () => {
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/faq" component={FAQPage} />
       <Route path="/designers-guide" component={DesignersGuide} />
+      <Route path="/cloth-color" component={ClothColorPage} />
       <Route component={NotFound} />
     </Switch>
   );

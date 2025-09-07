@@ -548,10 +548,11 @@ function PaletteApp() {
             Read the Designer's Guide
           </div>
           <div
-            className="bg-white text-gray-700 border border-gray-200 px-5 py-3 rounded-lg shadow hover:shadow-md transition-all font-medium cursor-pointer"
-            onClick={() => window.location.href = '/visualize'}
+            className={`bg-white text-gray-700 border border-gray-200 px-5 py-3 rounded-lg shadow hover:shadow-md transition-all font-medium cursor-pointer relative ${!isPremium ? 'opacity-75' : ''}`}
+            onClick={() => window.location.href = '/cloth-color'}
           >
-            Try Visualizer
+            Cloth Color Recommendations
+            {!isPremium && <Crown className="absolute -top-2 -right-2 w-4 h-4 text-yellow-500" />}
           </div>
         </div>
       </div>
