@@ -91,7 +91,7 @@ export function usePalettes() {
   });
 
   // Helper function to save current palette
-  const savePalette = (name: string, colors: string[], description?: string) => {
+  const savePalette = (name: string, colors: string[], description?: string, makePublic: boolean = false) => {
     if (!user) {
       toast({
         title: "Sign in required",
@@ -105,8 +105,36 @@ export function usePalettes() {
       name,
       colors,
       description,
-      isPublic: false,
+      isPublic: makePublic,
     });
+  };
+
+  // Tracking functions
+  const trackPaletteSave = async (paletteId: number) => {
+    try {
+      await apiRequest("POST", `/api/palettes/${paletteId}/track/save`);
+    } catch (error) {
+      // Silent fail for tracking
+      console.warn("Failed to track palette save:", error);
+    }
+  };
+
+  const trackPaletteDownload = async (paletteId: number) => {
+    try {
+      await apiRequest("POST", `/api/palettes/${paletteId}/track/download`);
+    } catch (error) {
+      // Silent fail for tracking
+      console.warn("Failed to track palette download:", error);
+    }
+  };
+
+  const trackPaletteView = async (paletteId: number) => {
+    try {
+      await apiRequest("POST", `/api/palettes/${paletteId}/track/view`);
+    } catch (error) {
+      // Silent fail for tracking
+      console.warn("Failed to track palette view:", error);
+    }
   };
 
   return {
@@ -116,6 +144,9 @@ export function usePalettes() {
     savePalette,
     updatePalette: updatePaletteMutation.mutate,
     deletePalette: deletePaletteMutation.mutate,
+    trackPaletteSave,
+    trackPaletteDownload,
+    trackPaletteView,
     isSaving: createPaletteMutation.isPending,
     isUpdating: updatePaletteMutation.isPending,
     isDeleting: deletePaletteMutation.isPending,
