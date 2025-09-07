@@ -3,7 +3,7 @@ import { Color } from './types/Color';
 import { isLightColor } from '@/lib/colorUtils';
 import { 
   LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, 
-  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock 
+  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock, Crown 
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
@@ -12,6 +12,8 @@ import WelcomeModal from '@/components/modals/WelcomeModal';
 import Footer from '@/components/Footer';
 import { usePalette, colorTheoryOptions, ColorTheory } from '@/contexts/PaletteContext';
 import { Link } from 'wouter';
+import { useAuth } from '@/hooks/use-auth';
+import { useToast } from '@/hooks/use-toast';
 
 // Toast notification component
 function Toast({ message, onClose }: { message: string; onClose: () => void }) {
@@ -60,12 +62,18 @@ function PaletteApp() {
     reorderColors
   } = usePalette();
   
+  const { user } = useAuth();
+  const { toast: showToast } = useToast();
   const [toast, setToast] = useState<string | null>(null);
   const [showInfoTooltip, setShowInfoTooltip] = useState<number | null>(null);
   const [showAdjustModal, setShowAdjustModal] = useState<boolean>(false);
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [generationCount, setGenerationCount] = useState(0);
   const paletteRef = useRef<HTMLDivElement>(null);
+
+  // Check if user has premium access
+  const isPremium = user?.subscriptionStatus === 'active' && user?.subscriptionPlan === 'premium';
   
   // Handle spacebar for generating new palette
   useEffect(() => {
@@ -75,13 +83,29 @@ function PaletteApp() {
           document.activeElement?.tagName !== "TEXTAREA" &&
           !showAdjustModal) {
         e.preventDefault();
-        generatePalette();
+        handleGenerateWithLimits();
       }
     };
     
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [generatePalette, showAdjustModal]);
+  }, [showAdjustModal]);
+
+  const handleGenerateWithLimits = () => {
+    // Check generation limit for free users
+    if (!isPremium && generationCount >= 7) {
+      showToast({
+        title: "Generation limit reached",
+        description: "Free users can generate up to 7 palettes. Upgrade to Premium for unlimited access.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    generatePalette();
+    setGenerationCount(prev => prev + 1);
+    setToast("New palette generated! Press space for another.");
+  };
   
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -208,6 +232,20 @@ function PaletteApp() {
                 <span>Press <kbd className="px-1.5 py-0.5 bg-white rounded text-xs font-semibold border border-gray-200 shadow-sm">spacebar</kbd> to generate</span>
               </div>
               
+              {!isPremium && (
+                <div className="flex items-center px-3 py-1.5 bg-yellow-100 rounded-full text-sm text-yellow-800">
+                  <Crown size={14} className="mr-1.5 text-yellow-600" />
+                  <span>Free: {generationCount}/7 generations</span>
+                </div>
+              )}
+
+              {isPremium && (
+                <div className="flex items-center px-3 py-1.5 bg-blue-100 rounded-full text-sm text-blue-800">
+                  <Crown size={14} className="mr-1.5 text-blue-600" />
+                  <span>Premium Active</span>
+                </div>
+              )}
+              
               <div className="flex items-center px-3 py-1.5 bg-gray-100 rounded-full text-sm text-gray-700">
                 <LockIcon size={14} className="mr-1.5 text-gray-500" />
                 <span>Click lock to keep a color</span>
@@ -271,11 +309,15 @@ function PaletteApp() {
       
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4">
           <button 
-            className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 sm:px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-indigo-700 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
-            onClick={generatePalette}
+            className={`bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 sm:px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-blue-600 hover:to-indigo-700 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium relative ${!isPremium && generationCount >= 7 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            onClick={handleGenerateWithLimits}
+            disabled={!isPremium && generationCount >= 7}
           >
             <RefreshCw size={18} className="sm:w-5 sm:h-5" />
-            <span>Generate</span>
+            <span>Generate {!isPremium && `(${generationCount}/7)`}</span>
+            {!isPremium && generationCount >= 7 && (
+              <Crown className="absolute -top-2 -right-2 w-5 h-5 text-yellow-400" />
+            )}
           </button>
           
           <button 
@@ -296,11 +338,18 @@ function PaletteApp() {
           </div>
           
           <div
-            className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:from-emerald-600 hover:to-teal-600 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium cursor-pointer"
-            onClick={handleVisualize}
+            className={`bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:from-emerald-600 hover:to-teal-600 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium cursor-pointer relative ${!isPremium ? 'opacity-50' : ''}`}
+            onClick={isPremium ? handleVisualize : () => showToast({
+              title: "Premium Feature",
+              description: "Visualizer is available with Premium subscription. Upgrade to access this feature.",
+              variant: "destructive",
+            })}
           >
             <Eye size={18} className="sm:w-5 sm:h-5" />
             <span>Visualize</span>
+            {!isPremium && (
+              <Crown className="absolute -top-2 -right-2 w-4 h-4 text-yellow-400" />
+            )}
           </div>
           
           <button 
@@ -320,6 +369,37 @@ function PaletteApp() {
           </button>
         </div>
       </div>
+
+      {/* Premium Upgrade Notice */}
+      {!isPremium && generationCount >= 5 && (
+        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-6 mb-8 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
+              <Crown className="w-6 h-6 text-yellow-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                You're almost at your generation limit!
+              </h3>
+              <p className="text-gray-600 mb-3">
+                Upgrade to Premium for unlimited palette generation, visualizer access, professional palettes, and more.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link href="/pricing">
+                  <button className="bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 transition-colors font-medium">
+                    Upgrade to Premium
+                  </button>
+                </Link>
+                <Link href="/pricing">
+                  <button className="text-yellow-700 hover:text-yellow-800 transition-colors font-medium">
+                    Learn More →
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       <div className="flex-1">
         <div 
