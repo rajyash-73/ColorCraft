@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'wouter';
-import { Palette, Smartphone, Monitor, Plug, Chrome, Download } from 'lucide-react';
+import { Palette, Smartphone, Monitor, Plug, Chrome, Download, Shirt } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
@@ -20,6 +20,7 @@ export default function LandingPage() {
               <Link href="/palettes" className="text-gray-600 hover:text-gray-900">Explore Palettes</Link>
               <Link href="/image-picker" className="text-gray-600 hover:text-gray-900">Image Picker</Link>
               <Link href="/fonts" className="text-gray-600 hover:text-gray-900">Fonts</Link>
+              <Link href="/clothing-palette" className="text-gray-600 hover:text-gray-900">Clothing Palette</Link>
               <Link href="/auth" className="text-gray-600 hover:text-gray-900">Sign in</Link>
               <Link href="/auth">
                 <Button>Sign up</Button>
@@ -153,7 +154,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
                 <Palette className="h-8 w-8 text-blue-600" />
@@ -176,6 +177,14 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Explore Palettes</h3>
               <p className="text-gray-600">Browse thousands of palettes created by the community</p>
+            </div>
+
+            <div className="text-center">
+              <div className="bg-orange-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Shirt className="h-8 w-8 text-orange-600" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Clothing Palette</h3>
+              <p className="text-gray-600">Discover clothing colors that complement your skin tone</p>
             </div>
           </div>
         </div>
@@ -202,6 +211,7 @@ export default function LandingPage() {
                 <li><Link href="/palettes" className="hover:text-white">Explore Palettes</Link></li>
                 <li><Link href="/image-picker" className="hover:text-white">Image Picker</Link></li>
                 <li><Link href="/fonts" className="hover:text-white">Fonts</Link></li>
+                <li><Link href="/clothing-palette" className="hover:text-white">Clothing Palette</Link></li>
               </ul>
             </div>
 

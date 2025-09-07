@@ -50,4 +50,4 @@ args = "npm run dev"
 waitForPort = 5000
 
 [agent]
-integrations = ["styling_shadcn==1.0.0"]
+integrations = ["styling_shadcn==1.0.0", "javascript_openai==1.0.0"]
