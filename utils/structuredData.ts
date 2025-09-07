@@ -90,3 +90,33 @@ export const generateArticleSchema = (title: string, description: string, author
     }
   };
 };
+
+// Contact page structured data
+export const generateContactPageSchema = () => {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    'name': 'Contact Coolors.in',
+    'description': 'Get in touch with Yash, the creator of Coolors.in color palette generator',
+    'url': 'https://coolors.in/contact',
+    'mainEntity': {
+      '@type': 'Person',
+      'name': 'Yash',
+      'email': 'rajyash73@gmail.com',
+      'jobTitle': 'Creator of Coolors.in',
+      'url': 'https://coolors.in',
+      'worksFor': {
+        '@type': 'Organization',
+        'name': 'Coolors.in'
+      }
+    },
+    'potentialAction': {
+      '@type': 'CommunicateAction',
+      'target': {
+        '@type': 'EntryPoint',
+        'urlTemplate': 'mailto:rajyash73@gmail.com',
+        'inLanguage': 'en-US'
+      }
+    }
+  };
+};

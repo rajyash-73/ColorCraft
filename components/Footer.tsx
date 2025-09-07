@@ -27,6 +27,17 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
             <p className="text-gray-400 mt-2">
               The super fast color palette generator for designers and developers.
             </p>
+            <div className="mt-4">
+              <p className="text-sm text-gray-300">
+                Created by <span className="font-medium text-white">Yash</span>
+              </p>
+              <a 
+                href="mailto:rajyash73@gmail.com" 
+                className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+              >
+                rajyash73@gmail.com
+              </a>
+            </div>
           </div>
           
           {/* Navigation */}
@@ -96,12 +107,12 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
                 </Link>
               </li>
               <li>
-                <a 
-                  href="mailto:coolors.in@gmail.com" 
-                  className="text-gray-300 hover:text-white transition-colors"
+                <Link 
+                  href="/contact" 
+                  className={`text-gray-300 hover:text-white transition-colors ${isActive('/contact') ? 'text-white font-medium' : ''}`}
                 >
                   Contact Us
-                </a>
+                </Link>
               </li>
             </ul>
           </nav>
