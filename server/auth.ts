@@ -281,6 +281,64 @@ export function setupAuth(app: Express) {
       res.status(500).json({ error: "Failed to delete palette" });
     }
   });
+
+  // Tracking endpoints
+  app.post("/api/palettes/:id/track/save", async (req, res) => {
+    try {
+      const paletteId = parseInt(req.params.id);
+      if (isNaN(paletteId)) {
+        return res.status(400).json({ error: "Invalid palette ID" });
+      }
+
+      await storage.incrementPaletteSaves(paletteId);
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Error tracking palette save:", error);
+      res.status(500).json({ error: "Failed to track save" });
+    }
+  });
+
+  app.post("/api/palettes/:id/track/download", async (req, res) => {
+    try {
+      const paletteId = parseInt(req.params.id);
+      if (isNaN(paletteId)) {
+        return res.status(400).json({ error: "Invalid palette ID" });
+      }
+
+      await storage.incrementPaletteDownloads(paletteId);
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Error tracking palette download:", error);
+      res.status(500).json({ error: "Failed to track download" });
+    }
+  });
+
+  app.post("/api/palettes/:id/track/view", async (req, res) => {
+    try {
+      const paletteId = parseInt(req.params.id);
+      if (isNaN(paletteId)) {
+        return res.status(400).json({ error: "Invalid palette ID" });
+      }
+
+      await storage.incrementPaletteViews(paletteId);
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Error tracking palette view:", error);
+      res.status(500).json({ error: "Failed to track view" });
+    }
+  });
+
+  // Trending palettes endpoint
+  app.get("/api/palettes/trending", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 5;
+      const trendingPalettes = await storage.getTrendingPalettes(limit);
+      res.json(trendingPalettes);
+    } catch (error) {
+      console.error("Error fetching trending palettes:", error);
+      res.status(500).json({ error: "Failed to fetch trending palettes" });
+    }
+  });
 }
 
 // Middleware to protect routes

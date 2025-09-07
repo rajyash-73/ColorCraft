@@ -1,6 +1,6 @@
 import { users, palettes, type User, type InsertUser, type Palette, type InsertPalette, type CreatePalette } from "../shared/schema";
 import { db } from "./db";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 
@@ -16,6 +16,14 @@ export interface IStorage {
   createPalette(palette: InsertPalette): Promise<Palette>;
   updatePalette(id: number, userId: number, updates: Partial<CreatePalette>): Promise<Palette | undefined>;
   deletePalette(id: number, userId: number): Promise<boolean>;
+
+  // Usage tracking operations
+  incrementPaletteSaves(paletteId: number): Promise<void>;
+  incrementPaletteDownloads(paletteId: number): Promise<void>;
+  incrementPaletteViews(paletteId: number): Promise<void>;
+
+  // Trending palettes
+  getTrendingPalettes(limit?: number): Promise<Palette[]>;
   
   // Session store
   sessionStore: session.Store;
@@ -123,6 +131,44 @@ export class DatabaseStorage implements IStorage {
       .delete(palettes)
       .where(and(eq(palettes.id, id), eq(palettes.userId, userId)));
     return (result.rowCount || 0) > 0;
+  }
+
+  async incrementPaletteSaves(paletteId: number): Promise<void> {
+    await db
+      .update(palettes)
+      .set({ saves: sql`${palettes.saves} + 1` })
+      .where(eq(palettes.id, paletteId));
+  }
+
+  async incrementPaletteDownloads(paletteId: number): Promise<void> {
+    await db
+      .update(palettes)
+      .set({ downloads: sql`${palettes.downloads} + 1` })
+      .where(eq(palettes.id, paletteId));
+  }
+
+  async incrementPaletteViews(paletteId: number): Promise<void> {
+    await db
+      .update(palettes)
+      .set({ views: sql`${palettes.views} + 1` })
+      .where(eq(palettes.id, paletteId));
+  }
+
+  async getTrendingPalettes(limit: number = 5): Promise<Palette[]> {
+    // Calculate trending score based on saves, downloads, and views
+    // Formula: (saves * 3) + (downloads * 2) + views
+    const results = await db
+      .select()
+      .from(palettes)
+      .where(eq(palettes.isPublic, true))
+      .orderBy(desc(sql`(${palettes.saves} * 3) + (${palettes.downloads} * 2) + ${palettes.views}`))
+      .limit(limit);
+    
+    // Parse colors from JSON strings back to arrays
+    return results.map(palette => ({
+      ...palette,
+      colors: JSON.parse(palette.colors),
+    }));
   }
 }
 
