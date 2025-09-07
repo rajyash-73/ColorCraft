@@ -118,15 +118,6 @@ export default function Footer({ className }: FooterProps) {
                     <ArrowUpRight className="ml-1" size={12} />
                   </div>
                 </li>
-                <li>
-                  <div 
-                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
-                    onClick={() => window.location.href = '/contact'}
-                  >
-                    Contact Us
-                    <ArrowUpRight className="ml-1" size={12} />
-                  </div>
-                </li>
               </ul>
             </div>
           </div>
