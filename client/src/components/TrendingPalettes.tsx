@@ -5,6 +5,7 @@ import { isLightColor, getColorName } from '@/lib/colorUtils';
 import { useQuery } from '@tanstack/react-query';
 import { getQueryFn } from '@/lib/queryClient';
 import type { Palette } from '../../../shared/schema';
+import ThemeFilter from './ThemeFilter';
 
 interface TrendingPaletteProps {
   palette: Palette;
@@ -17,6 +18,7 @@ export const FALLBACK_TRENDING_PALETTES = [
     id: 1,
     name: "Summer Sunset",
     colors: ["#FF9671", "#FFC75F", "#F9F871", "#D65DB1", "#845EC2"],
+    theme: "warm",
     saves: 152,
     downloads: 89,
     views: 523,
@@ -25,6 +27,7 @@ export const FALLBACK_TRENDING_PALETTES = [
     id: 2,
     name: "Ocean Breeze",
     colors: ["#1A535C", "#4ECDC4", "#F7FFF7", "#FF6B6B", "#FFE66D"],
+    theme: "cold",
     saves: 134,
     downloads: 76,
     views: 412,
@@ -33,6 +36,7 @@ export const FALLBACK_TRENDING_PALETTES = [
     id: 3,
     name: "Forest Vibes",
     colors: ["#2D6A4F", "#40916C", "#52B788", "#74C69D", "#95D5B2"],
+    theme: "cold",
     saves: 98,
     downloads: 65,
     views: 389,
@@ -41,6 +45,7 @@ export const FALLBACK_TRENDING_PALETTES = [
     id: 4,
     name: "Retro Wave",
     colors: ["#2B2D42", "#8D99AE", "#EDF2F4", "#EF233C", "#D90429"],
+    theme: "dark",
     saves: 87,
     downloads: 54,
     views: 298,
@@ -49,9 +54,37 @@ export const FALLBACK_TRENDING_PALETTES = [
     id: 5,
     name: "Pastel Dream",
     colors: ["#CDB4DB", "#FFC8DD", "#FFAFCC", "#BDE0FE", "#A2D2FF"],
+    theme: "pastel",
     saves: 76,
     downloads: 43,
     views: 267,
+  },
+  {
+    id: 6,
+    name: "Electric Neon",
+    colors: ["#FF00FF", "#00FFFF", "#FFFF00", "#FF6600", "#6600FF"],
+    theme: "vibrant",
+    saves: 65,
+    downloads: 38,
+    views: 245,
+  },
+  {
+    id: 7,
+    name: "Earth Tones",
+    colors: ["#8B7355", "#A0826D", "#BFA084", "#D4B896", "#E8D5B7"],
+    theme: "neutral",
+    saves: 54,
+    downloads: 32,
+    views: 198,
+  },
+  {
+    id: 8,
+    name: "Morning Light",
+    colors: ["#FFF8DC", "#FFFACD", "#F0F8FF", "#F5F5DC", "#FFFFF0"],
+    theme: "light",
+    saves: 43,
+    downloads: 28,
+    views: 176,
   }
 ];
 
@@ -140,18 +173,27 @@ interface TrendingPalettesProps {
 }
 
 export default function TrendingPalettes({ onSelectPalette }: TrendingPalettesProps) {
+  const [selectedTheme, setSelectedTheme] = useState('all');
+  
   const { 
     data: trendingPalettes = [], 
     isLoading,
     error 
   } = useQuery<Palette[]>({
-    queryKey: ['/api/palettes/trending'],
+    queryKey: ['/api/palettes/trending', selectedTheme],
     queryFn: getQueryFn(),
     staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 
   // Use real data if available, otherwise fallback to hardcoded data
-  const palettesToShow = trendingPalettes.length > 0 ? trendingPalettes : FALLBACK_TRENDING_PALETTES;
+  const allPalettes = trendingPalettes.length > 0 ? trendingPalettes : FALLBACK_TRENDING_PALETTES;
+  
+  // Filter fallback data by theme if using fallback
+  const palettesToShow = trendingPalettes.length > 0 
+    ? trendingPalettes 
+    : selectedTheme === 'all' 
+      ? FALLBACK_TRENDING_PALETTES 
+      : FALLBACK_TRENDING_PALETTES.filter(palette => palette.theme === selectedTheme);
 
   if (isLoading) {
     return (
@@ -179,16 +221,28 @@ export default function TrendingPalettes({ onSelectPalette }: TrendingPalettesPr
           <ArrowRight size={20} className="text-blue-500" />
         </div>
       </div>
+
+      <ThemeFilter 
+        selectedTheme={selectedTheme}
+        onThemeChange={setSelectedTheme}
+      />
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-        {palettesToShow.map((palette) => (
-          <TrendingPalette
-            key={palette.id}
-            palette={palette}
-            onSelect={onSelectPalette}
-          />
-        ))}
-      </div>
+      {palettesToShow.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          <p>No palettes found for the selected theme.</p>
+          <p className="text-sm mt-1">Try selecting a different theme or "All Themes"</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          {palettesToShow.map((palette) => (
+            <TrendingPalette
+              key={palette.id}
+              palette={palette}
+              onSelect={onSelectPalette}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
