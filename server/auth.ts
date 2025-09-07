@@ -332,7 +332,8 @@ export function setupAuth(app: Express) {
   app.get("/api/palettes/trending", async (req, res) => {
     try {
       const limit = parseInt(req.query.limit as string) || 5;
-      const trendingPalettes = await storage.getTrendingPalettes(limit);
+      const theme = req.query.theme as string;
+      const trendingPalettes = await storage.getTrendingPalettes(limit, theme);
       res.json(trendingPalettes);
     } catch (error) {
       console.error("Error fetching trending palettes:", error);
