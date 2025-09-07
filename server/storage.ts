@@ -8,14 +8,7 @@ export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
-  getUserByGoogleId(googleId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  createUserFromGoogle(googleProfile: {
-    email: string;
-    googleId: string;
-    username?: string;
-    profileImageUrl?: string;
-  }): Promise<User>;
   
   // Palette operations
   getPalettes(userId: number): Promise<Palette[]>;
@@ -46,34 +39,10 @@ export class DatabaseStorage implements IStorage {
     return user || undefined;
   }
 
-  async getUserByGoogleId(googleId: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.googleId, googleId));
-    return user || undefined;
-  }
-
   async createUser(userData: InsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
       .values(userData)
-      .returning();
-    return user;
-  }
-
-  async createUserFromGoogle(googleProfile: {
-    email: string;
-    googleId: string;
-    username?: string;
-    profileImageUrl?: string;
-  }): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values({
-        email: googleProfile.email,
-        googleId: googleProfile.googleId,
-        username: googleProfile.username || googleProfile.email.split('@')[0],
-        provider: "google",
-        profileImageUrl: googleProfile.profileImageUrl,
-      })
       .returning();
     return user;
   }
