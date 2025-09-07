@@ -3,7 +3,8 @@ import { Color } from './types/Color';
 import { isLightColor } from '@/lib/colorUtils';
 import { 
   LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, 
-  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock 
+  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock, 
+  Save, FolderOpen, X 
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
@@ -12,6 +13,8 @@ import WelcomeModal from '@/components/modals/WelcomeModal';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { usePalette, colorTheoryOptions, ColorTheory } from '@/contexts/PaletteContext';
+import { usePalettes } from '@/hooks/use-palettes';
+import { useAuth } from '@/hooks/use-auth';
 import { Link } from 'wouter';
 
 // Toast notification component
@@ -60,6 +63,9 @@ function PaletteApp() {
     setPalette: setPaletteColors,
     reorderColors
   } = usePalette();
+
+  const { user } = useAuth();
+  const { savePalette, palettes, isLoading: isPalettesLoading, isSaving } = usePalettes();
   
   const [toast, setToast] = useState<string | null>(null);
   const [showInfoTooltip, setShowInfoTooltip] = useState<number | null>(null);
@@ -67,6 +73,10 @@ function PaletteApp() {
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [showSavedPalettes, setShowSavedPalettes] = useState(false);
+  const [paletteName, setPaletteName] = useState("");
+  const [paletteDescription, setPaletteDescription] = useState("");
   const paletteRef = useRef<HTMLDivElement>(null);
   
   // Handle spacebar for generating new palette
@@ -150,16 +160,47 @@ function PaletteApp() {
   };
 
   const handleSave = () => {
-    // Save palette to localStorage
-    const savedPalettes = JSON.parse(localStorage.getItem('savedPalettes') || '[]');
-    const newPalette = {
-      id: Date.now(),
-      colors: palette.map(c => c.hex),
-      created: new Date().toISOString()
-    };
-    savedPalettes.push(newPalette);
-    localStorage.setItem('savedPalettes', JSON.stringify(savedPalettes));
-    setToast('Palette saved to local storage!');
+    if (!user) {
+      setToast('Please sign in to save palettes');
+      return;
+    }
+    setShowSaveDialog(true);
+  };
+
+  const handleSaveConfirm = () => {
+    if (!paletteName.trim()) {
+      setToast('Please enter a palette name');
+      return;
+    }
+
+    const colors = palette.map(c => c.hex);
+    savePalette(paletteName.trim(), colors, paletteDescription.trim() || undefined);
+    
+    // Reset dialog state
+    setShowSaveDialog(false);
+    setPaletteName("");
+    setPaletteDescription("");
+  };
+
+  // Utility function to convert hex to RGB
+  const hexToRgb = (hex: string) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+    } : { r: 0, g: 0, b: 0 };
+  };
+
+  const handleLoadPalette = (colors: string[]) => {
+    const loadedColors = colors.map(hex => ({
+      hex,
+      rgb: hexToRgb(hex),
+      locked: false,
+    }));
+    setPaletteColors(loadedColors);
+    setShowSavedPalettes(false);
+    setToast('Palette loaded successfully!');
   };
 
   const handleHelp = () => {
@@ -353,6 +394,16 @@ function PaletteApp() {
             <Download size={18} className="sm:w-5 sm:h-5" />
             <span>Export JSON</span>
           </button>
+          
+          {user && (
+            <button 
+              className="bg-white text-gray-700 border border-gray-200 px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:bg-gray-50 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
+              onClick={() => setShowSavedPalettes(true)}
+            >
+              <FolderOpen size={18} className="sm:w-5 sm:h-5" />
+              <span>Saved ({palettes.length})</span>
+            </button>
+          )}
         </div>
       </div>
       
@@ -520,6 +571,141 @@ function PaletteApp() {
           />
         )}
         
+        {/* Save Palette Dialog */}
+        {showSaveDialog && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl p-6 w-full max-w-md">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Save Palette</h3>
+                <button 
+                  onClick={() => setShowSaveDialog(false)}
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Palette Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={paletteName}
+                    onChange={(e) => setPaletteName(e.target.value)}
+                    placeholder="Enter palette name..."
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    autoFocus
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Description (optional)
+                  </label>
+                  <textarea
+                    value={paletteDescription}
+                    onChange={(e) => setPaletteDescription(e.target.value)}
+                    placeholder="Describe your palette..."
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  />
+                </div>
+                
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setShowSaveDialog(false)}
+                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveConfirm}
+                    disabled={isSaving || !paletteName.trim()}
+                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {isSaving ? (
+                      <>
+                        <RefreshCw size={16} className="animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save size={16} />
+                        Save Palette
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Saved Palettes Dialog */}
+        {showSavedPalettes && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Your Saved Palettes</h3>
+                <button 
+                  onClick={() => setShowSavedPalettes(false)}
+                  className="p-1 hover:bg-gray-100 rounded"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto">
+                {isPalettesLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <RefreshCw size={24} className="animate-spin text-gray-400" />
+                  </div>
+                ) : palettes.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <FolderOpen size={48} className="mx-auto mb-3 text-gray-300" />
+                    <p>No saved palettes yet</p>
+                    <p className="text-sm">Save your first palette to see it here</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-3">
+                    {palettes.map((savedPalette) => (
+                      <div 
+                        key={savedPalette.id}
+                        className="border border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-colors"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="font-medium">{savedPalette.name}</h4>
+                          <button
+                            onClick={() => handleLoadPalette(JSON.parse(savedPalette.colors))}
+                            className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                          >
+                            Load
+                          </button>
+                        </div>
+                        {savedPalette.description && (
+                          <p className="text-sm text-gray-600 mb-2">{savedPalette.description}</p>
+                        )}
+                        <div className="flex space-x-1">
+                          {JSON.parse(savedPalette.colors).map((color: string, index: number) => (
+                            <div
+                              key={index}
+                              className="w-8 h-8 rounded border border-gray-200"
+                              style={{ backgroundColor: color }}
+                              title={color}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </div>
     </div>
