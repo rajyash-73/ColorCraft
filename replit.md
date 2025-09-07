@@ -68,8 +68,11 @@ Next.js API routes provide server-side functionality:
 - **html2canvas**: Client-side screenshot generation for palette exports
 
 ### Authentication and Session Management
-- **Custom Auth System**: Built with secure session handling
-- **PostgreSQL Sessions**: Server-side session storage using connect-pg-simple
+- **Email/Password Authentication**: Secure user registration and login using Passport.js
+- **Password Security**: bcrypt hashing with salt for secure password storage
+- **Session Management**: PostgreSQL-based sessions using connect-pg-simple
+- **Protected Routes**: Authentication middleware for API endpoints
+- **User Context**: React Context API for authentication state management across components
 
 ### Development and Build Tools
 - **TypeScript**: Static type checking across the entire codebase
