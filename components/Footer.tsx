@@ -106,14 +106,6 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
                   Privacy Policy
                 </Link>
               </li>
-              <li>
-                <Link 
-                  href="/contact" 
-                  className={`text-gray-300 hover:text-white transition-colors ${isActive('/contact') ? 'text-white font-medium' : ''}`}
-                >
-                  Contact Us
-                </Link>
-              </li>
             </ul>
           </nav>
         </div>
