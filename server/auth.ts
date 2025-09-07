@@ -186,7 +186,7 @@ export function setupAuth(app: Express) {
 
   // Middleware to check authentication
   const requireAuthMiddleware = (req: any, res: any, next: any) => {
-    if (!req.isAuthenticated()) {
+    if (!req.isAuthenticated() || !req.user) {
       return res.status(401).json({ error: "Authentication required" });
     }
     next();
