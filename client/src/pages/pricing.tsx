@@ -15,11 +15,14 @@ import { Helmet } from 'react-helmet-async';
 import Footer from '@/components/Footer';
 import PayPalButton from '@/components/PayPalButton';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/use-auth';
+import { updateUserSubscription } from '@/lib/localStorageService';
 
 export default function Pricing() {
+  const { user } = useAuth();
   const [selectedCountry, setSelectedCountry] = useState('US');
   const [userInfo, setUserInfo] = useState({
-    email: '',
+    email: user?.email || '',
     firstName: '',
     lastName: ''
   });
@@ -63,13 +66,39 @@ export default function Pricing() {
     }
   };
 
-  const handleSubscriptionSuccess = (subscriptionId: string) => {
-    toast({
-      title: "Subscription successful!",
-      description: "Welcome to Coolors.in Premium! You now have access to all premium features.",
-    });
-    // Redirect to dashboard or update user state
-    window.location.href = '/generate';
+  const handleSubscriptionSuccess = async (orderId: string) => {
+    if (user) {
+      try {
+        // Update user subscription status in localStorage
+        updateUserSubscription(user.id, {
+          subscriptionStatus: 'active',
+          subscriptionId: orderId,
+          subscriptionPlan: 'premium',
+          subscriptionCountry: selectedCountry
+        });
+
+        toast({
+          title: "Subscription successful!",
+          description: "Welcome to Coolors.in Premium! You now have access to all premium features.",
+        });
+        
+        // Redirect to generator with premium access
+        setTimeout(() => {
+          window.location.href = '/generate';
+        }, 2000);
+      } catch (error) {
+        console.error('Failed to update subscription:', error);
+        toast({
+          title: "Subscription processed",
+          description: "Your payment was successful. Please refresh the page.",
+        });
+      }
+    } else {
+      toast({
+        title: "Payment successful",
+        description: "Please log in to access your premium features.",
+      });
+    }
   };
 
   const handleSubscriptionError = (error: any) => {
@@ -227,7 +256,20 @@ export default function Pricing() {
                 ))}
               </div>
 
-              {!showPayment ? (
+              {user?.subscriptionStatus === 'active' ? (
+                <div className="space-y-4 text-center">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                    <Check className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">You're already premium!</h3>
+                  <p className="text-gray-600">You have access to all premium features.</p>
+                  <Link href="/generate">
+                    <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                      Go to Generator
+                    </button>
+                  </Link>
+                </div>
+              ) : !showPayment ? (
                 <div className="space-y-4">
                   <input
                     type="email"

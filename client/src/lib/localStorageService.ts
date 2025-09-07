@@ -39,10 +39,17 @@ export const registerUser = (userData: InsertUser): User => {
     throw new Error('Username already exists');
   }
   
-  // Create new user
+  // Create new user with subscription defaults
   const newUser: User = {
     id: generateId(),
-    ...userData
+    ...userData,
+    subscriptionStatus: 'free',
+    subscriptionPlan: 'free',
+    subscriptionId: null,
+    customerId: null,
+    subscriptionCountry: null,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
   
   // Save to local storage
@@ -50,6 +57,33 @@ export const registerUser = (userData: InsertUser): User => {
   saveCurrentUser(newUser);
   
   return newUser;
+};
+
+export const updateUserSubscription = (userId: number, subscriptionData: {
+  subscriptionStatus: string;
+  subscriptionId: string;
+  subscriptionPlan: string;
+  subscriptionCountry: string;
+}): User => {
+  const users = getUsers();
+  const userIndex = users.findIndex(user => user.id === userId);
+  
+  if (userIndex === -1) {
+    throw new Error('User not found');
+  }
+  
+  // Update user subscription data
+  const updatedUser = {
+    ...users[userIndex],
+    ...subscriptionData,
+    updatedAt: new Date(),
+  };
+  
+  users[userIndex] = updatedUser;
+  saveUsers(users);
+  saveCurrentUser(updatedUser);
+  
+  return updatedUser;
 };
 
 export const loginUser = (username: string, password: string): User => {
