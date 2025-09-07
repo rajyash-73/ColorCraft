@@ -19,6 +19,7 @@ export default function LandingPage() {
               <Link href="/generate" className="text-gray-600 hover:text-gray-900">Palette Generator</Link>
               <Link href="/palettes" className="text-gray-600 hover:text-gray-900">Explore Palettes</Link>
               <Link href="/image-picker" className="text-gray-600 hover:text-gray-900">Image Picker</Link>
+              <Link href="/fonts" className="text-gray-600 hover:text-gray-900">Fonts</Link>
               <Link href="/auth" className="text-gray-600 hover:text-gray-900">Sign in</Link>
               <Link href="/auth">
                 <Button>Sign up</Button>
@@ -200,6 +201,7 @@ export default function LandingPage() {
                 <li><Link href="/generate" className="hover:text-white">Palette Generator</Link></li>
                 <li><Link href="/palettes" className="hover:text-white">Explore Palettes</Link></li>
                 <li><Link href="/image-picker" className="hover:text-white">Image Picker</Link></li>
+                <li><Link href="/fonts" className="hover:text-white">Fonts</Link></li>
               </ul>
             </div>
 
