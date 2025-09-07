@@ -45,13 +45,23 @@ export default function PayPalButton({
     });
     
     const data = await response.json();
-    return { subscriptionId: data.id };
+    return { orderId: data.id };
   };
 
   const onApprove = async (data: any) => {
-    console.log("Subscription approved:", data);
-    if (data.subscriptionID) {
-      onSuccess(data.subscriptionID);
+    console.log("Payment approved:", data);
+    if (data.orderID) {
+      // Capture the payment
+      const captureResponse = await fetch(`/api/subscription/capture/${data.orderID}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      
+      if (captureResponse.ok) {
+        onSuccess(data.orderID);
+      } else {
+        onError("Failed to capture payment");
+      }
     }
   };
 
@@ -108,10 +118,10 @@ export default function PayPalButton({
 
       const onClick = async () => {
         try {
-          const subscriptionPromise = createSubscription();
+          const orderPromise = createSubscription();
           await paypalCheckout.start(
-            { paymentFlow: "subscription" },
-            subscriptionPromise,
+            { paymentFlow: "auto" },
+            orderPromise,
           );
         } catch (e) {
           console.error(e);
