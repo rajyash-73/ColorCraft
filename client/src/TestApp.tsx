@@ -8,6 +8,7 @@ import {
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
 import TrendingPalettes from '@/components/TrendingPalettes';
+import ProfessionalPalettes from '@/components/ProfessionalPalettes';
 import WelcomeModal from '@/components/modals/WelcomeModal';
 import Footer from '@/components/Footer';
 import { usePalette, colorTheoryOptions, ColorTheory } from '@/contexts/PaletteContext';
@@ -529,6 +530,8 @@ function PaletteApp() {
       </div>
       
       {/* Trending Palettes Section */}
+      <ProfessionalPalettes onSelectPalette={handleTrendingPaletteSelect} />
+      
       <TrendingPalettes onSelectPalette={handleTrendingPaletteSelect} />
       
       <div className="mt-10 sm:mt-14 p-6 sm:p-8 bg-white rounded-2xl border border-gray-200 shadow-sm text-center">
