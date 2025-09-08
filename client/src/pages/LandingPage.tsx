@@ -176,30 +176,6 @@ export default function LandingPage() {
               Used by thousands of designers and developers worldwide
             </p>
           </div>
-          
-          {/* Company Logos */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-60 hover:opacity-80 transition-opacity duration-300">
-            <div className="flex items-center justify-center">
-              <div className="w-24 h-12 bg-gradient-to-r from-gray-300 to-gray-400 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">Design Co</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="w-24 h-12 bg-gradient-to-r from-blue-300 to-blue-400 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">Creative</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="w-24 h-12 bg-gradient-to-r from-purple-300 to-purple-400 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">Studio</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-center">
-              <div className="w-24 h-12 bg-gradient-to-r from-green-300 to-green-400 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">Agency</span>
-              </div>
-            </div>
-          </div>
         </section>
 
         {/* Features Grid */}
