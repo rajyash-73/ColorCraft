@@ -1,16 +1,5 @@
 import React from "react";
-import { Link } from "wouter";
-import { HelpCircle, Download, Save, Eye, Menu, User, LogOut } from "lucide-react";
-import { useAuth } from "@/hooks/use-auth";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+import { HelpCircle, Download, Save, Eye, Menu } from "lucide-react";
 
 interface HeaderProps {
   onHelp: () => void;
@@ -29,11 +18,6 @@ export default function Header({
   mobileMenuOpen, 
   toggleMobileMenu 
 }: HeaderProps) {
-  const { user, logoutMutation } = useAuth();
-
-  const handleLogout = () => {
-    logoutMutation.mutate();
-  };
   return (
     <>
       <header className="bg-white shadow-sm px-3 sm:px-4 py-2 sm:py-3 flex justify-between items-center z-10">
@@ -57,7 +41,7 @@ export default function Header({
             <HelpCircle size={16} />
             <span className="font-medium">Help</span>
             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg whitespace-nowrap">
-              Get instructions
+              Keyboard shortcuts & tips
             </span>
           </button>
           
@@ -69,7 +53,7 @@ export default function Header({
             <Download size={16} />
             <span className="font-medium">Export</span>
             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg whitespace-nowrap">
-              Download your palette
+              Download PNG, SVG, CSS
             </span>
           </button>
           
@@ -81,7 +65,7 @@ export default function Header({
             <Save size={16} />
             <span className="font-medium">Save</span>
             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg whitespace-nowrap">
-              Save to local storage
+              Save to browser storage
             </span>
           </button>
           
@@ -97,41 +81,6 @@ export default function Header({
                 Preview in UI templates
               </span>
             </button>
-          )}
-          
-          {/* Authentication Section */}
-          {user ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
-                  <User size={16} />
-                  <span className="hidden lg:inline">{user.username}</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="flex items-center gap-2 cursor-pointer">
-                  <User size={16} />
-                  {user.email}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem 
-                  className="flex items-center gap-2 cursor-pointer text-red-600"
-                  onClick={handleLogout}
-                >
-                  <LogOut size={16} />
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Link href="/auth">
-              <Button variant="outline" className="flex items-center gap-2">
-                <User size={16} />
-                <span className="hidden sm:inline">Sign In</span>
-              </Button>
-            </Link>
           )}
         </div>
         
@@ -181,33 +130,6 @@ export default function Header({
               <Eye size={16} className="text-gray-500" />
               <span className="font-medium">Visualize</span>
             </button>
-          )}
-          
-          {/* Mobile Authentication */}
-          {user ? (
-            <>
-              <div className="border-t border-gray-100 my-2"></div>
-              <div className="px-3 py-1.5 text-xs text-gray-500 font-medium">
-                Signed in as {user.username}
-              </div>
-              <button 
-                className="text-red-600 hover:text-red-700 hover:bg-red-50 flex items-center gap-2 py-1.5 px-3 rounded-lg transition-colors text-sm"
-                onClick={handleLogout}
-              >
-                <LogOut size={16} className="text-red-500" />
-                <span className="font-medium">Logout</span>
-              </button>
-            </>
-          ) : (
-            <>
-              <div className="border-t border-gray-100 my-2"></div>
-              <Link href="/auth">
-                <button className="text-gray-700 hover:text-blue-600 hover:bg-gray-50 flex items-center gap-2 py-1.5 px-3 rounded-lg transition-colors text-sm w-full">
-                  <User size={16} className="text-gray-500" />
-                  <span className="font-medium">Sign In</span>
-                </button>
-              </Link>
-            </>
           )}
         </div>
       </div>

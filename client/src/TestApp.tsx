@@ -13,8 +13,7 @@ import WelcomeModal from '@/components/modals/WelcomeModal';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { usePalette, colorTheoryOptions, ColorTheory } from '@/contexts/PaletteContext';
-import { usePalettes } from '@/hooks/use-palettes';
-import { useAuth } from '@/hooks/use-auth';
+// Removed authentication dependencies for client-only version
 import { Link } from 'wouter';
 
 // Toast notification component
