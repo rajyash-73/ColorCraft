@@ -3,12 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Upload, Camera, Sun, Moon, Palette, User, Eye, Sparkles, RefreshCw, Download, Copy } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
+// Using plain components instead of shadcn UI for compatibility
 
 // Color analysis utilities
 const analyzeImageForSkinTone = async (imageData: string): Promise<{
@@ -141,28 +136,24 @@ export default function ClothingPalettePage() {
   };
 
   const ColorPalette = ({ colors, title }: { colors: string[], title: string }) => (
-    <Card className="mb-4">
-      <CardHeader>
-        <CardTitle className="text-lg">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-4 gap-3">
-          {colors.map((color, index) => (
-            <div key={index} className="group">
-              <div 
-                className="w-full h-16 rounded-lg cursor-pointer transition-transform hover:scale-105 shadow-md"
-                style={{ backgroundColor: color }}
-                onClick={() => copyColorToClipboard(color)}
-                title={`Click to copy ${color}`}
-              />
-              <p className="text-xs text-center mt-1 font-mono text-gray-600 group-hover:text-gray-900 transition-colors">
-                {color}
-              </p>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="mb-6 bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
+      <div className="grid grid-cols-4 gap-3">
+        {colors.map((color, index) => (
+          <div key={index} className="group">
+            <div 
+              className="w-full h-16 rounded-lg cursor-pointer transition-transform hover:scale-105 shadow-md"
+              style={{ backgroundColor: color }}
+              onClick={() => copyColorToClipboard(color)}
+              title={`Click to copy ${color}`}
+            />
+            <p className="text-xs text-center mt-1 font-mono text-gray-600 group-hover:text-gray-900 transition-colors">
+              {color}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 
   return (
@@ -200,17 +191,15 @@ export default function ClothingPalettePage() {
             {/* Left Panel - Input Section */}
             <div className="space-y-6">
               {/* Image Upload */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Camera className="w-5 h-5" />
-                    Upload Your Photo
-                  </CardTitle>
-                  <CardDescription>
-                    Upload a clear photo of your face for skin tone analysis
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
+              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                  <Camera className="w-5 h-5" />
+                  Upload Your Photo
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Upload a clear photo of your face for skin tone analysis
+                </p>
+                <div className="space-y-4">
                   {selectedImage ? (
                     <div className="relative">
                       <img 
@@ -256,21 +245,18 @@ export default function ClothingPalettePage() {
                       Analyzing skin tone...
                     </div>
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
               {/* Hair Color Selection */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Palette className="w-5 h-5" />
-                    Hair Color
-                  </CardTitle>
-                  <CardDescription>
-                    Select your hair color for better recommendations
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
+              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                  <Palette className="w-5 h-5" />
+                  Hair Color
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Select your hair color for better recommendations
+                </p>
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                     {hairColorOptions.map((option) => (
                       <button
@@ -290,71 +276,72 @@ export default function ClothingPalettePage() {
                       </button>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
+              </div>
 
               {/* Day/Night Toggle */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    {isDayTime ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-                    Occasion Setting
-                  </CardTitle>
-                  <CardDescription>
-                    Choose between day and night color recommendations
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Sun className="w-5 h-5 text-yellow-500" />
-                      <Label htmlFor="time-toggle">Day</Label>
-                    </div>
-                    <Switch
-                      id="time-toggle"
-                      checked={!isDayTime}
-                      onCheckedChange={(checked) => setIsDayTime(!checked)}
-                    />
-                    <div className="flex items-center gap-3">
-                      <Label htmlFor="time-toggle">Night</Label>
-                      <Moon className="w-5 h-5 text-blue-600" />
-                    </div>
+              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                  {isDayTime ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                  Occasion Setting
+                </h3>
+                <p className="text-gray-600 text-sm mb-4">
+                  Choose between day and night color recommendations
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Sun className="w-5 h-5 text-yellow-500" />
+                    <label htmlFor="time-toggle" className="font-medium">Day</label>
                   </div>
-                </CardContent>
-              </Card>
+                  <button
+                    id="time-toggle"
+                    className={`relative w-12 h-6 rounded-full transition-colors ${
+                      isDayTime ? 'bg-gray-300' : 'bg-blue-600'
+                    }`}
+                    onClick={() => setIsDayTime(!isDayTime)}
+                  >
+                    <div
+                      className={`absolute w-5 h-5 bg-white rounded-full top-0.5 transition-transform ${
+                        isDayTime ? 'left-0.5' : 'left-6'
+                      }`}
+                    />
+                  </button>
+                  <div className="flex items-center gap-3">
+                    <label htmlFor="time-toggle" className="font-medium">Night</label>
+                    <Moon className="w-5 h-5 text-blue-600" />
+                  </div>
+                </div>
+              </div>
 
               {/* Analysis Results */}
               {analyzedData && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Eye className="w-5 h-5" />
-                      Analysis Results
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
+                <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <Eye className="w-5 h-5" />
+                    Analysis Results
+                  </h3>
+                  <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-medium">Skin Tone:</span>
-                      <Badge variant="secondary" className="capitalize">
+                      <span className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium capitalize">
                         {analyzedData.skinTone}
-                      </Badge>
+                      </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-medium">Undertone:</span>
-                      <Badge variant="outline" className="capitalize">
+                      <span className="px-3 py-1 border border-gray-300 text-gray-700 rounded-full text-sm font-medium capitalize">
                         {analyzedData.undertone}
-                      </Badge>
+                      </span>
                     </div>
                     
-                    <Button
+                    <button
                       onClick={handleGenerateRecommendations}
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                     >
-                      <Sparkles className="w-4 h-4 mr-2" />
+                      <Sparkles className="w-4 h-4" />
                       Generate New Recommendations
-                    </Button>
-                  </CardContent>
-                </Card>
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
 
@@ -376,14 +363,12 @@ export default function ClothingPalettePage() {
                   <ColorPalette colors={recommendations.accent} title="Accent Colors" />
 
                   {/* Style Tips */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Sparkles className="w-5 h-5" />
-                        Style Tips
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
+                  <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                      <Sparkles className="w-5 h-5" />
+                      Style Tips
+                    </h3>
+                    <div className="space-y-4">
                       <div className="space-y-2">
                         <h4 className="font-semibold">How to Use These Colors:</h4>
                         <ul className="text-sm space-y-1 text-gray-600">
@@ -399,12 +384,12 @@ export default function ClothingPalettePage() {
                           for a balanced, harmonious look.
                         </p>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <Card className="h-96 flex items-center justify-center">
-                  <CardContent className="text-center">
+                <div className="bg-white rounded-xl shadow-lg p-12 border border-gray-100 h-96 flex items-center justify-center">
+                  <div className="text-center">
                     <User className="w-16 h-16 mx-auto text-gray-300 mb-4" />
                     <h3 className="text-lg font-semibold text-gray-500 mb-2">
                       Upload Your Photo to Get Started
@@ -412,8 +397,8 @@ export default function ClothingPalettePage() {
                     <p className="text-gray-400">
                       Upload a clear photo of your face to receive personalized clothing color recommendations
                     </p>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               )}
             </div>
           </div>
