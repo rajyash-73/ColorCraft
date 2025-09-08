@@ -5,22 +5,22 @@ import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Header/Navigation */}
-      <header className="border-b border-gray-200">
+      <header className="backdrop-blur-sm bg-white/80 border-b border-white/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <Palette className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">Coolors</span>
+              <Palette className="h-8 w-8 text-indigo-600" />
+              <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Coolors.in</span>
             </div>
             
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="/generate" className="text-gray-600 hover:text-gray-900">Palette Generator</Link>
-              <Link href="/palettes" className="text-gray-600 hover:text-gray-900">Explore Palettes</Link>
-              <Link href="/image-picker" className="text-gray-600 hover:text-gray-900">Image Picker</Link>
-              <Link href="/fonts" className="text-gray-600 hover:text-gray-900">Fonts</Link>
-              <Link href="/clothing-palette" className="text-gray-600 hover:text-gray-900">Clothing Palette</Link>
+              <Link href="/generate" className="text-slate-700 hover:text-indigo-600 font-medium transition-colors">Palette Generator</Link>
+              <Link href="/palettes" className="text-slate-700 hover:text-indigo-600 font-medium transition-colors">Explore Palettes</Link>
+              <Link href="/image-picker" className="text-slate-700 hover:text-indigo-600 font-medium transition-colors">Image Picker</Link>
+              <Link href="/fonts" className="text-slate-700 hover:text-indigo-600 font-medium transition-colors">Fonts</Link>
+              <Link href="/clothing-palette" className="text-slate-700 hover:text-indigo-600 font-medium transition-colors">Clothing Palette</Link>
             </nav>
 
             <div className="md:hidden">
@@ -33,45 +33,52 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="pt-16 pb-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
+      <section className="pt-20 pb-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-slate-900 via-indigo-800 to-purple-800 bg-clip-text text-transparent mb-8 leading-tight">
             The super fast color palettes generator!
           </h1>
-          <p className="text-lg sm:text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
-            Create the perfect palette or get inspired by thousands of beautiful color schemes.
+          <p className="text-xl sm:text-2xl text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+            Create the perfect palette or get inspired by thousands of beautiful color schemes with our modern, intuitive tools.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
             <Link href="/generate">
-              <Button size="lg" className="w-full sm:w-auto px-8 py-3 text-lg">
+              <Button size="lg" className="w-full sm:w-auto px-10 py-4 text-lg font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
                 Start the generator!
               </Button>
             </Link>
             <Link href="/palettes">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto px-8 py-3 text-lg">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto px-10 py-4 text-lg font-semibold border-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50 hover:border-indigo-300 shadow-md hover:shadow-lg transition-all duration-300">
                 Explore trending palettes
               </Button>
             </Link>
           </div>
 
           {/* Quick Color Generator Preview */}
-          <div className="bg-gray-50 rounded-2xl p-8 mb-16">
-            <div className="grid grid-cols-5 gap-2 max-w-md mx-auto">
-              <div className="h-20 bg-blue-500 rounded-lg flex items-end justify-center pb-2">
-                <span className="text-xs text-white font-medium">#3B82F6</span>
+          <div className="bg-white/60 backdrop-blur-sm rounded-3xl p-10 mb-20 shadow-xl border border-white/20">
+            <h3 className="text-2xl font-semibold text-slate-800 mb-6">Try it instantly</h3>
+            <div className="grid grid-cols-5 gap-3 max-w-lg mx-auto">
+              <div className="h-24 bg-gradient-to-b from-blue-400 to-blue-600 rounded-xl flex items-end justify-center pb-3 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <span className="text-xs text-white font-semibold">#3B82F6</span>
               </div>
-              <div className="h-20 bg-green-500 rounded-lg flex items-end justify-center pb-2">
-                <span className="text-xs text-white font-medium">#10B981</span>
+              <div className="h-24 bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-xl flex items-end justify-center pb-3 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <span className="text-xs text-white font-semibold">#10B981</span>
               </div>
-              <div className="h-20 bg-yellow-400 rounded-lg flex items-end justify-center pb-2">
-                <span className="text-xs text-black font-medium">#F59E0B</span>
+              <div className="h-24 bg-gradient-to-b from-amber-300 to-amber-500 rounded-xl flex items-end justify-center pb-3 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <span className="text-xs text-amber-900 font-semibold">#F59E0B</span>
               </div>
-              <div className="h-20 bg-red-500 rounded-lg flex items-end justify-center pb-2">
-                <span className="text-xs text-white font-medium">#EF4444</span>
+              <div className="h-24 bg-gradient-to-b from-rose-400 to-rose-600 rounded-xl flex items-end justify-center pb-3 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <span className="text-xs text-white font-semibold">#EF4444</span>
               </div>
-              <div className="h-20 bg-purple-500 rounded-lg flex items-end justify-center pb-2">
-                <span className="text-xs text-white font-medium">#8B5CF6</span>
+              <div className="h-24 bg-gradient-to-b from-violet-400 to-violet-600 rounded-xl flex items-end justify-center pb-3 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <span className="text-xs text-white font-semibold">#8B5CF6</span>
               </div>
             </div>
             <p className="text-sm text-gray-600 mt-4">Press the spacebar to generate a new palette!</p>

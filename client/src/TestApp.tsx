@@ -233,7 +233,7 @@ function PaletteApp() {
   };
   
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 flex flex-col">
       {/* Header */}
       <Header 
         onHelp={handleHelp}
@@ -246,12 +246,12 @@ function PaletteApp() {
       
       <div className="p-4 md:p-8 flex flex-col flex-1">
         {/* Hero Section */}
-        <header className="relative mb-8 sm:mb-12 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 sm:p-8 overflow-hidden shadow-sm">
+        <header className="relative mb-8 sm:mb-12 bg-white/60 backdrop-blur-sm rounded-3xl p-8 sm:p-10 overflow-hidden shadow-xl border border-white/20">
         {/* Decorative Elements */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10">
-          <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-500 rounded-full"></div>
-          <div className="absolute top-20 -right-10 w-60 h-60 bg-purple-500 rounded-full"></div>
-          <div className="absolute -bottom-20 left-40 w-80 h-80 bg-indigo-500 rounded-full"></div>
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-15">
+          <div className="absolute -top-20 -left-20 w-60 h-60 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full blur-2xl"></div>
+          <div className="absolute top-10 -right-20 w-80 h-80 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-20 left-20 w-96 h-96 bg-gradient-to-br from-indigo-400 to-blue-500 rounded-full blur-3xl"></div>
         </div>
         
         <div className="relative">
