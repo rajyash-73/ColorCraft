@@ -131,18 +131,21 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Color Tools */}
+            {/* Clothing Palette */}
             <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-xl flex items-center justify-center mb-4">
                 <Palette className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Color Tools</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Clothing Colors</h3>
               <p className="text-gray-600 text-sm mb-4">
-                Visualizer, image picker, and advanced color harmony tools.
+                Get personalized clothing color recommendations based on your skin tone.
               </p>
-              <Link href="/visualizer" className="text-purple-600 font-medium text-sm hover:text-purple-700 transition-colors">
-                Explore tools →
-              </Link>
+              <button 
+                onClick={() => window.location.href = '/clothing-palette'}
+                className="text-purple-600 font-medium text-sm hover:text-purple-700 transition-colors"
+              >
+                Try now →
+              </button>
             </div>
 
             {/* Export Options */}
