@@ -2,7 +2,6 @@ import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { setupAuth } from './auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,17 +14,30 @@ async function createServer() {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   
-  // Set up authentication
-  setupAuth(app);
-  
   console.log('Starting client-side development server...');
   
-  // Create Vite server in middleware mode
+  // Create Vite server in middleware mode with minimal config
   const vite = await createViteServer({
-    configFile: path.join(rootDir, 'client', 'vite.config.replit.js'),
     root: path.join(rootDir, 'client'),
-    server: { middlewareMode: true },
-    appType: 'spa'
+    configFile: false, // Disable config file to avoid ESM issues
+    server: { 
+      middlewareMode: true,
+      hmr: {
+        port: 24678,
+      },
+    },
+    appType: 'spa',
+    resolve: {
+      alias: {
+        "@": path.join(rootDir, 'client', 'src'),
+        "@shared": path.join(rootDir, 'shared'),
+        "@assets": path.join(rootDir, 'attached_assets'),
+      },
+    },
+    plugins: [
+      // Add only essential plugins
+      (await import('@vitejs/plugin-react')).default(),
+    ],
   });
   
   // Use vite's connect instance as middleware
