@@ -95,13 +95,6 @@ export default function LandingPage() {
             </button>
           </div>
           
-          {/* Product Hunt Badge */}
-          <div className="flex justify-center">
-            <div className="inline-flex items-center bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-sm font-medium">
-              <Star className="w-4 h-4 mr-2 fill-current" />
-              Featured on Product Hunt
-            </div>
-          </div>
         </div>
 
         {/* Apps & Tools Showcase */}
