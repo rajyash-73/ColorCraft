@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "wouter";
 import { HelpCircle, Download, Save, Eye, Menu } from "lucide-react";
 
 interface HeaderProps {
@@ -41,7 +42,7 @@ export default function Header({
             <HelpCircle size={16} />
             <span className="font-medium">Help</span>
             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg whitespace-nowrap">
-              Keyboard shortcuts & tips
+              Get instructions
             </span>
           </button>
           
@@ -53,7 +54,7 @@ export default function Header({
             <Download size={16} />
             <span className="font-medium">Export</span>
             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg whitespace-nowrap">
-              Download PNG, SVG, CSS
+              Download your palette
             </span>
           </button>
           
@@ -65,7 +66,7 @@ export default function Header({
             <Save size={16} />
             <span className="font-medium">Save</span>
             <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition shadow-lg whitespace-nowrap">
-              Save to browser storage
+              Save to local storage
             </span>
           </button>
           

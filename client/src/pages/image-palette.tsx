@@ -198,7 +198,7 @@ export default function ImagePalette() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4 md:p-8 flex flex-col">
+    <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
       <Helmet>
         <title>Image to Palette Generator | Coolors.in</title>
         <meta name="description" content="Extract color palettes from your images. Upload any image and automatically generate a harmonious color palette based on the dominant colors." />
@@ -228,7 +228,7 @@ export default function ImagePalette() {
       </Helmet>
       <header className="mb-4 sm:mb-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
-          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 via-indigo-800 to-purple-800 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 bg-gradient-to-r from-purple-600 to-blue-400 bg-clip-text text-transparent">
             Image to Palette
           </h1>
           <div
@@ -239,12 +239,12 @@ export default function ImagePalette() {
             Back to Generator
           </div>
         </div>
-        <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">
+        <p className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">
           Upload an image to extract a color palette from its dominant colors.
         </p>
       </header>
       
-      <div className="bg-white/60 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6 sm:p-8 mb-8 sm:mb-10">
+      <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
         <div className="flex flex-col items-center">
           <input 
             type="file" 

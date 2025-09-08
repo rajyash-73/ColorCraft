@@ -3,17 +3,14 @@ import { Color } from './types/Color';
 import { isLightColor } from '@/lib/colorUtils';
 import { 
   LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, 
-  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock, 
-  Save, FolderOpen, X 
+  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock 
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
 import TrendingPalettes from '@/components/TrendingPalettes';
 import WelcomeModal from '@/components/modals/WelcomeModal';
 import Footer from '@/components/Footer';
-import Header from '@/components/Header';
 import { usePalette, colorTheoryOptions, ColorTheory } from '@/contexts/PaletteContext';
-// Removed authentication dependencies for client-only version
 import { Link } from 'wouter';
 
 // Toast notification component
@@ -62,19 +59,12 @@ function PaletteApp() {
     setPalette: setPaletteColors,
     reorderColors
   } = usePalette();
-
-  // Simplified for client-only version - no authentication or server-side palette saving
   
   const [toast, setToast] = useState<string | null>(null);
   const [showInfoTooltip, setShowInfoTooltip] = useState<number | null>(null);
   const [showAdjustModal, setShowAdjustModal] = useState<boolean>(false);
   const [activeColorIndex, setActiveColorIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [showSavedPalettes, setShowSavedPalettes] = useState(false);
-  const [paletteName, setPaletteName] = useState("");
-  const [paletteDescription, setPaletteDescription] = useState("");
   const paletteRef = useRef<HTMLDivElement>(null);
   
   // Handle spacebar for generating new palette
@@ -156,58 +146,6 @@ function PaletteApp() {
     // Navigate to visualizer page
     window.location.href = '/visualize';
   };
-
-  const handleSave = () => {
-    // Saving disabled in client-only version
-    setToast('Palette saving not available in this version');
-    return;
-    setShowSaveDialog(true);
-  };
-
-  const handleSaveConfirm = () => {
-    if (!paletteName.trim()) {
-      setToast('Please enter a palette name');
-      return;
-    }
-
-    const colors = palette.map(c => c.hex);
-    // Palette saving functionality removed for client-only version
-    
-    // Reset dialog state
-    setShowSaveDialog(false);
-    setPaletteName("");
-    setPaletteDescription("");
-  };
-
-  // Utility function to convert hex to RGB
-  const hexToRgb = (hex: string) => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? {
-      r: parseInt(result[1], 16),
-      g: parseInt(result[2], 16),
-      b: parseInt(result[3], 16)
-    } : { r: 0, g: 0, b: 0 };
-  };
-
-  const handleLoadPalette = (colors: string[]) => {
-    const loadedColors = colors.map(hex => ({
-      hex,
-      rgb: hexToRgb(hex),
-      locked: false,
-    }));
-    setPaletteColors(loadedColors);
-    setShowSavedPalettes(false);
-    setToast('Palette loaded successfully!');
-  };
-
-  const handleHelp = () => {
-    // Show help/welcome modal or navigate to help page
-    window.location.href = '/faq';
-  };
-
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
   
   // Drag and drop handlers
   const handleDragStart = (index: number) => {
@@ -233,25 +171,14 @@ function PaletteApp() {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 flex flex-col">
-      {/* Header */}
-      <Header 
-        onHelp={handleHelp}
-        onExport={exportPalette}
-        onSave={handleSave}
-        onVisualize={handleVisualize}
-        mobileMenuOpen={mobileMenuOpen}
-        toggleMobileMenu={toggleMobileMenu}
-      />
-      
-      <div className="p-4 md:p-8 flex flex-col flex-1">
-        {/* Hero Section */}
-        <header className="relative mb-8 sm:mb-12 bg-white/60 backdrop-blur-sm rounded-3xl p-8 sm:p-10 overflow-hidden shadow-xl border border-white/20">
+    <div className="min-h-screen bg-gray-100 p-4 md:p-8 flex flex-col">
+      {/* Hero Section */}
+      <header className="relative mb-8 sm:mb-12 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 sm:p-8 overflow-hidden shadow-sm">
         {/* Decorative Elements */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-15">
-          <div className="absolute -top-20 -left-20 w-60 h-60 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full blur-2xl"></div>
-          <div className="absolute top-10 -right-20 w-80 h-80 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-20 left-20 w-96 h-96 bg-gradient-to-br from-indigo-400 to-blue-500 rounded-full blur-3xl"></div>
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10">
+          <div className="absolute -top-10 -left-10 w-40 h-40 bg-blue-500 rounded-full"></div>
+          <div className="absolute top-20 -right-10 w-60 h-60 bg-purple-500 rounded-full"></div>
+          <div className="absolute -bottom-20 left-40 w-80 h-80 bg-indigo-500 rounded-full"></div>
         </div>
         
         <div className="relative">
@@ -391,8 +318,6 @@ function PaletteApp() {
             <Download size={18} className="sm:w-5 sm:h-5" />
             <span>Export JSON</span>
           </button>
-          
-          {/* Saved palettes button disabled for client-only version */}
         </div>
       </div>
       
@@ -548,125 +473,19 @@ function PaletteApp() {
         </div>
       </div>
       
-        {/* Footer */}
-        <Footer className="mt-8" />
-        
-        {/* Modals */}
-        {showAdjustModal && activeColorIndex !== null && (
-          <ColorAdjustmentModal 
-            color={palette[activeColorIndex]}
-            onClose={() => setShowAdjustModal(false)}
-            onApply={handleApplyColorAdjustment}
-          />
-        )}
-        
-        {/* Save Palette Dialog */}
-        {showSaveDialog && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl p-6 w-full max-w-md">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">Save Palette</h3>
-                <button 
-                  onClick={() => setShowSaveDialog(false)}
-                  className="p-1 hover:bg-gray-100 rounded"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Palette Name *
-                  </label>
-                  <input
-                    type="text"
-                    value={paletteName}
-                    onChange={(e) => setPaletteName(e.target.value)}
-                    placeholder="Enter palette name..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    autoFocus
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Description (optional)
-                  </label>
-                  <textarea
-                    value={paletteDescription}
-                    onChange={(e) => setPaletteDescription(e.target.value)}
-                    placeholder="Describe your palette..."
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                  />
-                </div>
-                
-                <div className="flex space-x-3">
-                  <button
-                    onClick={() => setShowSaveDialog(false)}
-                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleSaveConfirm}
-                    disabled={false || !paletteName.trim()}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {false ? (
-                      <>
-                        <RefreshCw size={16} className="animate-spin" />
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <Save size={16} />
-                        Save Palette
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Saved Palettes Dialog */}
-        {showSavedPalettes && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl p-6 w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">Your Saved Palettes</h3>
-                <button 
-                  onClick={() => setShowSavedPalettes(false)}
-                  className="p-1 hover:bg-gray-100 rounded"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-              
-              <div className="flex-1 overflow-y-auto">
-                {false ? (
-                  <div className="flex items-center justify-center py-8">
-                    <RefreshCw size={24} className="animate-spin text-gray-400" />
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <FolderOpen size={48} className="mx-auto mb-3 text-gray-300" />
-                    <p>Palette saving not available</p>
-                    <p className="text-sm">This feature requires server-side storage</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Saved palettes functionality disabled for client-only version */}
-        
-        {toast && <Toast message={toast} onClose={() => setToast(null)} />}
-      </div>
+      {/* Footer */}
+      <Footer className="mt-8" />
+      
+      {/* Modals */}
+      {showAdjustModal && activeColorIndex !== null && (
+        <ColorAdjustmentModal 
+          color={palette[activeColorIndex]}
+          onClose={() => setShowAdjustModal(false)}
+          onApply={handleApplyColorAdjustment}
+        />
+      )}
+      
+      {toast && <Toast message={toast} onClose={() => setToast(null)} />}
     </div>
   );
 }

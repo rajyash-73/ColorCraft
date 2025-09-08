@@ -3,10 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
-import LandingPage from "@/pages/landing-page";
-import FontsPage from "@/pages/fonts-page";
-import ClothingPalettePage from "@/pages/clothing-palette-page";
-import TestApp from "./TestApp";
+import Home from "@/pages/Home";
 import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
 import PaletteVisualizerNew from "@/pages/palette-visualizer-new";
@@ -14,19 +11,17 @@ import PrivacyPolicy from "@/pages/privacy-policy";
 import FAQPage from "@/pages/faq";
 import DesignersGuide from "@/pages/designers-guide";
 import { useEffect } from "react";
+import { AuthProvider } from "./hooks/use-auth";
 import { PaletteProvider } from "./contexts/PaletteContext";
+import TestApp from "./TestApp";
 import { HelmetProvider } from 'react-helmet-async';
 
-// Main application routes
-const AppRoutes = () => {
+// Components that use the PaletteContext
+const PaletteRoutes = () => {
   return (
     <Switch>
-      <Route path="/" component={LandingPage} />
-      <Route path="/generate" component={TestApp} />
-      <Route path="/palettes" component={TestApp} />
-      <Route path="/image-picker" component={ImagePalette} />
-      <Route path="/fonts" component={FontsPage} />
-      <Route path="/clothing-palette" component={ClothingPalettePage} />
+      <Route path="/" component={TestApp} />
+      <Route path="/image-palette" component={ImagePalette} />
       <Route path="/visualize" component={PaletteVisualizerNew} />
       <Route path="/visualize-old" component={PaletteVisualizer} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
@@ -38,7 +33,7 @@ const AppRoutes = () => {
 };
 
 function Router() {
-  return <AppRoutes />;
+  return <PaletteRoutes />;
 }
 
 function App() {
@@ -59,10 +54,12 @@ function App() {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <PaletteProvider>
-          <Router />
-          <Toaster />
-        </PaletteProvider>
+        <AuthProvider>
+          <PaletteProvider>
+            <Router />
+            <Toaster />
+          </PaletteProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
   );
