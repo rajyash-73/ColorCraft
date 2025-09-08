@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
+import LandingPage from "@/pages/LandingPage";
 import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
 import PaletteVisualizerNew from "@/pages/palette-visualizer-new";
@@ -20,7 +21,8 @@ import { HelmetProvider } from 'react-helmet-async';
 const PaletteRoutes = () => {
   return (
     <Switch>
-      <Route path="/" component={TestApp} />
+      <Route path="/" component={LandingPage} />
+      <Route path="/generator" component={TestApp} />
       <Route path="/image-palette" component={ImagePalette} />
       <Route path="/visualize" component={PaletteVisualizerNew} />
       <Route path="/visualize-old" component={PaletteVisualizer} />
