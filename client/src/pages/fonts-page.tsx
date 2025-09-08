@@ -129,17 +129,17 @@ export default function FontsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="backdrop-blur-sm bg-white/80 border-b border-white/20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <Type className="h-8 w-8 text-blue-600" />
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Fonts</h1>
+              <Type className="h-8 w-8 text-indigo-600" />
+              <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-slate-900 via-indigo-800 to-purple-800 bg-clip-text text-transparent">Fonts</h1>
             </div>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Browse hundreds of free fonts for your projects.
+            <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+              Browse hundreds of free fonts for your projects with live preview.
             </p>
           </div>
         </div>
