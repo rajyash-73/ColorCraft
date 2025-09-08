@@ -63,8 +63,7 @@ function PaletteApp() {
     reorderColors
   } = usePalette();
 
-  const { user } = useAuth();
-  const { savePalette, palettes, isLoading: isPalettesLoading, isSaving } = usePalettes();
+  // Simplified for client-only version - no authentication or server-side palette saving
   
   const [toast, setToast] = useState<string | null>(null);
   const [showInfoTooltip, setShowInfoTooltip] = useState<number | null>(null);
@@ -159,10 +158,9 @@ function PaletteApp() {
   };
 
   const handleSave = () => {
-    if (!user) {
-      setToast('Please sign in to save palettes');
-      return;
-    }
+    // Saving disabled in client-only version
+    setToast('Palette saving not available in this version');
+    return;
     setShowSaveDialog(true);
   };
 
@@ -173,7 +171,7 @@ function PaletteApp() {
     }
 
     const colors = palette.map(c => c.hex);
-    savePalette(paletteName.trim(), colors, paletteDescription.trim() || undefined);
+    // Palette saving functionality removed for client-only version
     
     // Reset dialog state
     setShowSaveDialog(false);
@@ -394,15 +392,7 @@ function PaletteApp() {
             <span>Export JSON</span>
           </button>
           
-          {user && (
-            <button 
-              className="bg-white text-gray-700 border border-gray-200 px-4 sm:px-6 py-3 rounded-xl shadow hover:shadow-md hover:bg-gray-50 transition-all flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base font-medium"
-              onClick={() => setShowSavedPalettes(true)}
-            >
-              <FolderOpen size={18} className="sm:w-5 sm:h-5" />
-              <span>Saved ({palettes.length})</span>
-            </button>
-          )}
+          {/* Saved palettes button disabled for client-only version */}
         </div>
       </div>
       
@@ -621,10 +611,10 @@ function PaletteApp() {
                   </button>
                   <button
                     onClick={handleSaveConfirm}
-                    disabled={isSaving || !paletteName.trim()}
+                    disabled={false || !paletteName.trim()}
                     className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    {isSaving ? (
+                    {false ? (
                       <>
                         <RefreshCw size={16} className="animate-spin" />
                         Saving...
@@ -657,47 +647,15 @@ function PaletteApp() {
               </div>
               
               <div className="flex-1 overflow-y-auto">
-                {isPalettesLoading ? (
+                {false ? (
                   <div className="flex items-center justify-center py-8">
                     <RefreshCw size={24} className="animate-spin text-gray-400" />
                   </div>
-                ) : palettes.length === 0 ? (
+                ) : (
                   <div className="text-center py-8 text-gray-500">
                     <FolderOpen size={48} className="mx-auto mb-3 text-gray-300" />
-                    <p>No saved palettes yet</p>
-                    <p className="text-sm">Save your first palette to see it here</p>
-                  </div>
-                ) : (
-                  <div className="grid gap-3">
-                    {palettes.map((savedPalette) => (
-                      <div 
-                        key={savedPalette.id}
-                        className="border border-gray-200 rounded-lg p-3 hover:border-gray-300 transition-colors"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium">{savedPalette.name}</h4>
-                          <button
-                            onClick={() => handleLoadPalette(JSON.parse(savedPalette.colors))}
-                            className="text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                          >
-                            Load
-                          </button>
-                        </div>
-                        {savedPalette.description && (
-                          <p className="text-sm text-gray-600 mb-2">{savedPalette.description}</p>
-                        )}
-                        <div className="flex space-x-1">
-                          {JSON.parse(savedPalette.colors).map((color: string, index: number) => (
-                            <div
-                              key={index}
-                              className="w-8 h-8 rounded border border-gray-200"
-                              style={{ backgroundColor: color }}
-                              title={color}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    ))}
+                    <p>Palette saving not available</p>
+                    <p className="text-sm">This feature requires server-side storage</p>
                   </div>
                 )}
               </div>
@@ -705,6 +663,8 @@ function PaletteApp() {
           </div>
         )}
 
+        {/* Saved palettes functionality disabled for client-only version */}
+        
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
       </div>
     </div>
