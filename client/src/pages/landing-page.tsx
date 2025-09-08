@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'wouter';
-import { Palette, Smartphone, Monitor, Plug, Chrome, Download, Shirt } from 'lucide-react';
+import { Palette, Download, Shirt } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function LandingPage() {
@@ -79,48 +79,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Apps & Extensions Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <Smartphone className="h-8 w-8 text-blue-600 mb-4" />
-              <h3 className="font-semibold text-gray-900 mb-2">iOS App</h3>
-              <p className="text-sm text-gray-600 mb-4">Create, browse and save palettes on the go.</p>
-              <Button variant="outline" size="sm" className="w-full">
-                View on App Store
-              </Button>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <Smartphone className="h-8 w-8 text-green-600 mb-4" />
-              <h3 className="font-semibold text-gray-900 mb-2">Android App</h3>
-              <p className="text-sm text-gray-600 mb-4">Thousands of palettes in your pocket.</p>
-              <Button variant="outline" size="sm" className="w-full">
-                View on Play Store
-              </Button>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <Monitor className="h-8 w-8 text-purple-600 mb-4" />
-              <h3 className="font-semibold text-gray-900 mb-2">Figma Plugin</h3>
-              <p className="text-sm text-gray-600 mb-4">All palettes right in your workspace.</p>
-              <Button variant="outline" size="sm" className="w-full">
-                Install now
-              </Button>
-            </div>
-
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-              <Chrome className="h-8 w-8 text-orange-600 mb-4" />
-              <h3 className="font-semibold text-gray-900 mb-2">Chrome Extension</h3>
-              <p className="text-sm text-gray-600 mb-4">Get and edit a palette every new tab.</p>
-              <Button variant="outline" size="sm" className="w-full">
-                Add to Chrome
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Social Proof Section */}
       <section className="py-16 bg-white">
@@ -169,7 +127,7 @@ export default function LandingPage() {
 
             <div className="text-center">
               <div className="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Monitor className="h-8 w-8 text-purple-600" />
+                <Palette className="h-8 w-8 text-purple-600" />
               </div>
               <h3 className="text-xl font-semibold text-gray-900 mb-2">Explore Palettes</h3>
               <p className="text-gray-600">Browse thousands of palettes created by the community</p>
@@ -189,7 +147,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
                 <Palette className="h-6 w-6 text-blue-400" />
@@ -211,15 +169,6 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            <div>
-              <h4 className="font-semibold mb-4">Apps</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-white">iOS App</a></li>
-                <li><a href="#" className="hover:text-white">Android App</a></li>
-                <li><a href="#" className="hover:text-white">Figma Plugin</a></li>
-                <li><a href="#" className="hover:text-white">Chrome Extension</a></li>
-              </ul>
-            </div>
 
             <div>
               <h4 className="font-semibold mb-4">Account</h4>
