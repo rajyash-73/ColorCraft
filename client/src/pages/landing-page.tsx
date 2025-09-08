@@ -21,15 +21,11 @@ export default function LandingPage() {
               <Link href="/image-picker" className="text-gray-600 hover:text-gray-900">Image Picker</Link>
               <Link href="/fonts" className="text-gray-600 hover:text-gray-900">Fonts</Link>
               <Link href="/clothing-palette" className="text-gray-600 hover:text-gray-900">Clothing Palette</Link>
-              <Link href="/auth" className="text-gray-600 hover:text-gray-900">Sign in</Link>
-              <Link href="/auth">
-                <Button>Sign up</Button>
-              </Link>
             </nav>
 
             <div className="md:hidden">
-              <Link href="/auth">
-                <Button size="sm">Sign in</Button>
+              <Link href="/generate">
+                <Button size="sm">Start Creating</Button>
               </Link>
             </div>
           </div>
