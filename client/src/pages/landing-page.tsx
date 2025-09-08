@@ -224,8 +224,7 @@ export default function LandingPage() {
             <div>
               <h4 className="font-semibold mb-4">Account</h4>
               <ul className="space-y-2 text-sm text-gray-400">
-                <li><Link href="/auth" className="hover:text-white">Sign In</Link></li>
-                <li><Link href="/auth" className="hover:text-white">Sign Up</Link></li>
+                <li><Link href="/generate" className="hover:text-white">Get Started</Link></li>
                 <li><a href="#" className="hover:text-white">Go Pro</a></li>
               </ul>
             </div>
