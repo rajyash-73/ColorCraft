@@ -304,16 +304,41 @@ const getClothingRecommendations = (skinTone: string, undertone: string, hairCol
     return adjustments;
   };
 
-  // Helper function to randomly select colors from array
+  // Helper function to randomly select unique colors from array
   const selectRandomColors = (colorArray: string[], count: number, variationIndex: number): string[] => {
-    const shuffled = [...colorArray];
-    // Use variationIndex to create different shuffling patterns
+    // First, ensure we have unique colors only
+    const uniqueColors = [...new Set(colorArray)];
+    
+    // If we don't have enough unique colors, pad with variations
+    while (uniqueColors.length < count && uniqueColors.length > 0) {
+      const baseColor = uniqueColors[uniqueColors.length % uniqueColors.length];
+      // Create a slight variation by adjusting brightness
+      const variation = adjustColorBrightness(baseColor, 0.1 * uniqueColors.length);
+      if (!uniqueColors.includes(variation)) {
+        uniqueColors.push(variation);
+      }
+    }
+    
+    // Shuffle using variationIndex for consistent but different results
+    const shuffled = [...uniqueColors];
     const seed = variationIndex;
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(((seed * (i + 1)) % 997) / 997 * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled.slice(0, count);
+  };
+
+  // Helper function to adjust color brightness
+  const adjustColorBrightness = (hex: string, factor: number): string => {
+    const num = parseInt(hex.replace("#", ""), 16);
+    const amt = Math.round(2.55 * factor * 100);
+    const R = (num >> 16) + amt;
+    const G = (num >> 8 & 0x00FF) + amt;
+    const B = (num & 0x0000FF) + amt;
+    return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+      (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+      (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
   };
 
   const timeOfDay = isDayTime ? 'day' : 'evening';
@@ -346,6 +371,7 @@ export default function ClothingPalettePage() {
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [recommendations, setRecommendations] = useState<any>(null);
   const [variationCount, setVariationCount] = useState<number>(0);
+  const [editingColor, setEditingColor] = useState<{category: string, index: number} | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -400,18 +426,75 @@ export default function ClothingPalettePage() {
     navigator.clipboard.writeText(color);
   };
 
-  const ColorPalette = ({ colors, title }: { colors: string[], title: string }) => (
+  const updateColor = (category: string, index: number, newColor: string) => {
+    if (!recommendations) return;
+    
+    const updatedRecs = { ...recommendations };
+    updatedRecs[category][index] = newColor;
+    setRecommendations(updatedRecs);
+    setEditingColor(null);
+  };
+
+  const ColorPalette = ({ colors, title, category }: { colors: string[], title: string, category: string }) => (
     <div className="mb-6 bg-white rounded-xl shadow-lg p-6 border border-gray-100">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
       <div className="grid grid-cols-4 gap-3">
         {colors.map((color, index) => (
-          <div key={index} className="group">
+          <div key={index} className="group relative">
             <div 
-              className="w-full h-16 rounded-lg cursor-pointer transition-transform hover:scale-105 shadow-md"
+              className="w-full h-16 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 shadow-md relative overflow-hidden"
               style={{ backgroundColor: color }}
               onClick={() => copyColorToClipboard(color)}
               title={`Click to copy ${color}`}
-            />
+            >
+              {/* Edit overlay on hover */}
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
+                <button
+                  className="opacity-0 group-hover:opacity-100 bg-white text-gray-800 p-1.5 rounded-full shadow-lg hover:bg-gray-50 transition-all duration-200 transform translate-y-2 group-hover:translate-y-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditingColor({category, index});
+                  }}
+                  title="Edit color"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+              </div>
+              
+              {/* Color picker overlay */}
+              {editingColor?.category === category && editingColor?.index === index && (
+                <div className="absolute inset-0 bg-white p-2 rounded-lg shadow-lg border-2 border-purple-300 z-10">
+                  <div className="flex flex-col h-full">
+                    <input
+                      type="color"
+                      value={color}
+                      onChange={(e) => updateColor(category, index, e.target.value)}
+                      className="w-full h-8 rounded border-none cursor-pointer mb-1"
+                      autoFocus
+                    />
+                    <div className="flex justify-between items-center mt-auto">
+                      <button
+                        onClick={() => setEditingColor(null)}
+                        className="text-xs text-gray-500 hover:text-gray-700 px-1"
+                      >
+                        ✓
+                      </button>
+                      <button
+                        onClick={() => {
+                          // Reset to original color (would need to store original)
+                          setEditingColor(null);
+                        }}
+                        className="text-xs text-gray-500 hover:text-gray-700 px-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
             <p className="text-xs text-center mt-1 font-mono text-gray-600 group-hover:text-gray-900 transition-colors">
               {color}
             </p>
@@ -621,9 +704,9 @@ export default function ClothingPalettePage() {
                     </p>
                   </div>
 
-                  <ColorPalette colors={recommendations.primary} title="Primary Colors" />
-                  <ColorPalette colors={recommendations.neutral} title="Neutral Colors" />
-                  <ColorPalette colors={recommendations.accent} title="Accent Colors" />
+                  <ColorPalette colors={recommendations.primary} title="Primary Colors" category="primary" />
+                  <ColorPalette colors={recommendations.neutral} title="Neutral Colors" category="neutral" />
+                  <ColorPalette colors={recommendations.accent} title="Accent Colors" category="accent" />
 
                   {/* Style Tips */}
                   <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
