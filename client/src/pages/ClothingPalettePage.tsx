@@ -11,15 +11,71 @@ const analyzeImageForSkinTone = async (imageData: string): Promise<{
   undertone: string;
   dominantColors: string[];
 }> => {
-  // Simulate skin tone analysis - in a real app, this would use computer vision APIs
-  const skinTones = ['fair', 'light', 'medium', 'tan', 'deep'];
-  const undertones = ['cool', 'warm', 'neutral'];
+  // Enhanced skin tone analysis - uses image characteristics for better results
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
   
-  return {
-    skinTone: skinTones[Math.floor(Math.random() * skinTones.length)],
-    undertone: undertones[Math.floor(Math.random() * undertones.length)],
-    dominantColors: ['#F4D2A5', '#E8B583', '#D4A574'] // Example skin tone colors
-  };
+  return new Promise((resolve) => {
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      ctx?.drawImage(img, 0, 0);
+      
+      // Sample pixels from center area (face region)
+      const centerX = Math.floor(img.width / 2);
+      const centerY = Math.floor(img.height / 2);
+      const sampleSize = Math.min(img.width, img.height) / 4;
+      
+      let totalR = 0, totalG = 0, totalB = 0, sampleCount = 0;
+      
+      for (let x = centerX - sampleSize/2; x < centerX + sampleSize/2; x += 10) {
+        for (let y = centerY - sampleSize/2; y < centerY + sampleSize/2; y += 10) {
+          const imageData = ctx?.getImageData(x, y, 1, 1);
+          if (imageData) {
+            totalR += imageData.data[0];
+            totalG += imageData.data[1];
+            totalB += imageData.data[2];
+            sampleCount++;
+          }
+        }
+      }
+      
+      const avgR = totalR / sampleCount;
+      const avgG = totalG / sampleCount;
+      const avgB = totalB / sampleCount;
+      
+      // Determine skin tone based on RGB values
+      const brightness = (avgR + avgG + avgB) / 3;
+      let skinTone: string;
+      if (brightness > 200) skinTone = 'fair';
+      else if (brightness > 160) skinTone = 'light';
+      else if (brightness > 120) skinTone = 'medium';
+      else if (brightness > 80) skinTone = 'tan';
+      else skinTone = 'deep';
+      
+      // Determine undertone based on color ratios
+      const yellowness = avgR + avgG - avgB * 2;
+      const pinkness = avgR - avgG;
+      
+      let undertone: string;
+      if (Math.abs(yellowness) < 10 && Math.abs(pinkness) < 10) {
+        undertone = 'neutral';
+      } else if (yellowness > pinkness) {
+        undertone = 'warm';
+      } else {
+        undertone = 'cool';
+      }
+      
+      resolve({
+        skinTone,
+        undertone,
+        dominantColors: [`rgb(${Math.floor(avgR)}, ${Math.floor(avgG)}, ${Math.floor(avgB)})`]
+      });
+    };
+    
+    img.src = imageData;
+  });
 };
 
 // Hair color options
@@ -33,52 +89,155 @@ const hairColorOptions = [
   { value: 'other', label: 'Other', color: '#A0A0A0' }
 ];
 
-// Clothing color recommendations based on skin tone and undertone
+// Enhanced clothing color recommendations based on skin tone, undertone, and hair color
 const getClothingRecommendations = (skinTone: string, undertone: string, hairColor: string, isDayTime: boolean) => {
-  const recommendations = {
-    // Cool undertone recommendations
+  
+  // Base color palettes following professional color analysis principles
+  const colorPalettes = {
     cool: {
       day: {
-        primary: ['#2E5D8F', '#4A708B', '#5F9EA0', '#6495ED'],
-        neutral: ['#F8F8FF', '#E6E6FA', '#D3D3D3', '#A9A9A9'],
-        accent: ['#FF69B4', '#DA70D6', '#BA55D3', '#9370DB']
+        primary: ['#1e3a8a', '#1e40af', '#3b82f6', '#0ea5e9'], // True blues
+        secondary: ['#7c3aed', '#8b5cf6', '#a855f7', '#c084fc'], // Cool purples  
+        neutral: ['#ffffff', '#f8fafc', '#e2e8f0', '#94a3b8'], // Cool grays & whites
+        accent: ['#ec4899', '#f97316', '#10b981', '#06b6d4'], // Bright cool accents
+        earth: ['#059669', '#0d9488', '#0891b2', '#0284c7'] // Cool earth tones
       },
-      night: {
-        primary: ['#191970', '#000080', '#483D8B', '#2F4F4F'],
-        neutral: ['#2F2F2F', '#1C1C1C', '#0D0D0D', '#000000'],
-        accent: ['#8A2BE2', '#4B0082', '#9400D3', '#8B008B']
+      evening: {
+        primary: ['#1e1b4b', '#312e81', '#3730a3', '#4338ca'], // Deep blues
+        secondary: ['#581c87', '#7c2d92', '#86198f', '#a21caf'], // Rich purples
+        neutral: ['#1f2937', '#374151', '#4b5563', '#6b7280'], // Sophisticated grays
+        accent: ['#dc2626', '#ea580c', '#059669', '#0891b2'], // Jewel accents
+        metallic: ['#6366f1', '#8b5cf6', '#ec4899', '#06b6d4'] // Cool metallics
       }
     },
-    // Warm undertone recommendations  
     warm: {
       day: {
-        primary: ['#CD853F', '#D2691E', '#A0522D', '#8B4513'],
-        neutral: ['#FFF8DC', '#F5DEB3', '#DEB887', '#D2B48C'],
-        accent: ['#FF6347', '#FF7F50', '#FF8C00', '#FFA500']
+        primary: ['#dc2626', '#ea580c', '#d97706', '#ca8a04'], // Warm reds & oranges
+        secondary: ['#92400e', '#a16207', '#a3a3a3', '#525252'], // Warm browns
+        neutral: ['#fef7cd', '#fef3c7', '#fde68a', '#f59e0b'], // Warm creams
+        accent: ['#f97316', '#f59e0b', '#eab308', '#84cc16'], // Bright warm accents  
+        earth: ['#92400e', '#a16207', '#a3a3a3', '#78716c'] // Warm earth tones
       },
-      night: {
-        primary: ['#8B4513', '#A0522D', '#654321', '#3D2B1F'],
-        neutral: ['#2F1B14', '#1A0E0A', '#0F0907', '#000000'],
-        accent: ['#B22222', '#DC143C', '#8B0000', '#800000']
+      evening: {
+        primary: ['#7f1d1d', '#92400e', '#a16207', '#713f12'], // Deep warm tones
+        secondary: ['#451a03', '#78350f', '#a16207', '#ca8a04'], // Rich browns & golds
+        neutral: ['#44403c', '#57534e', '#78716c', '#a8a29e'], // Warm grays
+        accent: ['#dc2626', '#ea580c', '#059669', '#0d9488'], // Sophisticated accents
+        metallic: ['#f59e0b', '#eab308', '#ca8a04', '#a16207'] // Warm metallics
       }
     },
-    // Neutral undertone recommendations
     neutral: {
       day: {
-        primary: ['#708090', '#778899', '#2F4F4F', '#36454F'],
-        neutral: ['#F5F5F5', '#DCDCDC', '#C0C0C0', '#A9A9A9'],
-        accent: ['#4682B4', '#5F9EA0', '#87CEEB', '#6495ED']
+        primary: ['#374151', '#4b5563', '#6b7280', '#9ca3af'], // True grays
+        secondary: ['#1e40af', '#dc2626', '#059669', '#7c2d92'], // Balanced colors
+        neutral: ['#ffffff', '#f9fafb', '#f3f4f6', '#d1d5db'], // Pure neutrals
+        accent: ['#3b82f6', '#ef4444', '#10b981', '#8b5cf6'], // Universal accents
+        earth: ['#78716c', '#a8a29e', '#d6d3d1', '#e7e5e4'] // Neutral earth tones
       },
-      night: {
-        primary: ['#2F4F4F', '#191970', '#000080', '#1C1C1C'],
-        neutral: ['#2F2F2F', '#1C1C1C', '#0D0D0D', '#000000'],
-        accent: ['#4B0082', '#483D8B', '#663399', '#800080']
+      evening: {
+        primary: ['#1f2937', '#374151', '#4b5563', '#6b7280'], // Deep neutrals  
+        secondary: ['#312e81', '#7f1d1d', '#064e3b', '#581c87'], // Evening jewel tones
+        neutral: ['#111827', '#1f2937', '#374151', '#4b5563'], // Sophisticated darks
+        accent: ['#4338ca', '#dc2626', '#059669', '#7c2d92'], // Rich accents
+        metallic: ['#6b7280', '#9ca3af', '#d1d5db', '#f3f4f6'] // Neutral metallics
       }
     }
   };
 
-  const timeOfDay = isDayTime ? 'day' : 'night';
-  return recommendations[undertone as keyof typeof recommendations]?.[timeOfDay] || recommendations.neutral[timeOfDay];
+  // Hair color modifications
+  const getHairColorAdjustments = (hairColor: string, baseColors: any) => {
+    const adjustments = { ...baseColors };
+    
+    switch (hairColor) {
+      case 'blonde':
+        // Blonde hair looks great with soft, muted colors
+        if (undertone === 'warm') {
+          adjustments.accent = ['#f97316', '#fbbf24', '#a3a3a3', '#f59e0b'];
+          adjustments.primary = ['#dc2626', '#ea580c', '#ca8a04', '#92400e'];
+        } else if (undertone === 'cool') {
+          adjustments.accent = ['#3b82f6', '#8b5cf6', '#ec4899', '#06b6d4'];
+          adjustments.primary = ['#1e40af', '#7c3aed', '#0ea5e9', '#1e3a8a'];
+        }
+        break;
+        
+      case 'red':
+        // Red hair pairs beautifully with greens, earth tones, avoid competing reds
+        adjustments.accent = ['#059669', '#0d9488', '#0891b2', '#7c2d92'];
+        adjustments.earth = ['#78716c', '#92400e', '#a16207', '#525252'];
+        // Remove competing reds from primary
+        adjustments.primary = adjustments.primary.filter((color: string) => 
+          !color.includes('dc2626') && !color.includes('ef4444')
+        );
+        break;
+        
+      case 'black':
+        // Black hair can handle bold, dramatic colors
+        adjustments.accent = ['#dc2626', '#7c3aed', '#059669', '#f97316'];
+        adjustments.primary = [...adjustments.primary, '#1a1a1a', '#0f172a'];
+        break;
+        
+      case 'brown':
+        // Brown hair is versatile, enhance earth tones
+        adjustments.earth = ['#92400e', '#a16207', '#78716c', '#a8a29e'];
+        break;
+        
+      case 'gray':
+      case 'white':
+        // Silver/white hair looks stunning with jewel tones and soft colors
+        adjustments.accent = ['#7c3aed', '#0ea5e9', '#ec4899', '#059669'];
+        adjustments.metallic = ['#6366f1', '#8b5cf6', '#06b6d4', '#a855f7'];
+        break;
+    }
+    
+    return adjustments;
+  };
+
+  // Skin tone intensity adjustments
+  const getSkinToneAdjustments = (skinTone: string, colors: any) => {
+    const adjustments = { ...colors };
+    
+    switch (skinTone) {
+      case 'fair':
+        // Fair skin looks great with soft, medium-intensity colors
+        adjustments.primary = adjustments.primary.map((color: string) => 
+          color.replace(/1e|0f|7f|45/g, '3b').replace(/81|92|a1/g, '94')
+        );
+        break;
+        
+      case 'deep':
+        // Deep skin tones can handle bold, vibrant colors
+        adjustments.accent = ['#ef4444', '#f97316', '#eab308', '#22c55e'];
+        adjustments.primary = [...adjustments.primary, '#1a1a1a', '#0f172a'];
+        break;
+        
+      case 'medium':
+      case 'tan':
+        // Medium skin tones look great with rich, warm colors
+        if (undertone === 'warm') {
+          adjustments.earth = ['#92400e', '#a16207', '#ca8a04', '#78716c'];
+        }
+        break;
+    }
+    
+    return adjustments;
+  };
+
+  const timeOfDay = isDayTime ? 'day' : 'evening';
+  let baseColors = colorPalettes[undertone as keyof typeof colorPalettes]?.[timeOfDay] || 
+                   colorPalettes.neutral[timeOfDay];
+  
+  // Apply hair color adjustments
+  baseColors = getHairColorAdjustments(hairColor, baseColors);
+  
+  // Apply skin tone adjustments  
+  baseColors = getSkinToneAdjustments(skinTone, baseColors);
+  
+  // Return organized palette
+  return {
+    primary: baseColors.primary.slice(0, 4),
+    neutral: baseColors.neutral.slice(0, 4), 
+    accent: baseColors.accent.slice(0, 4)
+  };
 };
 
 export default function ClothingPalettePage() {
