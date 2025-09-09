@@ -375,6 +375,14 @@ export default function ClothingPalettePage() {
     reader.readAsDataURL(file);
   }, [selectedHairColor, isDayTime]);
 
+  // Update recommendations when settings change
+  React.useEffect(() => {
+    if (analyzedData) {
+      setVariationCount(0); // Reset variation when settings change
+      generateRecommendations(analyzedData.skinTone, analyzedData.undertone, selectedHairColor, isDayTime, 0);
+    }
+  }, [selectedHairColor, isDayTime, analyzedData]);
+
   const generateRecommendations = (skinTone: string, undertone: string, hairColor: string, dayTime: boolean, variation: number = 0) => {
     const recs = getClothingRecommendations(skinTone, undertone, hairColor, dayTime, variation);
     setRecommendations(recs);
