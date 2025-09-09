@@ -439,16 +439,17 @@ export default function ClothingPalettePage() {
 
   const updatePreviewColor = (newColor: string) => {
     setPreviewColor(newColor);
-    
-    // Update the display with preview color
-    if (!recommendations || !editingColor) return;
-    const updatedRecs = { ...recommendations };
-    updatedRecs[editingColor.category][editingColor.index] = newColor;
-    setRecommendations(updatedRecs);
+    // Don't update recommendations immediately - wait for Apply
   };
 
   const applyColorChange = () => {
-    // Color is already updated in recommendations, just clean up editing state
+    // Apply the preview color to recommendations
+    if (!recommendations || !editingColor) return;
+    const updatedRecs = { ...recommendations };
+    updatedRecs[editingColor.category][editingColor.index] = previewColor;
+    setRecommendations(updatedRecs);
+    
+    // Clean up editing state
     setEditingColor(null);
     setPreviewColor('');
     setOriginalColors(null);
@@ -498,15 +499,33 @@ export default function ClothingPalettePage() {
               
               {/* Color picker overlay */}
               {editingColor?.category === category && editingColor?.index === index && (
-                <div className="absolute -inset-4 bg-white p-3 rounded-xl shadow-xl border-2 border-blue-400 z-30 min-h-[200px]">
+                <div className="absolute -inset-8 bg-white p-4 rounded-xl shadow-2xl border-2 border-blue-400 z-30" style={{minHeight: '220px', width: 'auto'}}>
                   <div className="flex flex-col h-full">
                     {/* Preview indicator */}
-                    <div className="text-xs text-center text-blue-600 font-medium mb-3">
+                    <div className="text-sm text-center text-blue-600 font-medium mb-3">
                       Preview Mode
                     </div>
                     
-                    {/* Color picker - allow it to expand */}
-                    <div className="flex-1 mb-3">
+                    {/* Show current vs preview colors */}
+                    <div className="flex gap-2 mb-3">
+                      <div className="flex-1 text-center">
+                        <div className="text-xs text-gray-600 mb-1">Original</div>
+                        <div 
+                          className="w-full h-8 rounded border border-gray-300"
+                          style={{ backgroundColor: originalColors?.[editingColor.category]?.[editingColor.index] || color }}
+                        />
+                      </div>
+                      <div className="flex-1 text-center">
+                        <div className="text-xs text-gray-600 mb-1">Preview</div>
+                        <div 
+                          className="w-full h-8 rounded border border-gray-300"
+                          style={{ backgroundColor: previewColor }}
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Color picker */}
+                    <div className="mb-4">
                       <input
                         type="color"
                         value={previewColor}
@@ -516,8 +535,8 @@ export default function ClothingPalettePage() {
                       />
                     </div>
                     
-                    {/* Apply/Cancel buttons at bottom - always visible */}
-                    <div className="flex gap-2 mt-auto">
+                    {/* Apply/Cancel buttons at bottom */}
+                    <div className="flex gap-2">
                       <button
                         onClick={applyColorChange}
                         className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-2 px-3 rounded transition-colors"
