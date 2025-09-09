@@ -372,6 +372,8 @@ export default function ClothingPalettePage() {
   const [recommendations, setRecommendations] = useState<any>(null);
   const [variationCount, setVariationCount] = useState<number>(0);
   const [editingColor, setEditingColor] = useState<{category: string, index: number} | null>(null);
+  const [previewColor, setPreviewColor] = useState<string>('');
+  const [originalColors, setOriginalColors] = useState<any>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -426,13 +428,40 @@ export default function ClothingPalettePage() {
     navigator.clipboard.writeText(color);
   };
 
-  const updateColor = (category: string, index: number, newColor: string) => {
+  const startEditingColor = (category: string, index: number) => {
     if (!recommendations) return;
     
+    // Store original colors when starting to edit
+    setOriginalColors({ ...recommendations });
+    setEditingColor({ category, index });
+    setPreviewColor(recommendations[category][index]);
+  };
+
+  const updatePreviewColor = (newColor: string) => {
+    setPreviewColor(newColor);
+    
+    // Update the display with preview color
+    if (!recommendations || !editingColor) return;
     const updatedRecs = { ...recommendations };
-    updatedRecs[category][index] = newColor;
+    updatedRecs[editingColor.category][editingColor.index] = newColor;
     setRecommendations(updatedRecs);
+  };
+
+  const applyColorChange = () => {
+    // Color is already updated in recommendations, just clean up editing state
     setEditingColor(null);
+    setPreviewColor('');
+    setOriginalColors(null);
+  };
+
+  const cancelColorChange = () => {
+    // Revert to original colors
+    if (originalColors) {
+      setRecommendations(originalColors);
+    }
+    setEditingColor(null);
+    setPreviewColor('');
+    setOriginalColors(null);
   };
 
   const ColorPalette = ({ colors, title, category }: { colors: string[], title: string, category: string }) => (
@@ -442,7 +471,11 @@ export default function ClothingPalettePage() {
         {colors.map((color, index) => (
           <div key={index} className="group relative">
             <div 
-              className="w-full h-16 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 shadow-md relative overflow-hidden"
+              className={`w-full h-16 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 shadow-md relative overflow-hidden ${
+                editingColor?.category === category && editingColor?.index === index 
+                  ? 'ring-4 ring-blue-400 ring-opacity-50 transform scale-105' 
+                  : ''
+              }`}
               style={{ backgroundColor: color }}
               onClick={() => copyColorToClipboard(color)}
               title={`Click to copy ${color}`}
@@ -453,7 +486,7 @@ export default function ClothingPalettePage() {
                   className="opacity-0 group-hover:opacity-100 bg-white text-gray-800 p-1.5 rounded-full shadow-lg hover:bg-gray-50 transition-all duration-200 transform translate-y-2 group-hover:translate-y-0"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setEditingColor({category, index});
+                    startEditingColor(category, index);
                   }}
                   title="Edit color"
                 >
@@ -465,30 +498,36 @@ export default function ClothingPalettePage() {
               
               {/* Color picker overlay */}
               {editingColor?.category === category && editingColor?.index === index && (
-                <div className="absolute inset-0 bg-white p-2 rounded-lg shadow-lg border-2 border-purple-300 z-10">
+                <div className="absolute inset-0 bg-white p-2 rounded-lg shadow-xl border-2 border-blue-400 z-20">
                   <div className="flex flex-col h-full">
+                    {/* Preview indicator */}
+                    <div className="text-xs text-center text-blue-600 font-medium mb-1">
+                      Preview Mode
+                    </div>
+                    
                     <input
                       type="color"
-                      value={color}
-                      onChange={(e) => updateColor(category, index, e.target.value)}
-                      className="w-full h-8 rounded border-none cursor-pointer mb-1"
+                      value={previewColor}
+                      onChange={(e) => updatePreviewColor(e.target.value)}
+                      className="w-full h-6 rounded border-none cursor-pointer mb-2"
                       autoFocus
                     />
-                    <div className="flex justify-between items-center mt-auto">
+                    
+                    {/* Apply/Cancel buttons */}
+                    <div className="flex gap-1 mt-auto">
                       <button
-                        onClick={() => setEditingColor(null)}
-                        className="text-xs text-gray-500 hover:text-gray-700 px-1"
+                        onClick={applyColorChange}
+                        className="flex-1 bg-green-500 hover:bg-green-600 text-white text-xs font-medium py-1 px-2 rounded transition-colors"
+                        title="Apply changes"
                       >
-                        ✓
+                        Apply
                       </button>
                       <button
-                        onClick={() => {
-                          // Reset to original color (would need to store original)
-                          setEditingColor(null);
-                        }}
-                        className="text-xs text-gray-500 hover:text-gray-700 px-1"
+                        onClick={cancelColorChange}
+                        className="flex-1 bg-gray-400 hover:bg-gray-500 text-white text-xs font-medium py-1 px-2 rounded transition-colors"
+                        title="Cancel changes"
                       >
-                        ✕
+                        Cancel
                       </button>
                     </div>
                   </div>
