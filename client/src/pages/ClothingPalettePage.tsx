@@ -503,16 +503,24 @@ export default function ClothingPalettePage() {
               
               {/* Color picker overlay - positioned outside the color swatch */}
               {editingColor?.category === category && editingColor?.index === index && (
-                <div 
-                  className="fixed bg-white p-4 rounded-xl shadow-2xl border-2 border-blue-400 z-50" 
-                  style={{
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    minWidth: '280px',
-                    maxWidth: '350px'
-                  }}
-                >
+                <>
+                  {/* Backdrop */}
+                  <div 
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                    onClick={cancelColorChange}
+                  />
+                  
+                  {/* Modal */}
+                  <div 
+                    className="fixed bg-white p-5 rounded-xl shadow-2xl border-2 border-blue-400 z-50" 
+                    style={{
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      minWidth: '320px',
+                      maxWidth: '400px'
+                    }}
+                  >
                   <div className="flex flex-col">
                     {/* Preview indicator */}
                     <div className="text-sm text-center text-blue-600 font-medium mb-3">
@@ -567,6 +575,7 @@ export default function ClothingPalettePage() {
                     </div>
                   </div>
                 </div>
+                </>
               )}
             </div>
             <p className="text-xs text-center mt-1 font-mono text-gray-600 group-hover:text-gray-900 transition-colors">
