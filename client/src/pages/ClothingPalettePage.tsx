@@ -207,10 +207,8 @@ export default function ClothingPalettePage() {
                         alt="Uploaded face" 
                         className="w-full max-w-md mx-auto rounded-lg shadow-md"
                       />
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="absolute top-2 right-2"
+                      <button
+                        className="absolute top-2 right-2 px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 shadow-sm transition-colors"
                         onClick={() => {
                           setSelectedImage(null);
                           setAnalyzedData(null);
@@ -218,7 +216,7 @@ export default function ClothingPalettePage() {
                         }}
                       >
                         Remove
-                      </Button>
+                      </button>
                     </div>
                   ) : (
                     <div 
