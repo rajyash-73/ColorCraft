@@ -89,57 +89,139 @@ const hairColorOptions = [
   { value: 'other', label: 'Other', color: '#A0A0A0' }
 ];
 
-// Enhanced clothing color recommendations based on skin tone, undertone, and hair color
-const getClothingRecommendations = (skinTone: string, undertone: string, hairColor: string, isDayTime: boolean) => {
+// Enhanced clothing color recommendations with multiple variations
+const getClothingRecommendations = (skinTone: string, undertone: string, hairColor: string, isDayTime: boolean, variationIndex: number = 0) => {
   
-  // Base color palettes following professional color analysis principles
+  // Expanded color palettes with multiple themes and variations
   const colorPalettes = {
     cool: {
       day: {
-        primary: ['#1e3a8a', '#1e40af', '#3b82f6', '#0ea5e9'], // True blues
-        secondary: ['#7c3aed', '#8b5cf6', '#a855f7', '#c084fc'], // Cool purples  
-        neutral: ['#ffffff', '#f8fafc', '#e2e8f0', '#94a3b8'], // Cool grays & whites
-        accent: ['#ec4899', '#f97316', '#10b981', '#06b6d4'], // Bright cool accents
-        earth: ['#059669', '#0d9488', '#0891b2', '#0284c7'] // Cool earth tones
+        primary: [
+          // Classic Blues Theme
+          '#1e3a8a', '#1e40af', '#3b82f6', '#0ea5e9', '#0284c7', '#0891b2',
+          // Cool Teal Theme  
+          '#0f766e', '#0d9488', '#14b8a6', '#2dd4bf', '#06b6d4', '#0ea5e9',
+          // Sophisticated Navy Theme
+          '#1e293b', '#334155', '#475569', '#64748b'
+        ],
+        neutral: [
+          // Pure Whites & Grays
+          '#ffffff', '#f8fafc', '#f1f5f9', '#e2e8f0', '#cbd5e1', '#94a3b8',
+          // Cool Beiges
+          '#f8f9fa', '#e9ecef', '#dee2e6', '#ced4da', '#adb5bd', '#6c757d'
+        ],
+        accent: [
+          // Bright Cool Accents
+          '#ec4899', '#f43f5e', '#ef4444', '#f97316', '#10b981', '#06b6d4',
+          // Jewel Tones
+          '#7c3aed', '#8b5cf6', '#a855f7', '#c084fc', '#d946ef', '#e879f9'
+        ]
       },
       evening: {
-        primary: ['#1e1b4b', '#312e81', '#3730a3', '#4338ca'], // Deep blues
-        secondary: ['#581c87', '#7c2d92', '#86198f', '#a21caf'], // Rich purples
-        neutral: ['#1f2937', '#374151', '#4b5563', '#6b7280'], // Sophisticated grays
-        accent: ['#dc2626', '#ea580c', '#059669', '#0891b2'], // Jewel accents
-        metallic: ['#6366f1', '#8b5cf6', '#ec4899', '#06b6d4'] // Cool metallics
+        primary: [
+          // Deep Sapphire Theme
+          '#1e1b4b', '#312e81', '#3730a3', '#4338ca', '#4f46e5', '#6366f1',
+          // Rich Navy Theme
+          '#0f172a', '#1e293b', '#334155', '#475569', '#64748b', '#94a3b8'
+        ],
+        neutral: [
+          // Sophisticated Grays
+          '#1f2937', '#374151', '#4b5563', '#6b7280', '#9ca3af', '#d1d5db',
+          // Charcoal Elegance
+          '#111827', '#1f2937', '#374151', '#4b5563', '#6b7280', '#9ca3af'
+        ],
+        accent: [
+          // Evening Jewels
+          '#dc2626', '#ea580c', '#059669', '#0891b2', '#7c2d92', '#a21caf',
+          // Rich Metallics
+          '#6366f1', '#8b5cf6', '#ec4899', '#06b6d4', '#10b981', '#f59e0b'
+        ]
       }
     },
     warm: {
       day: {
-        primary: ['#dc2626', '#ea580c', '#d97706', '#ca8a04'], // Warm reds & oranges
-        secondary: ['#92400e', '#a16207', '#a3a3a3', '#525252'], // Warm browns
-        neutral: ['#fef7cd', '#fef3c7', '#fde68a', '#f59e0b'], // Warm creams
-        accent: ['#f97316', '#f59e0b', '#eab308', '#84cc16'], // Bright warm accents  
-        earth: ['#92400e', '#a16207', '#a3a3a3', '#78716c'] // Warm earth tones
+        primary: [
+          // Warm Reds & Corals
+          '#dc2626', '#ef4444', '#f87171', '#fca5a5', '#ea580c', '#fb923c',
+          // Rich Earth Tones
+          '#92400e', '#a16207', '#ca8a04', '#eab308', '#facc15', '#fde047',
+          // Autumn Spice Theme
+          '#d97706', '#f59e0b', '#f59e0b', '#fbbf24'
+        ],
+        neutral: [
+          // Warm Creams & Beiges
+          '#fef7cd', '#fef3c7', '#fde68a', '#fcd34d', '#f59e0b', '#d97706',
+          // Natural Linens
+          '#faf5f0', '#f5f0e8', '#e6ddd4', '#d2c7b8', '#b8a690', '#9c8b72'
+        ],
+        accent: [
+          // Vibrant Warm Accents
+          '#f97316', '#fb923c', '#fdba74', '#fed7aa', '#84cc16', '#a3e635',
+          // Sunset Tones
+          '#f59e0b', '#eab308', '#facc15', '#fde047', '#84cc16', '#65a30d'
+        ]
       },
       evening: {
-        primary: ['#7f1d1d', '#92400e', '#a16207', '#713f12'], // Deep warm tones
-        secondary: ['#451a03', '#78350f', '#a16207', '#ca8a04'], // Rich browns & golds
-        neutral: ['#44403c', '#57534e', '#78716c', '#a8a29e'], // Warm grays
-        accent: ['#dc2626', '#ea580c', '#059669', '#0d9488'], // Sophisticated accents
-        metallic: ['#f59e0b', '#eab308', '#ca8a04', '#a16207'] // Warm metallics
+        primary: [
+          // Deep Burgundy Theme
+          '#7f1d1d', '#991b1b', '#b91c1c', '#dc2626', '#92400e', '#a16207',
+          // Rich Brown & Gold Theme
+          '#451a03', '#78350f', '#92400e', '#a16207', '#ca8a04', '#eab308'
+        ],
+        neutral: [
+          // Warm Sophisticated Grays
+          '#44403c', '#57534e', '#78716c', '#a8a29e', '#d6d3d1', '#e7e5e4',
+          // Chocolate Browns
+          '#292524', '#44403c', '#57534e', '#78716c', '#a8a29e', '#d6d3d1'
+        ],
+        accent: [
+          // Evening Warm Accents
+          '#dc2626', '#ea580c', '#f59e0b', '#059669', '#0d9488', '#7c2d92',
+          // Rich Metallics
+          '#eab308', '#ca8a04', '#a16207', '#92400e', '#78350f', '#451a03'
+        ]
       }
     },
     neutral: {
       day: {
-        primary: ['#374151', '#4b5563', '#6b7280', '#9ca3af'], // True grays
-        secondary: ['#1e40af', '#dc2626', '#059669', '#7c2d92'], // Balanced colors
-        neutral: ['#ffffff', '#f9fafb', '#f3f4f6', '#d1d5db'], // Pure neutrals
-        accent: ['#3b82f6', '#ef4444', '#10b981', '#8b5cf6'], // Universal accents
-        earth: ['#78716c', '#a8a29e', '#d6d3d1', '#e7e5e4'] // Neutral earth tones
+        primary: [
+          // True Grays
+          '#374151', '#4b5563', '#6b7280', '#9ca3af', '#d1d5db', '#f3f4f6',
+          // Universal Colors
+          '#1e40af', '#dc2626', '#059669', '#7c2d92', '#ea580c', '#0891b2'
+        ],
+        neutral: [
+          // Perfect Neutrals
+          '#ffffff', '#f9fafb', '#f3f4f6', '#e5e7eb', '#d1d5db', '#9ca3af',
+          // Warm-Cool Balance
+          '#fafaf9', '#f5f5f4', '#e7e5e4', '#d6d3d1', '#a8a29e', '#78716c'
+        ],
+        accent: [
+          // Universal Accents
+          '#3b82f6', '#ef4444', '#10b981', '#8b5cf6', '#f59e0b', '#06b6d4',
+          // Balanced Brights
+          '#2563eb', '#dc2626', '#16a34a', '#9333ea', '#d97706', '#0284c7'
+        ]
       },
       evening: {
-        primary: ['#1f2937', '#374151', '#4b5563', '#6b7280'], // Deep neutrals  
-        secondary: ['#312e81', '#7f1d1d', '#064e3b', '#581c87'], // Evening jewel tones
-        neutral: ['#111827', '#1f2937', '#374151', '#4b5563'], // Sophisticated darks
-        accent: ['#4338ca', '#dc2626', '#059669', '#7c2d92'], // Rich accents
-        metallic: ['#6b7280', '#9ca3af', '#d1d5db', '#f3f4f6'] // Neutral metallics
+        primary: [
+          // Sophisticated Neutrals
+          '#1f2937', '#374151', '#4b5563', '#6b7280', '#9ca3af', '#d1d5db',
+          // Evening Jewel Tones
+          '#312e81', '#7f1d1d', '#064e3b', '#581c87', '#92400e', '#1e40af'
+        ],
+        neutral: [
+          // Evening Sophistication
+          '#111827', '#1f2937', '#374151', '#4b5563', '#6b7280', '#9ca3af',
+          // Elegant Darks
+          '#0f172a', '#1e293b', '#334155', '#475569', '#64748b', '#94a3b8'
+        ],
+        accent: [
+          // Evening Accents
+          '#4338ca', '#dc2626', '#059669', '#7c2d92', '#ea580c', '#0891b2',
+          // Refined Tones
+          '#6366f1', '#ef4444', '#10b981', '#a855f7', '#f59e0b', '#06b6d4'
+        ]
       }
     }
   };
@@ -222,6 +304,18 @@ const getClothingRecommendations = (skinTone: string, undertone: string, hairCol
     return adjustments;
   };
 
+  // Helper function to randomly select colors from array
+  const selectRandomColors = (colorArray: string[], count: number, variationIndex: number): string[] => {
+    const shuffled = [...colorArray];
+    // Use variationIndex to create different shuffling patterns
+    const seed = variationIndex;
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(((seed * (i + 1)) % 997) / 997 * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, count);
+  };
+
   const timeOfDay = isDayTime ? 'day' : 'evening';
   let baseColors = colorPalettes[undertone as keyof typeof colorPalettes]?.[timeOfDay] || 
                    colorPalettes.neutral[timeOfDay];
@@ -232,11 +326,11 @@ const getClothingRecommendations = (skinTone: string, undertone: string, hairCol
   // Apply skin tone adjustments  
   baseColors = getSkinToneAdjustments(skinTone, baseColors);
   
-  // Return organized palette
+  // Return organized palette with random selection based on variation
   return {
-    primary: baseColors.primary.slice(0, 4),
-    neutral: baseColors.neutral.slice(0, 4), 
-    accent: baseColors.accent.slice(0, 4)
+    primary: selectRandomColors(baseColors.primary, 4, variationIndex),
+    neutral: selectRandomColors(baseColors.neutral, 4, variationIndex + 1), 
+    accent: selectRandomColors(baseColors.accent, 4, variationIndex + 2)
   };
 };
 
@@ -251,6 +345,7 @@ export default function ClothingPalettePage() {
   const [isDayTime, setIsDayTime] = useState<boolean>(true);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [recommendations, setRecommendations] = useState<any>(null);
+  const [variationCount, setVariationCount] = useState<number>(0);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -269,7 +364,8 @@ export default function ClothingPalettePage() {
       try {
         const analysis = await analyzeImageForSkinTone(imageData);
         setAnalyzedData(analysis);
-        generateRecommendations(analysis.skinTone, analysis.undertone, selectedHairColor, isDayTime);
+        setVariationCount(0); // Reset variation count for new image
+        generateRecommendations(analysis.skinTone, analysis.undertone, selectedHairColor, isDayTime, 0);
       } catch (error) {
         console.error('Error analyzing image:', error);
       } finally {
@@ -279,14 +375,16 @@ export default function ClothingPalettePage() {
     reader.readAsDataURL(file);
   }, [selectedHairColor, isDayTime]);
 
-  const generateRecommendations = (skinTone: string, undertone: string, hairColor: string, dayTime: boolean) => {
-    const recs = getClothingRecommendations(skinTone, undertone, hairColor, dayTime);
+  const generateRecommendations = (skinTone: string, undertone: string, hairColor: string, dayTime: boolean, variation: number = 0) => {
+    const recs = getClothingRecommendations(skinTone, undertone, hairColor, dayTime, variation);
     setRecommendations(recs);
   };
 
   const handleGenerateRecommendations = () => {
     if (analyzedData) {
-      generateRecommendations(analyzedData.skinTone, analyzedData.undertone, selectedHairColor, isDayTime);
+      const newVariation = variationCount + 1;
+      setVariationCount(newVariation);
+      generateRecommendations(analyzedData.skinTone, analyzedData.undertone, selectedHairColor, isDayTime, newVariation);
     }
   };
 
