@@ -501,23 +501,26 @@ export default function ClothingPalettePage() {
                 <div className="absolute inset-0 bg-white p-2 rounded-lg shadow-xl border-2 border-blue-400 z-20">
                   <div className="flex flex-col h-full">
                     {/* Preview indicator */}
-                    <div className="text-xs text-center text-blue-600 font-medium mb-1">
+                    <div className="text-xs text-center text-blue-600 font-medium mb-2">
                       Preview Mode
                     </div>
                     
-                    <input
-                      type="color"
-                      value={previewColor}
-                      onChange={(e) => updatePreviewColor(e.target.value)}
-                      className="w-full h-6 rounded border-none cursor-pointer mb-2"
-                      autoFocus
-                    />
+                    {/* Color picker - takes up the middle space */}
+                    <div className="flex-1 flex items-center justify-center mb-2">
+                      <input
+                        type="color"
+                        value={previewColor}
+                        onChange={(e) => updatePreviewColor(e.target.value)}
+                        className="w-full h-10 rounded border-none cursor-pointer"
+                        autoFocus
+                      />
+                    </div>
                     
-                    {/* Apply/Cancel buttons */}
-                    <div className="flex gap-1 mt-auto">
+                    {/* Apply/Cancel buttons at bottom */}
+                    <div className="flex gap-1">
                       <button
                         onClick={applyColorChange}
-                        className="flex-1 bg-green-500 hover:bg-green-600 text-white text-xs font-medium py-1 px-2 rounded transition-colors"
+                        className="flex-1 bg-green-500 hover:bg-green-600 text-white text-xs font-medium py-1.5 px-2 rounded transition-colors"
                         title="Apply changes"
                       >
                         Apply
