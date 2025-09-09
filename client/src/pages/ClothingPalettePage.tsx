@@ -498,36 +498,36 @@ export default function ClothingPalettePage() {
               
               {/* Color picker overlay */}
               {editingColor?.category === category && editingColor?.index === index && (
-                <div className="absolute inset-0 bg-white p-2 rounded-lg shadow-xl border-2 border-blue-400 z-20">
+                <div className="absolute -inset-4 bg-white p-3 rounded-xl shadow-xl border-2 border-blue-400 z-30 min-h-[200px]">
                   <div className="flex flex-col h-full">
                     {/* Preview indicator */}
-                    <div className="text-xs text-center text-blue-600 font-medium mb-2">
+                    <div className="text-xs text-center text-blue-600 font-medium mb-3">
                       Preview Mode
                     </div>
                     
-                    {/* Color picker - takes up the middle space */}
-                    <div className="flex-1 flex items-center justify-center mb-2">
+                    {/* Color picker - allow it to expand */}
+                    <div className="flex-1 mb-3">
                       <input
                         type="color"
                         value={previewColor}
                         onChange={(e) => updatePreviewColor(e.target.value)}
-                        className="w-full h-10 rounded border-none cursor-pointer"
+                        className="w-full h-12 rounded border-none cursor-pointer"
                         autoFocus
                       />
                     </div>
                     
-                    {/* Apply/Cancel buttons at bottom */}
-                    <div className="flex gap-1">
+                    {/* Apply/Cancel buttons at bottom - always visible */}
+                    <div className="flex gap-2 mt-auto">
                       <button
                         onClick={applyColorChange}
-                        className="flex-1 bg-green-500 hover:bg-green-600 text-white text-xs font-medium py-1.5 px-2 rounded transition-colors"
+                        className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-2 px-3 rounded transition-colors"
                         title="Apply changes"
                       >
                         Apply
                       </button>
                       <button
                         onClick={cancelColorChange}
-                        className="flex-1 bg-gray-400 hover:bg-gray-500 text-white text-xs font-medium py-1 px-2 rounded transition-colors"
+                        className="flex-1 bg-gray-400 hover:bg-gray-500 text-white text-sm font-medium py-2 px-3 rounded transition-colors"
                         title="Cancel changes"
                       >
                         Cancel
