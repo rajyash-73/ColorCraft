@@ -307,7 +307,7 @@ const getClothingRecommendations = (skinTone: string, undertone: string, hairCol
   // Helper function to randomly select unique colors from array
   const selectRandomColors = (colorArray: string[], count: number, variationIndex: number): string[] => {
     // First, ensure we have unique colors only
-    const uniqueColors = [...new Set(colorArray)];
+    const uniqueColors = Array.from(new Set(colorArray));
     
     // If we don't have enough unique colors, pad with variations
     while (uniqueColors.length < count && uniqueColors.length > 0) {
