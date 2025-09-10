@@ -1,42 +1,87 @@
+import React, { Suspense, useEffect, startTransition } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import NotFound from "@/pages/not-found";
-import Home from "@/pages/Home";
-import LandingPage from "@/pages/LandingPage";
-import ClothingPalettePage from "@/pages/ClothingPalettePage";
-import ClothingColorGuide from "@/pages/ClothingColorGuide";
-import VisualizerGuide from "@/pages/VisualizerGuide";
-import ImagePaletteGuide from "@/pages/ImagePaletteGuide";
-import ImagePalette from "@/pages/image-palette";
-import PaletteVisualizer from "@/pages/palette-visualizer";
-import PaletteVisualizerNew from "@/pages/palette-visualizer-new";
-import PrivacyPolicy from "@/pages/privacy-policy";
-import FAQPage from "@/pages/faq";
-import DesignersGuide from "@/pages/designers-guide";
-import { useEffect } from "react";
 import { AuthProvider } from "./hooks/use-auth";
 import { PaletteProvider } from "./contexts/PaletteContext";
-import TestApp from "./TestApp";
 import { HelmetProvider } from 'react-helmet-async';
+
+// Keep essential/small components synchronous
+import NotFound from "@/pages/not-found";
+import LandingPage from "@/pages/LandingPage";
+
+// Lazy load heavy components for better performance
+const TestApp = React.lazy(() => import("./TestApp"));
+const Home = React.lazy(() => import("@/pages/Home"));
+const ClothingPalettePage = React.lazy(() => import("@/pages/ClothingPalettePage"));
+const ClothingColorGuide = React.lazy(() => import("@/pages/ClothingColorGuide"));
+const VisualizerGuide = React.lazy(() => import("@/pages/VisualizerGuide"));
+const ImagePaletteGuide = React.lazy(() => import("@/pages/ImagePaletteGuide"));
+const ImagePalette = React.lazy(() => import("@/pages/image-palette"));
+const PaletteVisualizer = React.lazy(() => import("@/pages/palette-visualizer"));
+const PaletteVisualizerNew = React.lazy(() => import("@/pages/palette-visualizer-new"));
+const PrivacyPolicy = React.lazy(() => import("@/pages/privacy-policy"));
+const FAQPage = React.lazy(() => import("@/pages/faq"));
+const DesignersGuide = React.lazy(() => import("@/pages/designers-guide"));
+
+// Loading component for lazy-loaded routes
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="flex flex-col items-center space-y-4">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <p className="text-gray-600 font-medium">Loading...</p>
+    </div>
+  </div>
+);
+
+// Wrapper to handle route transitions properly
+const LazyRoute = ({ component: Component, ...props }: any) => {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Component {...props} />
+    </Suspense>
+  );
+};
 
 // Components that use the PaletteContext
 const PaletteRoutes = () => {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
-      <Route path="/generator" component={TestApp} />
-      <Route path="/clothing-palette" component={ClothingPalettePage} />
-      <Route path="/image-palette" component={ImagePalette} />
-      <Route path="/visualize" component={PaletteVisualizerNew} />
-      <Route path="/visualize-old" component={PaletteVisualizer} />
-      <Route path="/privacy-policy" component={PrivacyPolicy} />
-      <Route path="/faq" component={FAQPage} />
-      <Route path="/designers-guide" component={DesignersGuide} />
-      <Route path="/clothing-color-guide" component={ClothingColorGuide} />
-      <Route path="/visualizer-guide" component={VisualizerGuide} />
-      <Route path="/image-palette-guide" component={ImagePaletteGuide} />
+      <Route path="/generator">
+        <LazyRoute component={TestApp} />
+      </Route>
+      <Route path="/clothing-palette">
+        <LazyRoute component={ClothingPalettePage} />
+      </Route>
+      <Route path="/image-palette">
+        <LazyRoute component={ImagePalette} />
+      </Route>
+      <Route path="/visualize">
+        <LazyRoute component={PaletteVisualizerNew} />
+      </Route>
+      <Route path="/visualize-old">
+        <LazyRoute component={PaletteVisualizer} />
+      </Route>
+      <Route path="/privacy-policy">
+        <LazyRoute component={PrivacyPolicy} />
+      </Route>
+      <Route path="/faq">
+        <LazyRoute component={FAQPage} />
+      </Route>
+      <Route path="/designers-guide">
+        <LazyRoute component={DesignersGuide} />
+      </Route>
+      <Route path="/clothing-color-guide">
+        <LazyRoute component={ClothingColorGuide} />
+      </Route>
+      <Route path="/visualizer-guide">
+        <LazyRoute component={VisualizerGuide} />
+      </Route>
+      <Route path="/image-palette-guide">
+        <LazyRoute component={ImagePaletteGuide} />
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );
