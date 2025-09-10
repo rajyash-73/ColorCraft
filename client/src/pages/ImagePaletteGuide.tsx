@@ -43,10 +43,6 @@ export default function ImagePaletteGuide() {
       </Helmet>
 
       <Header 
-        onHelp={() => {}} 
-        onExport={() => {}} 
-        onSave={() => {}}
-        onVisualize={() => {}}
         mobileMenuOpen={false}
         toggleMobileMenu={() => {}}
       />
