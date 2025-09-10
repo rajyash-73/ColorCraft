@@ -374,6 +374,9 @@ export default function ClothingPalettePage() {
   const [editingColor, setEditingColor] = useState<{category: string, index: number} | null>(null);
   const [previewColor, setPreviewColor] = useState<string>('');
   const [originalColors, setOriginalColors] = useState<any>(null);
+  const [hue, setHue] = useState<number>(0);
+  const [saturation, setSaturation] = useState<number>(100);
+  const [brightness, setBrightness] = useState<number>(50);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -428,13 +431,64 @@ export default function ClothingPalettePage() {
     navigator.clipboard.writeText(color);
   };
 
+  const hexToHsb = (hex: string): {h: number, s: number, b: number} => {
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+    
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const delta = max - min;
+    
+    let h = 0;
+    if (delta !== 0) {
+      if (max === r) h = ((g - b) / delta) % 6;
+      else if (max === g) h = (b - r) / delta + 2;
+      else h = (r - g) / delta + 4;
+      h = Math.round(h * 60);
+      if (h < 0) h += 360;
+    }
+    
+    const s = max === 0 ? 0 : Math.round((delta / max) * 100);
+    const brightness = Math.round(max * 100);
+    
+    return { h, s, b: brightness };
+  };
+
+  const hsbToHex = (h: number, s: number, b: number): string => {
+    const c = (b / 100) * (s / 100);
+    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+    const m = (b / 100) - c;
+    
+    let r = 0, g = 0, blue = 0;
+    if (h < 60) { r = c; g = x; blue = 0; }
+    else if (h < 120) { r = x; g = c; blue = 0; }
+    else if (h < 180) { r = 0; g = c; blue = x; }
+    else if (h < 240) { r = 0; g = x; blue = c; }
+    else if (h < 300) { r = x; g = 0; blue = c; }
+    else { r = c; g = 0; blue = x; }
+    
+    r = Math.round((r + m) * 255);
+    g = Math.round((g + m) * 255);
+    blue = Math.round((blue + m) * 255);
+    
+    return '#' + [r, g, blue].map(val => val.toString(16).padStart(2, '0')).join('');
+  };
+
   const startEditingColor = (category: string, index: number) => {
     if (!recommendations) return;
     
     // Store original colors when starting to edit
     setOriginalColors({ ...recommendations });
     setEditingColor({ category, index });
-    setPreviewColor(recommendations[category][index]);
+    const color = recommendations[category][index];
+    setPreviewColor(color);
+    
+    // Set HSB values from the current color
+    const hsb = hexToHsb(color);
+    setHue(hsb.h);
+    setSaturation(hsb.s);
+    setBrightness(hsb.b);
   };
 
   const updatePreviewColor = (newColor: string) => {
@@ -501,7 +555,7 @@ export default function ClothingPalettePage() {
                 </button>
               </div>
               
-              {/* Color picker overlay - positioned outside the color swatch */}
+              {/* Custom Color Picker Modal */}
               {editingColor?.category === category && editingColor?.index === index && (
                 <>
                   {/* Backdrop */}
@@ -510,71 +564,134 @@ export default function ClothingPalettePage() {
                     onClick={cancelColorChange}
                   />
                   
-                  {/* Modal */}
+                  {/* Modal with Custom Color Picker */}
                   <div 
-                    className="fixed bg-white p-5 rounded-xl shadow-2xl border-2 border-blue-400 z-50" 
+                    className="fixed bg-white rounded-xl shadow-2xl border-2 border-gray-300 z-50" 
                     style={{
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      minWidth: '320px',
-                      maxWidth: '400px'
+                      width: '360px',
+                      maxHeight: '90vh',
+                      overflow: 'auto'
                     }}
                   >
-                  <div className="flex flex-col">
-                    {/* Preview indicator */}
-                    <div className="text-sm text-center text-blue-600 font-medium mb-3">
-                      Preview Mode
-                    </div>
-                    
-                    {/* Show current vs preview colors */}
-                    <div className="flex gap-3 mb-3">
-                      <div className="flex-1 text-center">
-                        <div className="text-xs text-gray-600 mb-1">Original</div>
-                        <div 
-                          className="w-full h-10 rounded border-2 border-gray-300"
-                          style={{ backgroundColor: originalColors?.[editingColor.category]?.[editingColor.index] || color }}
-                        />
+                    <div className="p-5">
+                      {/* Header */}
+                      <div className="text-lg font-semibold text-gray-800 text-center mb-4">
+                        Edit Color
                       </div>
-                      <div className="flex-1 text-center">
-                        <div className="text-xs text-gray-600 mb-1">Preview</div>
-                        <div 
-                          className="w-full h-10 rounded border-2 border-blue-400"
-                          style={{ backgroundColor: previewColor }}
-                        />
+                      
+                      {/* Color Comparison */}
+                      <div className="flex gap-3 mb-4">
+                        <div className="flex-1">
+                          <div className="text-xs text-gray-600 mb-1 text-center">Original</div>
+                          <div 
+                            className="w-full h-12 rounded-lg border-2 border-gray-300"
+                            style={{ backgroundColor: originalColors?.[editingColor.category]?.[editingColor.index] || color }}
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <div className="text-xs text-gray-600 mb-1 text-center">Preview</div>
+                          <div 
+                            className="w-full h-12 rounded-lg border-2 border-blue-400"
+                            style={{ backgroundColor: previewColor }}
+                          />
+                        </div>
                       </div>
-                    </div>
-                    
-                    {/* Color picker */}
-                    <div className="mb-4">
-                      <input
-                        type="color"
-                        value={previewColor}
-                        onChange={(e) => updatePreviewColor(e.target.value)}
-                        className="w-full h-14 rounded cursor-pointer border-2 border-gray-300"
-                        autoFocus
-                      />
-                    </div>
-                    
-                    {/* Apply/Cancel buttons at bottom */}
-                    <div className="flex gap-2">
-                      <button
-                        onClick={applyColorChange}
-                        className="flex-1 bg-green-500 hover:bg-green-600 text-white text-sm font-semibold py-2.5 px-4 rounded-lg transition-colors"
-                        title="Apply changes"
-                      >
-                        Apply
-                      </button>
-                      <button
-                        onClick={cancelColorChange}
-                        className="flex-1 bg-gray-400 hover:bg-gray-500 text-white text-sm font-semibold py-2.5 px-4 rounded-lg transition-colors"
-                        title="Cancel changes"
-                      >
-                        Cancel
-                      </button>
+                      
+                      {/* Color Selection Area */}
+                      <div className="space-y-4 mb-6">
+                        {/* Saturation/Brightness Picker */}
+                        <div 
+                          className="relative w-full h-48 rounded-lg cursor-crosshair"
+                          style={{
+                            background: `linear-gradient(to bottom, transparent 0%, black 100%), 
+                                       linear-gradient(to right, white 0%, hsl(${hue}, 100%, 50%) 100%)`
+                          }}
+                          onClick={(e) => {
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+                            const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
+                            setSaturation(x);
+                            setBrightness(100 - y);
+                            const newColor = hsbToHex(hue, x, 100 - y);
+                            setPreviewColor(newColor);
+                          }}
+                        >
+                          <div 
+                            className="absolute w-4 h-4 rounded-full border-2 border-white shadow-lg"
+                            style={{
+                              left: `${saturation}%`,
+                              top: `${100 - brightness}%`,
+                              transform: 'translate(-50%, -50%)',
+                              backgroundColor: previewColor
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Hue Slider */}
+                        <div className="space-y-2">
+                          <label className="text-xs text-gray-600">Hue</label>
+                          <input
+                            type="range"
+                            min="0"
+                            max="360"
+                            value={hue}
+                            onChange={(e) => {
+                              const newHue = parseInt(e.target.value);
+                              setHue(newHue);
+                              const newColor = hsbToHex(newHue, saturation, brightness);
+                              setPreviewColor(newColor);
+                            }}
+                            className="w-full h-3 rounded-lg appearance-none cursor-pointer"
+                            style={{
+                              background: `linear-gradient(to right, 
+                                #ff0000 0%, #ffff00 17%, #00ff00 33%, 
+                                #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)`
+                            }}
+                          />
+                        </div>
+                        
+                        {/* Hex Input */}
+                        <div className="space-y-2">
+                          <label className="text-xs text-gray-600">Hex Color</label>
+                          <input
+                            type="text"
+                            value={previewColor}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
+                                setPreviewColor(value);
+                                const hsb = hexToHsb(value);
+                                setHue(hsb.h);
+                                setSaturation(hsb.s);
+                                setBrightness(hsb.b);
+                              }
+                            }}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
+                            placeholder="#000000"
+                          />
+                        </div>
+                      </div>
+                      
+                      {/* Apply/Cancel buttons at the very bottom */}
+                      <div className="flex gap-3 pt-4 border-t border-gray-200">
+                        <button
+                          onClick={applyColorChange}
+                          className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+                        >
+                          Apply
+                        </button>
+                        <button
+                          onClick={cancelColorChange}
+                          className="flex-1 bg-gray-400 hover:bg-gray-500 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
                 </>
               )}
             </div>
