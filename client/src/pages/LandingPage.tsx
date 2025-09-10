@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Helmet } from "react-helmet-async";
 import { ArrowRight, Palette, Smartphone, Monitor, Chrome, Download, Star, Users } from "lucide-react";
@@ -12,6 +12,111 @@ export default function LandingPage() {
 
   const handleExplorePalettes = () => {
     window.location.href = '/saved-palettes';
+  };
+
+  // Animated Color Palette Showcase Component
+  const AnimatedPaletteShowcase = () => {
+    const [currentSet, setCurrentSet] = useState(0);
+    
+    const paletteSets = [
+      [
+        ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FECA57'],
+        ['#6C5CE7', '#A29BFE', '#FD79A8', '#E17055', '#00B894'],
+        ['#2D3436', '#636E72', '#DDD', '#74B9FF', '#00CEC9'],
+        ['#FF7675', '#FD79A8', '#FDCB6E', '#6C5CE7', '#74B9FF']
+      ],
+      [
+        ['#1ABC9C', '#2ECC71', '#3498DB', '#9B59B6', '#E74C3C'],
+        ['#F39C12', '#E67E22', '#D35400', '#C0392B', '#8E44AD'],
+        ['#2C3E50', '#34495E', '#7F8C8D', '#95A5A6', '#BDC3C7'],
+        ['#E8F5E8', '#FFF3CD', '#D1ECF1', '#F8D7DA', '#E2E3E5']
+      ],
+      [
+        ['#FF9FF3', '#F368E0', '#FF6B6B', '#4ECDC4', '#45B7D1'],
+        ['#A8E6CF', '#FFD93D', '#6BCF7F', '#4D96FF', '#9B59B6'],
+        ['#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9'],
+        ['#F8BBD9', '#E8F5E8', '#FFF8DC', '#E6E6FA', '#F0F8FF']
+      ]
+    ];
+    
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setCurrentSet((prev) => (prev + 1) % paletteSets.length);
+      }, 3000);
+      
+      return () => clearInterval(interval);
+    }, []);
+    
+    return (
+      <div className="relative bg-white rounded-2xl shadow-xl p-8 border border-gray-100 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 opacity-50"></div>
+        
+        <div className="relative z-10">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Endless Palette Possibilities</h3>
+            <p className="text-gray-600">Discover thousands of beautiful color combinations</p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {paletteSets[currentSet].map((palette, paletteIndex) => (
+              <div 
+                key={`${currentSet}-${paletteIndex}`}
+                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-500 transform hover:scale-105 animate-fade-in"
+                style={{
+                  animationDelay: `${paletteIndex * 0.1}s`
+                }}
+              >
+                <div className="flex h-20">
+                  {palette.map((color, colorIndex) => (
+                    <div
+                      key={colorIndex}
+                      className="flex-1 transition-all duration-300 hover:scale-110 relative group"
+                      style={{ backgroundColor: color }}
+                    >
+                      <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                        <span className="text-white text-xs font-mono opacity-0 group-hover:opacity-100 transition-all duration-300">
+                          {color}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="p-2 text-center">
+                  <div className="flex justify-center space-x-1">
+                    {[...Array(5)].map((_, i) => (
+                      <div key={i} className="w-1 h-1 bg-gray-300 rounded-full"></div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex justify-center mt-6 space-x-2">
+            {paletteSets.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSet(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentSet 
+                    ? 'bg-blue-600 scale-125' 
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+              />
+            ))}
+          </div>
+          
+          <div className="text-center mt-6">
+            <button
+              onClick={() => window.location.href = '/'}
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            >
+              Start Creating Palettes
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -96,6 +201,28 @@ export default function LandingPage() {
           </div>
           
         </div>
+
+        {/* Animated Palette Showcase */}
+        <section className="mb-20">
+          <style>
+            {`
+              @keyframes fade-in {
+                from {
+                  opacity: 0;
+                  transform: translateY(20px);
+                }
+                to {
+                  opacity: 1;
+                  transform: translateY(0);
+                }
+              }
+              .animate-fade-in {
+                animation: fade-in 0.8s ease-in-out both;
+              }
+            `}
+          </style>
+          <AnimatedPaletteShowcase />
+        </section>
 
         {/* Apps & Tools Showcase */}
         <section className="mb-20">
