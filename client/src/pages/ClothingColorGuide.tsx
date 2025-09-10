@@ -1,6 +1,6 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import { Palette, Users, Star, ArrowRight } from "lucide-react";
+import { Palette, Users, Star, ArrowRight, ChevronLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -46,6 +46,19 @@ export default function ClothingColorGuide() {
         mobileMenuOpen={false}
         toggleMobileMenu={() => {}}
       />
+
+      {/* Back to Home Navigation */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="container mx-auto px-4 py-3">
+          <div 
+            className="flex items-center text-purple-600 hover:text-purple-800 transition-colors cursor-pointer"
+            onClick={() => window.location.href = '/'}
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            <span>Back to Home</span>
+          </div>
+        </div>
+      </div>
 
       <main className="container mx-auto px-4 py-16">
         {/* Hero Section */}
