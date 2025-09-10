@@ -11,7 +11,7 @@ export default function LandingPage() {
   };
 
   const handleExplorePalettes = () => {
-    window.location.href = '/';
+    window.location.href = '/generator#trending';
   };
 
   // Animated Color Palette Showcase Component
