@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { Color } from '@/types/Color';
-import { Upload, Image as ImageIcon, ArrowLeft, RefreshCw, X, Info } from 'lucide-react';
+import { Upload, Image as ImageIcon, ArrowLeft, RefreshCw, X, Info, ChevronLeft } from 'lucide-react';
 import { usePalette } from '@/contexts/PaletteContext';
 import { hexToRgb, getColorName, rgbToHex } from '@/lib/colorUtils';
 import { useToast } from '@/hooks/use-toast';
@@ -235,8 +235,8 @@ export default function ImagePalette() {
             className="flex items-center text-gray-600 hover:text-gray-900 transition-colors text-sm sm:text-base cursor-pointer"
             onClick={() => window.location.href = '/'}
           >
-            <ArrowLeft className="mr-1" size={18} />
-            Back to Generator
+            <ChevronLeft className="mr-1" size={18} />
+            Back to Home
           </div>
         </div>
         <p className="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">

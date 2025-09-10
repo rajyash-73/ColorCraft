@@ -177,10 +177,6 @@ export default function Home() {
         </script>
       </Helmet>
       <Header 
-        onHelp={handleHelp} 
-        onExport={handleExport} 
-        onSave={handleSavePalette}
-        onVisualize={handleVisualize}
         mobileMenuOpen={mobileMenuOpen}
         toggleMobileMenu={toggleMobileMenu}
       />

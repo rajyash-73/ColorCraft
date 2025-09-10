@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
-import { Upload, Camera, Sun, Moon, Palette, User, Eye, Sparkles, RefreshCw, Download, Copy } from "lucide-react";
+import { Upload, Camera, Sun, Moon, Palette, User, Eye, Sparkles, RefreshCw, Download, Copy, ChevronLeft } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 // Using plain components instead of shadcn UI for compatibility
@@ -463,13 +463,22 @@ export default function ClothingPalettePage() {
       </Helmet>
 
       <Header 
-        onHelp={() => {}} 
-        onExport={() => {}} 
-        onSave={() => {}}
-        onVisualize={() => {}}
         mobileMenuOpen={false}
         toggleMobileMenu={() => {}}
       />
+
+      {/* Back to Home Navigation */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="container mx-auto px-4 py-3">
+          <div 
+            className="flex items-center text-purple-600 hover:text-purple-800 transition-colors cursor-pointer"
+            onClick={() => window.location.href = '/'}
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            <span>Back to Home</span>
+          </div>
+        </div>
+      </div>
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
