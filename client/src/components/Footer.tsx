@@ -64,6 +64,24 @@ export default function Footer({ className }: FooterProps) {
                 <li>
                   <div 
                     className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
+                    onClick={() => window.location.href = '/'}
+                  >
+                    Color Palette Generator
+                    <ArrowUpRight className="ml-1" size={12} />
+                  </div>
+                </li>
+                <li>
+                  <div 
+                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
+                    onClick={() => window.location.href = '/clothing-palette'}
+                  >
+                    Clothing Color Palette Creator
+                    <ArrowUpRight className="ml-1" size={12} />
+                  </div>
+                </li>
+                <li>
+                  <div 
+                    className="text-gray-600 hover:text-blue-600 transition-colors flex items-center cursor-pointer"
                     onClick={() => window.location.href = '/visualize'}
                   >
                     Visualizer
