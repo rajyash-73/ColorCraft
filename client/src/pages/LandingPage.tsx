@@ -11,7 +11,7 @@ export default function LandingPage() {
   };
 
   const handleExplorePalettes = () => {
-    window.location.href = '/saved-palettes';
+    window.location.href = '/';
   };
 
   // Animated Color Palette Showcase Component
@@ -108,7 +108,7 @@ export default function LandingPage() {
           
           <div className="text-center mt-6">
             <button
-              onClick={() => window.location.href = '/'}
+              onClick={() => window.location.href = '/generator'}
               className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               Start Creating Palettes
