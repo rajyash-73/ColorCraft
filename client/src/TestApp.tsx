@@ -459,7 +459,9 @@ function PaletteApp() {
       </div>
       
       {/* Trending Palettes Section */}
-      <TrendingPalettes onSelectPalette={handleTrendingPaletteSelect} />
+      <div id="trending">
+        <TrendingPalettes onSelectPalette={handleTrendingPaletteSelect} />
+      </div>
       
       <div className="mt-10 sm:mt-14 p-6 sm:p-8 bg-white rounded-2xl border border-gray-200 shadow-sm text-center">
         <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-4">Start creating beautiful designs today</h3>
