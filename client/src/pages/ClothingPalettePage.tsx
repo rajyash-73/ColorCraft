@@ -371,12 +371,7 @@ export default function ClothingPalettePage() {
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [recommendations, setRecommendations] = useState<any>(null);
   const [variationCount, setVariationCount] = useState<number>(0);
-  const [editingColor, setEditingColor] = useState<{category: string, index: number} | null>(null);
-  const [previewColor, setPreviewColor] = useState<string>('');
-  const [originalColors, setOriginalColors] = useState<any>(null);
-  const [hue, setHue] = useState<number>(0);
-  const [saturation, setSaturation] = useState<number>(100);
-  const [brightness, setBrightness] = useState<number>(50);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -419,11 +414,18 @@ export default function ClothingPalettePage() {
     setRecommendations(recs);
   };
 
-  const handleGenerateRecommendations = () => {
+  const handleGenerateRecommendations = async () => {
     if (analyzedData) {
+      setIsGenerating(true);
+      
+      // Add a small delay for better UX feedback
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       const newVariation = variationCount + 1;
       setVariationCount(newVariation);
       generateRecommendations(analyzedData.skinTone, analyzedData.undertone, selectedHairColor, isDayTime, newVariation);
+      
+      setIsGenerating(false);
     }
   };
 
@@ -431,270 +433,18 @@ export default function ClothingPalettePage() {
     navigator.clipboard.writeText(color);
   };
 
-  const hexToHsb = (hex: string): {h: number, s: number, b: number} => {
-    const r = parseInt(hex.slice(1, 3), 16) / 255;
-    const g = parseInt(hex.slice(3, 5), 16) / 255;
-    const b = parseInt(hex.slice(5, 7), 16) / 255;
-    
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    const delta = max - min;
-    
-    let h = 0;
-    if (delta !== 0) {
-      if (max === r) h = ((g - b) / delta) % 6;
-      else if (max === g) h = (b - r) / delta + 2;
-      else h = (r - g) / delta + 4;
-      h = Math.round(h * 60);
-      if (h < 0) h += 360;
-    }
-    
-    const s = max === 0 ? 0 : Math.round((delta / max) * 100);
-    const brightness = Math.round(max * 100);
-    
-    return { h, s, b: brightness };
-  };
-
-  const hsbToHex = (h: number, s: number, b: number): string => {
-    const c = (b / 100) * (s / 100);
-    const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-    const m = (b / 100) - c;
-    
-    let r = 0, g = 0, blue = 0;
-    if (h < 60) { r = c; g = x; blue = 0; }
-    else if (h < 120) { r = x; g = c; blue = 0; }
-    else if (h < 180) { r = 0; g = c; blue = x; }
-    else if (h < 240) { r = 0; g = x; blue = c; }
-    else if (h < 300) { r = x; g = 0; blue = c; }
-    else { r = c; g = 0; blue = x; }
-    
-    r = Math.round((r + m) * 255);
-    g = Math.round((g + m) * 255);
-    blue = Math.round((blue + m) * 255);
-    
-    return '#' + [r, g, blue].map(val => val.toString(16).padStart(2, '0')).join('');
-  };
-
-  const startEditingColor = (category: string, index: number) => {
-    if (!recommendations) return;
-    
-    // Store original colors when starting to edit
-    setOriginalColors({ ...recommendations });
-    setEditingColor({ category, index });
-    const color = recommendations[category][index];
-    setPreviewColor(color);
-    
-    // Set HSB values from the current color
-    const hsb = hexToHsb(color);
-    setHue(hsb.h);
-    setSaturation(hsb.s);
-    setBrightness(hsb.b);
-  };
-
-  const updatePreviewColor = (newColor: string) => {
-    setPreviewColor(newColor);
-    // Don't update recommendations immediately - wait for Apply
-  };
-
-  const applyColorChange = () => {
-    // Apply the preview color to recommendations
-    if (!recommendations || !editingColor) return;
-    const updatedRecs = { ...recommendations };
-    updatedRecs[editingColor.category][editingColor.index] = previewColor;
-    setRecommendations(updatedRecs);
-    
-    // Clean up editing state
-    setEditingColor(null);
-    setPreviewColor('');
-    setOriginalColors(null);
-  };
-
-  const cancelColorChange = () => {
-    // Revert to original colors
-    if (originalColors) {
-      setRecommendations(originalColors);
-    }
-    setEditingColor(null);
-    setPreviewColor('');
-    setOriginalColors(null);
-  };
-
-  const ColorPalette = ({ colors, title, category }: { colors: string[], title: string, category: string }) => (
+  const ColorPalette = ({ colors, title }: { colors: string[], title: string }) => (
     <div className="mb-6 bg-white rounded-xl shadow-lg p-6 border border-gray-100">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">{title}</h3>
       <div className="grid grid-cols-4 gap-3">
         {colors.map((color, index) => (
           <div key={index} className="group relative">
             <div 
-              className={`w-full h-16 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 shadow-md relative overflow-hidden ${
-                editingColor?.category === category && editingColor?.index === index 
-                  ? 'ring-4 ring-blue-400 ring-opacity-50 transform scale-105' 
-                  : ''
-              }`}
-              style={{ 
-                backgroundColor: editingColor?.category === category && editingColor?.index === index 
-                  ? previewColor 
-                  : color 
-              }}
+              className="w-full h-16 rounded-lg cursor-pointer transition-all duration-200 hover:scale-105 shadow-md"
+              style={{ backgroundColor: color }}
               onClick={() => copyColorToClipboard(color)}
               title={`Click to copy ${color}`}
-            >
-              {/* Edit overlay on hover */}
-              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-200 flex items-center justify-center">
-                <button
-                  className="opacity-0 group-hover:opacity-100 bg-white text-gray-800 p-1.5 rounded-full shadow-lg hover:bg-gray-50 transition-all duration-200 transform translate-y-2 group-hover:translate-y-0"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    startEditingColor(category, index);
-                  }}
-                  title="Edit color"
-                >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
-              </div>
-              
-              {/* Custom Color Picker Modal */}
-              {editingColor?.category === category && editingColor?.index === index && (
-                <>
-                  {/* Backdrop */}
-                  <div 
-                    className="fixed inset-0 bg-black bg-opacity-50 z-40"
-                    onClick={cancelColorChange}
-                  />
-                  
-                  {/* Modal with Custom Color Picker */}
-                  <div 
-                    className="fixed bg-white rounded-xl shadow-2xl border-2 border-gray-300 z-50" 
-                    style={{
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      width: '360px',
-                      maxHeight: '90vh',
-                      overflow: 'auto'
-                    }}
-                  >
-                    <div className="p-5">
-                      {/* Header */}
-                      <div className="text-lg font-semibold text-gray-800 text-center mb-4">
-                        Edit Color
-                      </div>
-                      
-                      {/* Color Comparison */}
-                      <div className="flex gap-3 mb-4">
-                        <div className="flex-1">
-                          <div className="text-xs text-gray-600 mb-1 text-center">Original</div>
-                          <div 
-                            className="w-full h-12 rounded-lg border-2 border-gray-300"
-                            style={{ backgroundColor: originalColors?.[editingColor.category]?.[editingColor.index] || color }}
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <div className="text-xs text-gray-600 mb-1 text-center">Preview</div>
-                          <div 
-                            className="w-full h-12 rounded-lg border-2 border-blue-400"
-                            style={{ backgroundColor: previewColor }}
-                          />
-                        </div>
-                      </div>
-                      
-                      {/* Color Selection Area */}
-                      <div className="space-y-4 mb-6">
-                        {/* Saturation/Brightness Picker */}
-                        <div 
-                          className="relative w-full h-48 rounded-lg cursor-crosshair"
-                          style={{
-                            background: `linear-gradient(to bottom, transparent 0%, black 100%), 
-                                       linear-gradient(to right, white 0%, hsl(${hue}, 100%, 50%) 100%)`
-                          }}
-                          onClick={(e) => {
-                            const rect = e.currentTarget.getBoundingClientRect();
-                            const x = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-                            const y = Math.max(0, Math.min(100, ((e.clientY - rect.top) / rect.height) * 100));
-                            setSaturation(x);
-                            setBrightness(100 - y);
-                            const newColor = hsbToHex(hue, x, 100 - y);
-                            setPreviewColor(newColor);
-                          }}
-                        >
-                          <div 
-                            className="absolute w-4 h-4 rounded-full border-2 border-white shadow-lg"
-                            style={{
-                              left: `${saturation}%`,
-                              top: `${100 - brightness}%`,
-                              transform: 'translate(-50%, -50%)',
-                              backgroundColor: previewColor
-                            }}
-                          />
-                        </div>
-                        
-                        {/* Hue Slider */}
-                        <div className="space-y-2">
-                          <label className="text-xs text-gray-600">Hue</label>
-                          <input
-                            type="range"
-                            min="0"
-                            max="360"
-                            value={hue}
-                            onChange={(e) => {
-                              const newHue = parseInt(e.target.value);
-                              setHue(newHue);
-                              const newColor = hsbToHex(newHue, saturation, brightness);
-                              setPreviewColor(newColor);
-                            }}
-                            className="w-full h-3 rounded-lg appearance-none cursor-pointer"
-                            style={{
-                              background: `linear-gradient(to right, 
-                                #ff0000 0%, #ffff00 17%, #00ff00 33%, 
-                                #00ffff 50%, #0000ff 67%, #ff00ff 83%, #ff0000 100%)`
-                            }}
-                          />
-                        </div>
-                        
-                        {/* Hex Input */}
-                        <div className="space-y-2">
-                          <label className="text-xs text-gray-600">Hex Color</label>
-                          <input
-                            type="text"
-                            value={previewColor}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
-                                setPreviewColor(value);
-                                const hsb = hexToHsb(value);
-                                setHue(hsb.h);
-                                setSaturation(hsb.s);
-                                setBrightness(hsb.b);
-                              }
-                            }}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
-                            placeholder="#000000"
-                          />
-                        </div>
-                      </div>
-                      
-                      {/* Apply/Cancel buttons at the very bottom */}
-                      <div className="flex gap-3 pt-4 border-t border-gray-200">
-                        <button
-                          onClick={applyColorChange}
-                          className="flex-1 bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
-                        >
-                          Apply
-                        </button>
-                        <button
-                          onClick={cancelColorChange}
-                          className="flex-1 bg-gray-400 hover:bg-gray-500 text-white font-medium py-3 px-4 rounded-lg transition-colors"
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
+            />
             <p className="text-xs text-center mt-1 font-mono text-gray-600 group-hover:text-gray-900 transition-colors">
               {color}
             </p>
@@ -881,10 +631,24 @@ export default function ClothingPalettePage() {
                     
                     <button
                       onClick={handleGenerateRecommendations}
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-4 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                      disabled={isGenerating}
+                      className={`w-full px-4 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 transform ${
+                        isGenerating
+                          ? 'bg-gray-400 cursor-not-allowed'
+                          : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl'
+                      }`}
                     >
-                      <Sparkles className="w-4 h-4" />
-                      Generate New Recommendations
+                      {isGenerating ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4" />
+                          Generate New Recommendations
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -904,9 +668,9 @@ export default function ClothingPalettePage() {
                     </p>
                   </div>
 
-                  <ColorPalette colors={recommendations.primary} title="Primary Colors" category="primary" />
-                  <ColorPalette colors={recommendations.neutral} title="Neutral Colors" category="neutral" />
-                  <ColorPalette colors={recommendations.accent} title="Accent Colors" category="accent" />
+                  <ColorPalette colors={recommendations.primary} title="Primary Colors" />
+                  <ColorPalette colors={recommendations.neutral} title="Neutral Colors" />
+                  <ColorPalette colors={recommendations.accent} title="Accent Colors" />
 
                   {/* Style Tips */}
                   <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
