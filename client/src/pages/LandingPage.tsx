@@ -227,41 +227,27 @@ export default function LandingPage() {
         {/* Apps & Tools Showcase */}
         <section className="mb-20">
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Web App */}
+            {/* Color Palette Generator */}
             <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
               <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mb-4">
-                <Monitor className="w-6 h-6 text-white" />
+                <Palette className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Web App</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Palette Generator</h3>
               <p className="text-gray-600 text-sm mb-4">
-                Create, browse and save palettes instantly in your browser.
+                Create beautiful color palettes with advanced algorithms and color theory.
               </p>
               <button 
-                onClick={handleGetStarted}
+                onClick={() => window.location.href = '/'}
                 className="text-blue-600 font-medium text-sm hover:text-blue-700 transition-colors"
               >
-                Launch now →
+                Start creating →
               </button>
             </div>
 
-            {/* Mobile Experience */}
-            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4">
-                <Smartphone className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Mobile Ready</h3>
-              <p className="text-gray-600 text-sm mb-4">
-                Fully responsive design that works perfectly on all devices.
-              </p>
-              <div className="text-green-600 font-medium text-sm">
-                Always available →
-              </div>
-            </div>
-
-            {/* Clothing Palette */}
+            {/* Clothing Color Palette */}
             <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-xl flex items-center justify-center mb-4">
-                <Palette className="w-6 h-6 text-white" />
+                <Smartphone className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Clothing Colors</h3>
               <p className="text-gray-600 text-sm mb-4">
@@ -275,18 +261,38 @@ export default function LandingPage() {
               </button>
             </div>
 
-            {/* Export Options */}
+            {/* Visualizer */}
+            <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mb-4">
+                <Monitor className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Visualizer</h3>
+              <p className="text-gray-600 text-sm mb-4">
+                See your color palettes in action with real-time mockups and previews.
+              </p>
+              <button 
+                onClick={() => window.location.href = '/visualize'}
+                className="text-green-600 font-medium text-sm hover:text-green-700 transition-colors"
+              >
+                Visualize →
+              </button>
+            </div>
+
+            {/* Image to Palette */}
             <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
               <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl flex items-center justify-center mb-4">
                 <Download className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Export Ready</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Image to Palette</h3>
               <p className="text-gray-600 text-sm mb-4">
-                Export in multiple formats: CSS, JSON, Adobe ASE, and more.
+                Extract beautiful color palettes from any image you upload.
               </p>
-              <div className="text-orange-600 font-medium text-sm">
-                Multiple formats →
-              </div>
+              <button 
+                onClick={() => window.location.href = '/image-palette'}
+                className="text-orange-600 font-medium text-sm hover:text-orange-700 transition-colors"
+              >
+                Extract colors →
+              </button>
             </div>
           </div>
         </section>
