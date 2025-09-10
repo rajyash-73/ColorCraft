@@ -82,6 +82,19 @@ function PaletteApp() {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [generatePalette, showAdjustModal]);
+
+  // Handle scrolling to trending section when hash is present
+  useEffect(() => {
+    if (window.location.hash === '#trending') {
+      // Use a timeout to ensure the component is fully rendered
+      setTimeout(() => {
+        const element = document.getElementById('trending');
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, []);
   
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
