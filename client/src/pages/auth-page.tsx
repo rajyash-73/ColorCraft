@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronLeft } from "lucide-react";
 
 // Extend the user schema to add validation rules
 const authFormSchema = insertUserSchema.extend({
@@ -57,7 +57,21 @@ export default function AuthPage() {
   const isPending = loginMutation.isPending || registerMutation.isPending;
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="min-h-screen">
+      {/* Back to Home Navigation */}
+      <div className="border-b border-gray-200 bg-white">
+        <div className="container mx-auto px-4 py-3">
+          <div 
+            className="flex items-center text-blue-600 hover:text-blue-800 transition-colors cursor-pointer"
+            onClick={() => window.location.href = '/'}
+          >
+            <ChevronLeft className="mr-1 h-4 w-4" />
+            <span>Back to Home</span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex min-h-screen flex-col md:flex-row">
       {/* Hero Section */}
       <div className="w-full md:w-1/2 bg-gradient-to-b from-primary/20 to-primary/5 p-8 flex items-center justify-center">
         <div className="max-w-md space-y-4 text-center md:text-left">
@@ -173,6 +187,7 @@ export default function AuthPage() {
             >Privacy Policy</span>.
           </CardFooter>
         </Card>
+      </div>
       </div>
     </div>
   );
