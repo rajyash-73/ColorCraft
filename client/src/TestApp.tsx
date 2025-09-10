@@ -3,7 +3,7 @@ import { Color } from './types/Color';
 import { isLightColor } from '@/lib/colorUtils';
 import { 
   LockIcon, UnlockIcon, RefreshCw, Copy, Download, Plus, Trash, Info, Sliders, 
-  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock 
+  GripVertical, Image as ImageIcon, Eye, BookOpen, Keyboard, Move, Lock, ChevronLeft 
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import ColorAdjustmentModal from '@/components/ColorAdjustmentModal';
@@ -192,12 +192,22 @@ function PaletteApp() {
               </p>
             </div>
             
-            <div
-              className="mt-3 sm:mt-0 px-4 py-2 text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 border border-blue-200 rounded-full shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer"
-              onClick={() => window.location.href = '/designers-guide'}
-            >
-              <Eye size={16} />
-              <span>Designer's Guide</span>
+            <div className="flex items-center gap-3">
+              <div
+                className="px-4 py-2 text-sm font-medium text-gray-600 bg-white hover:bg-gray-50 border border-gray-200 rounded-full shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer"
+                onClick={() => window.location.href = '/'}
+              >
+                <ChevronLeft size={16} />
+                <span>Back to Home</span>
+              </div>
+              
+              <div
+                className="px-4 py-2 text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 border border-blue-200 rounded-full shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer"
+                onClick={() => window.location.href = '/designers-guide'}
+              >
+                <Eye size={16} />
+                <span>Designer's Guide</span>
+              </div>
             </div>
           </div>
           
