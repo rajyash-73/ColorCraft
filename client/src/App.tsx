@@ -6,6 +6,9 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import LandingPage from "@/pages/LandingPage";
 import ClothingPalettePage from "@/pages/ClothingPalettePage";
+import ClothingColorGuide from "@/pages/ClothingColorGuide";
+import VisualizerGuide from "@/pages/VisualizerGuide";
+import ImagePaletteGuide from "@/pages/ImagePaletteGuide";
 import ImagePalette from "@/pages/image-palette";
 import PaletteVisualizer from "@/pages/palette-visualizer";
 import PaletteVisualizerNew from "@/pages/palette-visualizer-new";
@@ -31,6 +34,9 @@ const PaletteRoutes = () => {
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/faq" component={FAQPage} />
       <Route path="/designers-guide" component={DesignersGuide} />
+      <Route path="/clothing-color-guide" component={ClothingColorGuide} />
+      <Route path="/visualizer-guide" component={VisualizerGuide} />
+      <Route path="/image-palette-guide" component={ImagePaletteGuide} />
       <Route component={NotFound} />
     </Switch>
   );
