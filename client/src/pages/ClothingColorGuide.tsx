@@ -43,10 +43,6 @@ export default function ClothingColorGuide() {
       </Helmet>
 
       <Header 
-        onHelp={() => {}} 
-        onExport={() => {}} 
-        onSave={() => {}}
-        onVisualize={() => {}}
         mobileMenuOpen={false}
         toggleMobileMenu={() => {}}
       />

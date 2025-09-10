@@ -43,10 +43,6 @@ export default function VisualizerGuide() {
       </Helmet>
 
       <Header 
-        onHelp={() => {}} 
-        onExport={() => {}} 
-        onSave={() => {}}
-        onVisualize={() => {}}
         mobileMenuOpen={false}
         toggleMobileMenu={() => {}}
       />

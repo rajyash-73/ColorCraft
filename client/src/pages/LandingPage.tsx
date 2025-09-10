@@ -159,10 +159,6 @@ export default function LandingPage() {
 
       {/* Header */}
       <Header 
-        onHelp={() => {}} 
-        onExport={() => {}} 
-        onSave={() => {}}
-        onVisualize={() => {}}
         mobileMenuOpen={false}
         toggleMobileMenu={() => {}}
       />
